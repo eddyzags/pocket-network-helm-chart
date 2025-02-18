@@ -2,6 +2,66 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
+protocol: shannon
+stage: main
+version: 0.0.11-rc
+
+shannon:
+  relayminer:
+    config:
+      signing_key_name: supplier1
+      default_signing_key_names: [supplier1]
+      smt_store_path: smt_stores
+      pocket_node:
+        query_node_rpc_url: tcp://poktroll-validator:26657
+        query_node_grpc_url: tcp://poktroll-validator:9090
+        tx_node_rpc_url: tcp://poktroll-validator:26657
+      suppliers:
+        - service_id: anvil
+          type: http
+          service_config:
+            backend_url: http://anvil:8547/
+            publicly_exposed_endpoints:
+              - relayminers
+          listen_url: http://0.0.0.0:8545
+      metrics:
+      enabled: true
+      # If changing port here, make sure to adjust `metrics.serviceMonitor.port`
+      addr: :9090
+      pprof:
+        enabled: true
+        addr: localhost:6060
+    replica: 3
+    image:
+      repository: ghcr.io/pokt-network/poktrolld
+      pullPolicy: IfNotPresent
+      # Overrides the image tag whose default is the chart appVersion.
+      tag: "latest"
+    imagePullSecrets: []
+    serviceAccount:
+      # Specifies whether a service account should be created
+      create: true
+      # Annotations to add to the service account
+      annotations: {}
+      # The name of the service account to use.
+      # If not set and create is true, a name is generated using the fullname template
+      name: ""
+    
+
+  fullnode:
+
+  relayminer:
+
+
+
+morse:
+  validator:
+  fullnode:
+
+################################################################################
+
+
+
 replicaCount: 1
 
 image:
