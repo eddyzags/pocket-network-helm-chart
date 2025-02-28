@@ -2,141 +2,191 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
+# protocol string refers to the decentralized framework that enables applications
+# to access reliable and censorship-resistant infrastructure (e.g. shannon or morse).
 protocol: shannon
-stage: main
+
+# stage string refers to the different stages of a protocol testing phase
+# before it goes live to on the Mainnet. (e.g. mainnet, testnet, devnet)
+#
+# see https://dev.poktroll.com/category/networks
+stage: mainnet
+
+# version string refers to the unique version of the poktrolld computer
+# software.
+#
+# see https://dev.poktroll.com/operate/faq/full_node_faq?_highlight=version#how-do-i-check-the-node-version
 version: 0.0.11-rc
 
+# homeDirectory refers to the poktrolld working directory. This variable is
+# shared across all every procol actors. Meaning that the working directory
+# will be instantiated in the same path for every 
+homeDirectory: /root/.poktroll
+
+
+# shannon object refers to the root level values configuration for the shannon
+# protocol to define the configuration for every protocol actors. This
+# field is required when `.Values.protocol=shannon`.
+#
+# see https://dev.poktroll.com/category/protocol-actors for more information.
 shannon:
+  # relayminer key-value pairs refers to the relayminer configuration.
   relayminer:
+    # chainId string refers to pocket network unique identifier for a blockchain
+    # network within the Cosmos ecosystem.
+    chainId: "poktroll"
+    # grpcInsecure allows gRPC over insecure channels for querying state in the CosmosSDK.
+    #
+    # see https://dev.poktroll.com/operate/cheat_sheets/supplier_cheatsheet#secure-vs-non-secure-query_node_grpc_url
+    grpcInsecure: false
+    # gasAdjustment refers to the adjustement factor to be multiplied by the gas
+    # estmiation given by the tx simulation.
+    #
+    # see https://docs.cosmos.network/main/learn/beginner/tx-lifecycle#gas-and-fees
+    gasAdjustment: 1.5
+    # gasPrices specifies how much you are willing to pay per unit of gas.
+    #
+    # see https://docs.cosmos.network/main/learn/beginner/tx-lifecycle#gas-and-fees
+    gasPrices: 0.0001upokt
+    # keyringBackend refers the storage backend for the keyring implementation.
+    #
+    # see https://docs.cosmos.network/v0.46/run-node/keyring.html#available-backends-for-the-keyring
+    keyringBackend: test
+    # logs refers to the logging configuration
+    logs:
+      # level defines the log severity.
+      #
+      # see https://github.com/pokt-network/poktroll/blob/6759eec9f586358a12306fa8c92d18cb03ef6530/pkg/polylog/polyzero/levels.go#L39-L54
+      level: info
+    # config defines key-values pairs for the relayminer general configuration.
+    #
+    # see https://dev.poktroll.com/operate/configs/relayminer_config
     config:
       signing_key_name: supplier1
+      # default_signing_key_names defines the list of key names from the keyring.
+      # 
+      # https://dev.poktroll.com/operate/configs/relayminer_config
       default_signing_key_names: [supplier1]
+      # smt_store_path path to working direectory for Sparse Merkle Tree.
       smt_store_path: smt_stores
+      # pocket_node defines the different connectivity for the poktrolld node.
+      #
+      # see https://dev.poktroll.com/operate/configs/relayminer_config#pocket-node-connectivity
       pocket_node:
+        # query_node_rpc_url sets the websocket connection to a pocket network node.
+        #
+        # see https://dev.poktroll.com/operate/configs/relayminer_config#query_node_rpc_url
         query_node_rpc_url: tcp://poktroll-validator:26657
+        # query_node_grpc_url sets the pocket node endpoint to read from Pocket Network.
+        #
+        # see https://dev.poktroll.com/operate/configs/relayminer_config#query_node_rpc_url
         query_node_grpc_url: tcp://poktroll-validator:9090
+        # tx_node_rpc_url sets the pocket node endpoint to write into Pocket Network.
+        #
+        # see https://dev.poktroll.com/operate/configs/relayminer_config#tx_node_rpc_url
         tx_node_rpc_url: tcp://poktroll-validator:26657
+      # suppliers defines a list of key-values pairs to define the suppliers managed
+      # by this relayminer.
+      #
+      # e.g.
+      # suppliers:
+      #   - service_id: ollama
+      #     service_config:
+      #      backend_url: http://ollama:8547/
+      #      publicly_exposed_endpoints:
+      #        - relayminers
+      #     listen_url: http://0.0.0.0:8546
+      #   - service_id: anvil
+      #     service_config:
+      #      backend_url: http://anvil:8547/
+      #      publicly_exposed_endpoints:
+      #        - relayminers
+      #     listen_url: http://0.0.0.0:8546
+      #
+      # see https://dev.poktroll.com/operate/configs/relayminer_config#suppliers
       suppliers:
-        - service_id: anvil
-          type: http
-          service_config:
-            backend_url: http://anvil:8547/
-            publicly_exposed_endpoints:
-              - relayminers
-          listen_url: http://0.0.0.0:8545
+        # service_id is a unique identifier to reference a service provided by
+        # this relayminer.
+      - service_id: anvil
+        # service_config configures the supplier of this service.
+        #
+        # see https://dev.poktroll.com/operate/configs/relayminer_config#service_config
+        service_config:
+          # backend_url is the endpoint where the request will be forward for
+          # this service.
+          backend_url: http://anvil:8547/
+          # publicly_exposed_endpoints are a list of host the relayminer will
+          # accept request from.
+          publicly_exposed_endpoints:
+            - relayminers
+        # listen_url is the address from which the relayminer will start a
+        # server to listen for incoming request for this service.
+        #
+        # see https://dev.poktroll.com/operate/configs/relayminer_config#listen_url
+        listen_url: http://0.0.0.0:8545
+      # metrics configures a Prometheus Exporter endpoint for clients to read
+      # relayminer metrics.
       metrics:
-      enabled: true
-      # If changing port here, make sure to adjust `metrics.serviceMonitor.port`
-      addr: :9090
-      pprof:
+        # enabled activates a Prometheus Exporter endpoint if set to true.
         enabled: true
+        # addr is the address at which the server must listen to.
+        # 
+        # If changing port here, make sure to adjust `metrics.serviceMonitor.port`
+        addr: :9090
+      # pprof configures a pprof endpoint for visualization and analysis of
+      # profiling data.
+      pprof:
+        # enabled activates a pprof endpoint.
+        enabled: true
+        # addr is the address at which the server must listen to.
         addr: localhost:6060
-    replica: 3
+    # metrics is the root value configuration for the relayminer metric consumer.
+    metrics:
+      # serviceMonitor represents the configuration for a Prometheus Operator
+      # ServiceMonitor.
+      serviceMonitor:
+        # enabled activates the templating of a Prometheus Operator
+        # ServiceMonitor.
+        enabled: false
+      # port defines the targeted port to consume the metrics.
+      port: 9090
     image:
       repository: ghcr.io/pokt-network/poktrolld
       pullPolicy: IfNotPresent
       # Overrides the image tag whose default is the chart appVersion.
       tag: "latest"
+    replica: 3
     imagePullSecrets: []
-    serviceAccount:
-      # Specifies whether a service account should be created
-      create: true
-      # Annotations to add to the service account
-      annotations: {}
-      # The name of the service account to use.
-      # If not set and create is true, a name is generated using the fullname template
-      name: ""
-    
-
-  fullnode:
-
-  relayminer:
-
-
-
-morse:
-  validator:
-  fullnode:
-
-################################################################################
-
-
-
-replicaCount: 1
-
-image:
-  repository: nginx
-  pullPolicy: IfNotPresent
-  # Overrides the image tag whose default is the chart appVersion.
-  tag: ""
-
-imagePullSecrets: []
-nameOverride: ""
-fullnameOverride: ""
-
-serviceAccount:
-  # Specifies whether a service account should be created
-  create: true
-  # Annotations to add to the service account
-  annotations: {}
-  # The name of the service account to use.
-  # If not set and create is true, a name is generated using the fullname template
-  name: ""
-
-podAnnotations: {}
-
-podSecurityContext: {}
-  # fsGroup: 2000
-
-securityContext: {}
-  # capabilities:
-  #   drop:
-  #   - ALL
-  # readOnlyRootFilesystem: true
-  # runAsNonRoot: true
-  # runAsUser: 1000
-
-service:
-  type: ClusterIP
-  port: 80
-
-ingress:
-  enabled: false
-  className: ""
-  annotations: {}
-    # kubernetes.io/ingress.class: nginx
-    # kubernetes.io/tls-acme: "true"
-  hosts:
-    - host: chart-example.local
-      paths:
-        - path: /
-          pathType: ImplementationSpecific
-  tls: []
-  #  - secretName: chart-example-tls
-  #    hosts:
-  #      - chart-example.local
-
-resources: {}
-  # We usually recommend not to specify default resources and to leave this as a conscious
-  # choice for the user. This also increases chances charts run on environments with little
-  # resources, such as Minikube. If you do want to specify resources, uncomment the following
-  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-  # limits:
-  #   cpu: 100m
-  #   memory: 128Mi
-  # requests:
-  #   cpu: 100m
-  #   memory: 128Mi
-
-autoscaling:
-  enabled: false
-  minReplicas: 1
-  maxReplicas: 100
-  targetCPUUtilizationPercentage: 80
-  # targetMemoryUtilizationPercentage: 80
-
-nodeSelector: {}
-
-tolerations: []
-
-affinity: {}
+    resources: {}
+      # We usually recommend not to specify default resources and to leave this as a conscious
+      # choice for the user. This also increases chances charts run on environments with little
+      # resources, such as Minikube. If you do want to specify resources, uncomment the following
+      # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+      # limits:
+      #   cpu: 100m
+      #   memory: 128Mi
+      # requests:
+      #   cpu: 100m
+      #   memory: 128Mi
+    service:
+      type: ClusterIP
+      port: 8545
+    autoscaling:
+      enabled: false
+      minReplicas: 1
+      maxReplicas: 100
+      targetCPUUtilizationPercentage: 80
+      targetMemoryUtilizationPercentage: 80
+    podAnnotations: {}
+    podSecurityContext: {}
+      #fsGroup: 2000
+    securityContext: {}
+      # capabilities:
+      #   drop:
+      #   - ALL
+      # readOnlyRootFilesystem: true
+      # runAsNonRoot: true
+      # runAsUser: 1000
+    nodeSelector: {}
+    affinity: {}
+    tolerations: []

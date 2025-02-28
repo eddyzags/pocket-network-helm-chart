@@ -18,7 +18,7 @@ If release name contains chart name it will be used as a full name.
 {{- if contains $name .Release.Name }}
 {{- .Release.Name | trunc 63 | trimSuffix "-" }}
 {{- else }}
-{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" }}
+{{- printf "%s-%s" $name .Release.Name | trunc 63 | trimSuffix "-" }}
 {{- end }}
 {{- end }}
 {{- end }}
@@ -35,7 +35,6 @@ Common labels
 */}}
 {{- define "pocket-network.labels" -}}
 helm.sh/chart: {{ include "pocket-network.chart" . }}
-{{ include "pocket-network.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
@@ -58,5 +57,33 @@ Create the name of the service account to use
 {{- default (include "pocket-network.fullname" .) .Values.serviceAccount.name }}
 {{- else }}
 {{- default "default" .Values.serviceAccount.name }}
+{{- end }}
+{{- end }}
+
+{{/*
+Parse URL.
+*/}}
+
+{{- define "pocket-network.utils.listenURLToPorts" -}}
+{{- range .suppliers }}
+{{- $url := .listen_url }}
+{{- if not (contains "://" $url) }}
+{{- fail "Invalid URL format: must contain '://'. Example: http://0.0.0.0:8545" }}
+{{- end }}
+{{- $protocolParts := split "://" $url }}
+{{- $protocol := $protocolParts._0 }}
+{{- $remaining := $protocolParts._1 }}
+{{- $hostParts := split "/" $remaining }}
+{{- $hostPort := $hostParts._0 }}
+{{- $hostAndPort := split ":" $hostPort }}
+{{- $host := $hostAndPort._0 }}
+{{- $port := "" }}
+{{- if eq (len $hostAndPort) 2 }}
+{{- $port = $hostAndPort._1 }}
+{{- end }}
+- port: {{ $port }}
+  targetPort: {{ $port }}
+  protocol: TCP
+  name: {{ $protocol }}
 {{- end }}
 {{- end }}

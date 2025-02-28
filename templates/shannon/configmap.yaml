@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "pocket-network.fullname" . }}-relayminer
+  labels:
+    {{- include "pocket-network.labels" . | nindent 4 }}
+    app.pocket.network/name: {{ include "pocket-network.fullname" . }}-relayminer
+data:
+  config.yaml: | {{ toYaml .Values.shannon.relayminer.config | nindent 4 }}
+  client.toml: |
+    broadcast-mode = "sync"
+    chain-id = "{{ .Values.chainId }}"
+    keyring-backend = "test"
+    node = "{{ .Values.shannon.relayminer.config.pocket_node.tx_node_rpc_url }}"
+    output = "text"

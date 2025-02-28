@@ -1,0 +1,17 @@
+{{ if and .Values.shannon.relayminer .Values.shannon.relayminer.metrics.serviceMonitor }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ include "pocket-network.fullname" . }}-relayminer
+  labels:
+    {{- include "pocket-network.labels" . | nindent 4 }}
+    app.pocket.network/name: {{ include "pocket-network.fullname" . }}-relayminer
+spec:
+  selector:
+    matchLabels:
+      app.pocket.network/name: {{ include "pocket-network.fullname" . }}-relayminer
+  endpoints:
+    - port: metrics
+      interval: 30s
+      path: /metrics
+{{ end }}
