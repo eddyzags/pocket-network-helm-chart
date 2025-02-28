@@ -1,4 +1,4 @@
-{{ if and .Values.shannon.relayminer .Values.shannon.relayminer.metrics.serviceMonitor }}
+{{ if .Values.shannon.relayminer.metrics.serviceMonitor.enabled }}
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
