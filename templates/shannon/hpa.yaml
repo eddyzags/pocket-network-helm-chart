@@ -1,0 +1,32 @@
+{{- if .Values.shannon.relayminer.autoscaling.enabled }}
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ include "pocket-network.fullname" . }}
+  labels:
+    {{- include "pocket-network.labels" . | nindent 4 }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ include "pocket-network.fullname" . }}
+  minReplicas: {{ .Values.shannon.relayminer.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.shannon.relayminer.autoscaling.maxReplicas }}
+  metrics:
+    {{- if .Values.shannon.relayminer.autoscaling.targetCPUUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: {{ .Values.shannon.relayminer.autoscaling.targetCPUUtilizationPercentage }}
+    {{- end }}
+    {{- if .Values.shannon.relayminer.autoscaling.targetMemoryUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: {{ .Values.shannon.relayminer.autoscaling.targetMemoryUtilizationPercentage }}
+    {{- end }}
+{{- end }}
