@@ -41,10 +41,10 @@ spec:
             - -c
             - |
               mkdir -p {{ .Values.homeDirectory }}/config && \
-              chown -R {{ .Values.chownDataDirTo }}:{{ .Values.chownDataDirTo }} {{ .Values.homeDirectory }} && \
+              chown -R {{ .Values.shannon.relayminer.chownDataDirTo }}:{{ .Values.shannon.relayminer.chownDataDirTo }} {{ .Values.homeDirectory }} && \
               chmod -R 755 {{ .Values.homeDirectory }}
           volumeMounts:
-            - name: poktroll-home
+            - name: relayminer-home
               mountPath: {{ .Values.homeDirectory }}
       {{- end }}
       containers:
@@ -88,6 +88,30 @@ spec:
               port: http
           resources:
             {{- toYaml .Values.shannon.relayminer.resources | nindent 12 }}
+          volumeMounts:
+            - name: relayminer-keys
+              mountPath: {{ .Values.homeDirectory }}/keyring-test/{{ .Values.shannon.relayminer.config.signing_key_name }}.info
+              subPath: {{ .Values.shannon.relayminer.config.signing_key_name }}.info
+            - name: relayminer-config
+              mountPath: "{{ .Values.homeDirectory }}/config/config.yaml"
+              subPath: "config.yaml"
+            - name: relayminer-config
+              mountPath: "{{ .Values.homeDirectory }}/config/client.toml"
+              subPath: "client.toml"
+            - name: relayminer-home
+              mountPath: {{ .Values.homeDirectory }}
+          {{- with .Values.shannon.relayminer.volumeMounts }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          volumes:
+            - name: relayminer-keys
+              secret:
+                secretName: {{ .Values.shannon.relayminer.keysSecretName }}
+            - name: relayminer-config
+              configMap:
+                name: {{ include "pocket-network.fullname" . }}-relayminer
+            - name: relayminer-home
+              emptyDir: {}
       {{- with .Values.shannon.relayminer.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

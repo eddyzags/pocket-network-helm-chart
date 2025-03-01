@@ -23,7 +23,6 @@ version: 0.0.11-rc
 # will be instantiated in the same path for every 
 homeDirectory: /root/.poktroll
 
-
 # shannon object refers to the root level values configuration for the shannon
 # protocol to define the configuration for every protocol actors. This
 # field is required when `.Values.protocol=shannon`.
@@ -58,6 +57,15 @@ shannon:
       #
       # see https://github.com/pokt-network/poktroll/blob/6759eec9f586358a12306fa8c92d18cb03ef6530/pkg/polylog/polyzero/levels.go#L39-L54
       level: info
+    # keysSecretName injects a Kubernetes Secret that defines the signing key
+    # inside the relayminer pod.
+    keysSecretName: ""
+    # chownDataDirTo explictly chown the .homeDirectory path to the according
+    # UID and GID.
+    #
+    # e.g.
+    # chownDataDirTo: "1001:100"
+    chownDataDirTo: ""
     # config defines key-values pairs for the relayminer general configuration.
     #
     # see https://dev.poktroll.com/operate/configs/relayminer_config
@@ -197,6 +205,15 @@ shannon:
       #
       # see https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types
       type: ClusterIP
+    # volumes are the additional volume for the relayminer pod.
+    volumes: []
+    # volumeMounts are the additional volume mount point for the relayminer pod.
+    #
+    # e.g.
+    # - name: foo
+    #   mountPath: "/etc/foo"
+    #   readOnly: true
+    volumeMounts: []
     # autoscaling ist the root configuration for the HorizontalPodAutoscaler.
     autoscaling:
       # enable activates the templating of a HorizontalPodAutoscaler resource.

@@ -11,6 +11,8 @@ Pocket Network is permissionless decentralized physical infrastructure (DePin) p
 ## Introduction
 
 ## Prerequisites
+* Kubernetes 1.23+
+* Helm 3.9.0+
 
 ## Installing the Chart
 
