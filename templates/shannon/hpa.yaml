@@ -1,4 +1,4 @@
-{{- if .Values.shannon.relayminer.autoscaling.enabled }}
+{{- if and (eq .Values.shannon.relayminer.autoscaling.enabled true) (eq .Values.protocol "shannon") }}
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:

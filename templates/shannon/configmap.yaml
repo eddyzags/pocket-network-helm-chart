@@ -1,3 +1,4 @@
+{{- if eq .Values.protocol "shannon"}}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -13,3 +14,4 @@ data:
     keyring-backend = "test"
     node = "{{ .Values.shannon.relayminer.config.pocket_node.tx_node_rpc_url }}"
     output = "text"
+{{- end }}

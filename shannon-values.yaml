@@ -147,7 +147,7 @@ shannon:
       serviceMonitor:
         # enabled activates the templating of a Prometheus Operator
         # ServiceMonitor.
-        enabled: false
+        enabled: true
       # port defines the targeted port to consume the metrics.
       port: 9090
     # development are the globals settings to set up an development environment
