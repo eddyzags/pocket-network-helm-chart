@@ -53,28 +53,19 @@ spec:
             {{- toYaml .Values.shannon.relayminer.securityContext | nindent 12 }}
           image: "{{ .Values.shannon.relayminer.image.repository }}:{{ .Values.shannon.relayminer.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.shannon.relayminer.image.pullPolicy }}
-{{ if .Values.development.delve.enabled }}
+{{- if .Values.shannon.relayminer.development.delve.enabled }}
           command: [ "/go/bin/dlv" ]
           args:
             - exec
-            - --listen={{ .Values.development.delve.laddr }}
+            - --listen={{ .Values.shannon.relayminer.development.delve.addr }}
             - --headless=true
             - --api-version=2
             - --accept-multiclient
             - /usr/local/bin/poktrolld
             - --
 {{ else }}
-          # TODO(@okdas): enable health checks
-          # livenessProbe:
-          #   httpGet:
-          #     path: /
-          #     port: http
-          # readinessProbe:
-          #   httpGet:
-          #     path: /
-          #     port: http
           args:
-{{ end }}
+{{- end }}
             - "relayminer"
             - "--keyring-backend={{ .Values.shannon.relayminer.keyringBackend }}"
             - "--config={{ .Values.homeDirectory }}/config/config.yaml"

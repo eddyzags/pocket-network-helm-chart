@@ -68,8 +68,7 @@ Parse URL.
 {{- range .suppliers }}
 {{- $url := .listen_url }}
 {{- if not (contains "://" $url) }}
-{{- fail "Invalid URL format: must contain '://'. Example: http://0.0.0.0:8545" }}
-{{- end }}
+{{- fail "Invalid URL format: must contain '://'. Example: http://0.0.0.0:8545" }}{{- end }}
 {{- $protocolParts := split "://" $url }}
 {{- $protocol := $protocolParts._0 }}
 {{- $remaining := $protocolParts._1 }}
@@ -79,11 +78,9 @@ Parse URL.
 {{- $host := $hostAndPort._0 }}
 {{- $port := "" }}
 {{- if eq (len $hostAndPort) 2 }}
-{{- $port = $hostAndPort._1 }}
-{{- end }}
+{{- $port = $hostAndPort._1 }}{{- end }}
 - port: {{ $port }}
   targetPort: {{ $port }}
   protocol: TCP
-  name: {{ $protocol }}
-{{- end }}
+  name: {{ $protocol }}{{- end }}
 {{- end }}

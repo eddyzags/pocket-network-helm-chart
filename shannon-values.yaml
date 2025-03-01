@@ -1,4 +1,4 @@
-# Default values for pocket-network.
+# Default values for Shannon.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
@@ -150,43 +150,99 @@ shannon:
         enabled: false
       # port defines the targeted port to consume the metrics.
       port: 9090
+    # development are the globals settings to set up an development environment
+    # on the relayminer pod.
+    development:
+      # delve configures a debugger for the Go programming language.
+      #
+      # see https://github.com/go-delve/delve/tree/master/Documentation
+      delve:
+        # enables executes the poktrolld binary with delve.
+        enabled: false
+        # addr is the address where the delve server listen to.
+        addr: :40004
+    # image is the root configuration for the container image to be used for the
+    # relayminer.
     image:
+      # repository defines which container image will be pulled from a container
+      # registry.
       repository: ghcr.io/pokt-network/poktrolld
+      # pullPolicy defines the pull policy for the relayminer.
       pullPolicy: IfNotPresent
-      # Overrides the image tag whose default is the chart appVersion.
+      # tag overrides the image tag whose default is the chart appVersion.
       tag: "latest"
+    # replica defines the number of instances for the relayminer.
     replica: 3
+    # imagePullSecrets defines the information to authenticate with the
+    # container registry.
     imagePullSecrets: []
-    resources: {}
-      # We usually recommend not to specify default resources and to leave this as a conscious
-      # choice for the user. This also increases chances charts run on environments with little
-      # resources, such as Minikube. If you do want to specify resources, uncomment the following
-      # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-      # limits:
-      #   cpu: 100m
-      #   memory: 128Mi
-      # requests:
-      #   cpu: 100m
-      #   memory: 128Mi
+    # resources is the root configuration for the resource isolation.
+    resources:
+      # requests defines the minimum resources a container needs to run.
+      requests:
+        # cpu defines the cpu minimum resources.
+        cpu: 2000m
+        # memory defines the memory minimum resources.
+        memory: 2Gi
+      # limits defines the maximum resources a container can use.
+      limits:
+        # cpu defines the cpu maximum resource.
+        cpu: 3000m
+        # memory defines the memory maximum resource.
+        memory: 3Gi
+    # service is the root configuration when defining a Kubernetes Service object for the relayminer.
     service:
+      # type defines the type of service we want to use for the relayminer servers
+      # (ClusterIP, NodePort, etc...).
+      #
+      # see https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types
       type: ClusterIP
-      port: 8545
+    # autoscaling ist the root configuration for the HorizontalPodAutoscaler.
     autoscaling:
+      # enable activates the templating of a HorizontalPodAutoscaler resource.
       enabled: false
+      # minReplicas defines the minimum number of replicas that should be maintained.
       minReplicas: 1
+      # maxReplicas defines the maximum number of replicas that the HPA can
+      # scale up to when the demand increases.
       maxReplicas: 100
+      # targetCPUUtilizationPercentage defines the percentage of requested CPU
+      # usage across all pods.
       targetCPUUtilizationPercentage: 80
+      # targetMemoryUtilizationPercentage defines the percentage of requested
+      # memory usage across all pods.
       targetMemoryUtilizationPercentage: 80
+    # podAnnotations are key-values pairs metadata attched to Pods.
+    #
+    # e.g.
+    # podAnnotations:
+    #   version: "1.2.3"
+    #   commitHash: "abc123def456"
     podAnnotations: {}
+    # podSecurityContext are key-values pairs to define the security settings
+    # for all containers within a pod.
+    #
+    # e.g
+    # podSecurityContext
+    #   runAsUser: 1000         # Run the Pod as user ID 1000
+    #   runAsGroup: 3000        # Run the Pod as group ID 3000
+    #   fsGroup: 2000           # Set file system group ownership to 2000
     podSecurityContext: {}
-      #fsGroup: 2000
+    # securityContext are key-values pairs to define the security settings
+    # for the relayminer container.
+    #
+    # e.g.
+    # capabilities:
+    #     drop:
+    #     - ALL
+    #   readOnlyRootFilesystem: true
+    #   runAsNonRoot: true
+    #   runAsUser: 1000
     securityContext: {}
-      # capabilities:
-      #   drop:
-      #   - ALL
-      # readOnlyRootFilesystem: true
-      # runAsNonRoot: true
-      # runAsUser: 1000
+    # nodeSelector are key-values pairs to schedule the relayminer pod on a
+    # specific node based on labels.
     nodeSelector: {}
+    # affinity defines the settings for complex scheduling preferences.
     affinity: {}
+    # tolerations defines policies for taints.
     tolerations: []
