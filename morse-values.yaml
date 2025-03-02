@@ -3,7 +3,7 @@
 # Declare variables to be passed into your templates.
 
 protocol: morse
-stage: main
+network: mainnet
 version: 0.0.0
 
 morse:

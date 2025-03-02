@@ -6,11 +6,11 @@
 # to access reliable and censorship-resistant infrastructure (e.g. shannon or morse).
 protocol: shannon
 
-# stage string refers to the different stages of a protocol testing phase
+# network string refers to the different stages of the protocol testing phase
 # before it goes live to on the Mainnet. (e.g. mainnet, testnet, devnet)
 #
 # see https://dev.poktroll.com/category/networks
-stage: mainnet
+network: mainnet
 
 # version string refers to the unique version of the poktrolld computer
 # software.
