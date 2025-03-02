@@ -65,7 +65,8 @@ Parse URL.
 */}}
 
 {{- define "pocket-network.utils.listenURLToPorts" -}}
-{{- range .suppliers }}
+{{- $processedPorts := dict }}
+{{- range .config.suppliers }}
 {{- $url := .listen_url }}
 {{- if not (contains "://" $url) }}
 {{- fail "Invalid URL format: must contain '://'. Example: http://0.0.0.0:8545" }}{{- end }}
@@ -79,8 +80,17 @@ Parse URL.
 {{- $port := "" }}
 {{- if eq (len $hostAndPort) 2 }}
 {{- $port = $hostAndPort._1 }}{{- end }}
+{{- if not (hasKey $processedPorts (toString $port)) }}
+{{- $_ := set $processedPorts (toString $port) true }}
+{{- if eq $.kind "Service" }}
 - port: {{ $port }}
   targetPort: {{ $port }}
   protocol: TCP
-  name: {{ $protocol }}{{- end }}
+  name: {{ $protocol }}
+{{- else if eq $.kind "Deployment" }}
+- name: {{ $protocol }}
+  containerPort: {{ $port }}
+  protocol: TCP
+{{- else }}
+{{- fail "Invalid kind for listenURLToPort (must be Service or Deployment)" }}{{- end }}{{- end }}{{- end }}
 {{- end }}

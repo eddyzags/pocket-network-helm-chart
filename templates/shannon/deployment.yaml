@@ -67,6 +67,7 @@ spec:
           args:
 {{- end }}
             - "relayminer"
+            - "--home={{ .Values.homeDirectory }}"
             - "--keyring-backend={{ .Values.shannon.relayminer.keyringBackend }}"
             - "--config={{ .Values.homeDirectory }}/config/config.yaml"
             - "--grpc-insecure={{ .Values.shannon.relayminer.grpcInsecure }}"
@@ -74,7 +75,7 @@ spec:
             - "--chain-id={{ .Values.shannon.relayminer.chainId }}"
             - "--gas-adjustment={{ .Values.shannon.relayminer.gasAdjustment }}"
             - "--gas-prices={{ .Values.shannon.relayminer.gasPrices }}"
-          ports: {{- include "pocket-network.utils.listenURLToPorts" .Values.shannon.relayminer.config | nindent 12 }}
+          ports: {{- include "pocket-network.utils.listenURLToPorts" (dict "config" .Values.shannon.relayminer.config "kind" "Deployment") | nindent 12 }}
             - name: metrics
               containerPort: {{ .Values.shannon.relayminer.metrics.port }}
               protocol: TCP
@@ -103,15 +104,15 @@ spec:
           {{- with .Values.shannon.relayminer.volumeMounts }}
             {{- toYaml . | nindent 12 }}
           {{- end }}
-          volumes:
-            - name: relayminer-keys
-              secret:
-                secretName: {{ .Values.shannon.relayminer.keysSecretName }}
-            - name: relayminer-config
-              configMap:
-                name: {{ include "pocket-network.fullname" . }}-relayminer
-            - name: relayminer-home
-              emptyDir: {}
+      volumes:
+        - name: relayminer-keys
+          secret:
+            secretName: {{ .Values.shannon.relayminer.keysSecretName }}
+        - name: relayminer-config
+          configMap:
+            name: {{ include "pocket-network.fullname" . }}-relayminer
+        - name: relayminer-home
+          emptyDir: {}
       {{- with .Values.shannon.relayminer.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

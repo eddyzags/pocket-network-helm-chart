@@ -21,7 +21,7 @@ version: 0.0.11-rc
 # homeDirectory refers to the poktrolld working directory. This variable is
 # shared across all every procol actors. Meaning that the working directory
 # will be instantiated in the same path for every 
-homeDirectory: /root/.poktroll
+homeDirectory: /.poktroll
 
 # shannon object refers to the root level values configuration for the shannon
 # protocol to define the configuration for every protocol actors. This
@@ -37,7 +37,7 @@ shannon:
     # grpcInsecure allows gRPC over insecure channels for querying state in the CosmosSDK.
     #
     # see https://dev.poktroll.com/operate/cheat_sheets/supplier_cheatsheet#secure-vs-non-secure-query_node_grpc_url
-    grpcInsecure: false
+    grpcInsecure: true
     # gasAdjustment refers to the adjustement factor to be multiplied by the gas
     # estmiation given by the tx simulation.
     #
@@ -59,13 +59,13 @@ shannon:
       level: info
     # keysSecretName injects a Kubernetes Secret that defines the signing key
     # inside the relayminer pod.
-    keysSecretName: ""
+    keysSecretName: "poktrolld-keys"
     # chownDataDirTo explictly chown the .homeDirectory path to the according
     # UID and GID.
     #
     # e.g.
-    # chownDataDirTo: "1001:100"
-    chownDataDirTo: ""
+    # chownDataDirTo: "1001"
+    chownDataDirTo: 1025
     # config defines key-values pairs for the relayminer general configuration.
     #
     # see https://dev.poktroll.com/operate/configs/relayminer_config
@@ -75,8 +75,8 @@ shannon:
       # 
       # https://dev.poktroll.com/operate/configs/relayminer_config
       default_signing_key_names: [supplier1]
-      # smt_store_path path to working direectory for Sparse Merkle Tree.
-      smt_store_path: smt_stores
+      # smt_store_path path to working directory for Sparse Merkle Tree.
+      smt_store_path: /.poktroll/smt
       # pocket_node defines the different connectivity for the poktrolld node.
       #
       # see https://dev.poktroll.com/operate/configs/relayminer_config#pocket-node-connectivity
@@ -84,15 +84,15 @@ shannon:
         # query_node_rpc_url sets the websocket connection to a pocket network node.
         #
         # see https://dev.poktroll.com/operate/configs/relayminer_config#query_node_rpc_url
-        query_node_rpc_url: tcp://poktroll-validator:26657
+        query_node_rpc_url: tcp://validator-poktroll-validator:26657
         # query_node_grpc_url sets the pocket node endpoint to read from Pocket Network.
         #
         # see https://dev.poktroll.com/operate/configs/relayminer_config#query_node_rpc_url
-        query_node_grpc_url: tcp://poktroll-validator:9090
+        query_node_grpc_url: tcp://validator-poktroll-validator:9090
         # tx_node_rpc_url sets the pocket node endpoint to write into Pocket Network.
         #
         # see https://dev.poktroll.com/operate/configs/relayminer_config#tx_node_rpc_url
-        tx_node_rpc_url: tcp://poktroll-validator:26657
+        tx_node_rpc_url: tcp://validator-poktroll-validator:26657
       # suppliers defines a list of key-values pairs to define the suppliers managed
       # by this relayminer.
       #
@@ -126,7 +126,7 @@ shannon:
           # publicly_exposed_endpoints are a list of host the relayminer will
           # accept request from.
           publicly_exposed_endpoints:
-            - relayminers
+            - relayminer1
         # listen_url is the address from which the relayminer will start a
         # server to listen for incoming request for this service.
         #
