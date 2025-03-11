@@ -186,6 +186,14 @@ shannon:
     imagePullSecrets: []
     # resources is the root configuration for the resource isolation.
     resources:
+      # preset defines the resource pre-configuration (cpu and memory) for the
+      # relayminer (small, medium, large or none). If one or more values are
+      # defined in .shannon.relayminer.resources.requests or
+      # .shannon.relayminer.resources.limits, the preset pre-configuration is
+      # discarded.
+      #
+      # More information available here TODO(eddyzags): link to README
+      preset: none
       # requests defines the minimum resources a container needs to run.
       requests:
         # cpu defines the cpu minimum resources.

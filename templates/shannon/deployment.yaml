@@ -87,8 +87,11 @@ spec:
             httpGet:
               path: /ping
               port: http
-          resources:
-            {{- toYaml .Values.shannon.relayminer.resources | nindent 12 }}
+          {{- if and .Values.shannon.relayminer.resources.requests .Values.shannon.relayminer.resources.limits }}
+          resources: {{- toYaml .Values.shannon.relayminer.resources | nindent 12 }}
+          {{- else if ne .Values.shannon.relayminer.resources.preset "none" }}
+          resources: {{- include "pocket-network.shannon.preset" (dict "type" .Values.shannon.relayminer.resources.preset) | nindent 12 }}
+          {{- end }}
           volumeMounts:
             - name: relayminer-keys
               mountPath: {{ .Values.homeDirectory }}/keyring-test/{{ .Values.shannon.relayminer.config.signing_key_name }}.info
