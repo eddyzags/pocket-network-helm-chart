@@ -1,0 +1,15 @@
+{{- if or (ne .Values.protocol "shannon") (ne .Values.protocol "morse") }}
+{{- fail "must provide protocol in values file (must be 'shannon' or 'morse')" }}
+{{- end }}
+
+{{- if or (ne .Values.network "mainnet") (ne .Values.network "testnet") (ne .Values.network "devnet") (ne .Values.network "alphanet") (ne .Values.network "betanet") }}
+{{- fail "must provide network in values file (must be 'mainnet', 'testnet', 'devnet', 'alphanet' or 'betanet')" }}
+{{- end }}
+
+{{- if not .Values.version }}
+{{- fail "must provide version in values file" }}
+{{- end }}
+
+{{- if not .Values.homeDirectory }}
+{{- fail "must provide home directory in values file" }}
+{{- end }}
