@@ -28,7 +28,7 @@ This command deploy the different Pocket Network actors based on the values prov
 
 ### Resources and limits
 
-Pocket Network charts allow settings resource requests and limits for every protocol actors (containers) inside the chart deployment. There are inside the `resources` values.
+Pocket Network charts allow setting resource requests and limits for every protocol actors (containers) inside the chart deployment. There are inside the `resources` values.
 To make this resource and limit definition easier to define, this chart contains a `resources.preset` attribute that sets the `resources.limits` and `resources.requests`. These presets are recommended by the community, but you can define your own.
 
 > Note: You can either define a preset (`resources.preset=small` for example) or an explicit . If you define both, the `resources.limits` and `resources.requests` will be used.
@@ -51,10 +51,25 @@ This chart can be integrated with Prometheus by setting `metrics.enabled` to `tr
 
 ### Global parameters
 
+| Name            | Description                                    | Value |
+|-----------------|------------------------------------------------|-------|
+| `protocol`      | decentralized framework to access network      | ""    |
+| `network`       | different stage of the protocol testing phase  | ""    |
+| `version`       | Semantic versionning of the poktrolld software | ""    |
+| `homeDirectory` | poktrolld working directory                    | ""    |
 
-### Common parameters
+### Shannon parameters
+| Name                                | Description                                                               | Value |
+|-------------------------------------|---------------------------------------------------------------------------|-------|
+| `shannon.relayminer.chainId`        | unique identifier within the Cosmos ecosystem                             | ""    |
+| `shannon.relayminer.grpcInsecure`   | activate gRPC over insecure channels for querying state in the Cosmos SDK | ""    |
+| `shannon.relayminer.gasAdjustment`  | adjustement factor to be multiplied by the gas estimation                 | ""    |
+| TODO(eddyzags): add every arguments |                                                                           |       |
 
-### Pocket Network parameters
+### Morse parameters
+| Name | Description | Value |
+|------|-------------|-------|
+|      |             |       |
 
 ## Troubleshooting
 
