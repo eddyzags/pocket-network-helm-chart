@@ -11,9 +11,11 @@
 {{- end }}
 
 {{- if not .Values.version }}
+#TODO(eddyzags): add semantic versionning validation.
 {{- fail "must provide version in values file" }}
 {{- end }}
 
 {{- if not .Values.homeDirectory }}
+#TODO(eddyzags): add path validation.
 {{- fail "must provide home directory in values file" }}
 {{- end }}
