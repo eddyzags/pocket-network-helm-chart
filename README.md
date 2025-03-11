@@ -28,9 +28,10 @@ This command deploy the different Pocket Network actors based on the values prov
 
 ### Resources and limits
 
-Pocket network chart allow settings resources requests and limits for all containers inside the chart deployment. These are inside the `resources` values.
+Pocket Network charts allow settings resource requests and limits for every protocol actors (containers) inside the chart deployment. There are inside the `resources` values.
+To make this resource and limit definition easier to define, this chart contains a `resources.preset` attribute that sets the `resources.limits` and `resources.requests`. These presets are recommended by the community, but you can define your own.
 
-#TODO(eddyzags): define resource presets (small, medium, large)
+> Note: You can either define a preset (`resources.preset=small` for example) or an explicit . If you define both, the `resources.limits` and `resources.requests` will be used.
 
 ### Prometheus metrics
 
