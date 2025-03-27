@@ -1,6 +1,6 @@
-# This file implements values validations for Helm values. This ensure data
-# integrity, security, and proper application functionnality of the Pocket
-# Helm Chart release in Kubernetes.
+# This file implements an input values validations for the global parameters.
+# This ensure data integrity, security, and proper application functionnality
+# of the Pocket Helm Chart release in Kubernetes.
 
 {{- if not (or (eq .Values.protocol "shannon") (eq .Values.protocol "morse")) }}
 {{- fail "must provide protocol in values file (must be 'shannon' or 'morse')" }}
