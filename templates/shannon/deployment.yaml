@@ -20,6 +20,7 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
+        {{- include "pocket-network.labels" . | nindent 8 }}
         app.pocket.network/name: {{ include "pocket-network.fullname" . }}-relayminer
     spec:
       {{- with .Values.shannon.relayminer.imagePullSecrets }}
