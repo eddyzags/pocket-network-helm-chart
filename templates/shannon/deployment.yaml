@@ -104,6 +104,7 @@ spec:
             - name: relayminer-keys
               mountPath: {{ .Values.homeDirectory }}/keyring-test/{{ .Values.shannon.relayminer.config.signing_key_name }}.info
               subPath: {{ .Values.shannon.relayminer.config.signing_key_name }}.info
+              readOnly: true
             - name: relayminer-config
               mountPath: "{{ .Values.homeDirectory }}/config/config.yaml"
               subPath: "config.yaml"
