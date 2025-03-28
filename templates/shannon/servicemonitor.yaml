@@ -1,15 +1,14 @@
-{{ if and (eq .Values.shannon.relayminer.metrics.serviceMonitor.enabled true) (eq .Values.protocol "shannon") }}
+{{ if and (eq .Values.shannon.relayminer.prometheus.serviceMonitor.enabled true) (eq .Values.protocol "shannon") }}
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  name: {{ include "pocket-network.fullname" . }}-relayminer
+  name: {{ include "pocket-network.fullname" . }}-shannon-relayminer
   labels:
-    {{- include "pocket-network.labels" . | nindent 4 }}
-    app.pocket.network/name: {{ include "pocket-network.fullname" . }}-relayminer
+    {{- include "pocket-network.labels" (dict "root" . "nameSuffix" "shannon-relayminer" ) | nindent 4 }}
 spec:
   selector:
     matchLabels:
-      app.pocket.network/name: {{ include "pocket-network.fullname" . }}-relayminer
+      {{- include "pocket-network.selectorLabels" (dict "root" . "nameSuffix" "shannon-relayminer") | nindent 6 }}
   endpoints:
     - port: metrics
       interval: 30s

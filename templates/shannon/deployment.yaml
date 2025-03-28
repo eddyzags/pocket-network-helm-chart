@@ -2,17 +2,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "pocket-network.fullname" . }}-relayminer
+  name: {{ include "pocket-network.fullname" . }}-shannon-relayminer
   labels:
-    {{- include "pocket-network.labels" . | nindent 4 }}
-    app.pocket.network/name: {{ include "pocket-network.fullname" . }}-relayminer
+    {{- include "pocket-network.labels" (dict "root" . "nameSuffix" "shannon-relayminer" ) | nindent 4 }}
 spec:
   {{- if not .Values.shannon.relayminer.autoscaling.enabled }}
-  replicas: {{ .Values.shannon.relayminer.replica }}
+  replicas: {{ .Values.shannon.relayminer.replicas }}
   {{- end }}
   selector:
     matchLabels:
-      app.pocket.network/name: {{ include "pocket-network.fullname" . }}-relayminer
+      {{- include "pocket-network.selectorLabels" (dict "root" . "nameSuffix" "shannon-relayminer") | nindent 6 }}
   template:
     metadata:
       {{- with .Values.shannon.relayminer.podAnnotations }}
@@ -20,53 +19,56 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "pocket-network.labels" . | nindent 8 }}
-        app.pocket.network/name: {{ include "pocket-network.fullname" . }}-relayminer
+        {{- include "pocket-network.labels" (dict "root" . "nameSuffix" "shannon-relayminer" ) | nindent 8 }}
     spec:
       {{- with .Values.shannon.relayminer.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      {{- if .Values.shannon.relayminer.podSecurityContext.enabled }}
       securityContext:
         {{- toYaml .Values.shannon.relayminer.podSecurityContext | nindent 8 }}
-      {{- /* Only add an extra init container if chownDataDirTo is provided */ -}}
-      {{- if .Values.shannon.relayminer.chownDataDirTo }}
+      {{- end }}
       initContainers:
-        - name: init-permissions
+        - name: init-relayminer-home-config
           image: busybox
+          {{- if .Values.shannon.relayminer.initContainersSecurityContext.enabled }}
           securityContext:
-            runAsUser: 0  # Run as root to create directories
-            runAsGroup: 0
+            {{- toYaml .Values.shannon.relayminer.initContainersSecurityContext | nindent 12 }}
+          {{- end }}
           command:
             - sh
             - -c
             - |
-              mkdir -p {{ .Values.homeDirectory }}/config && \
-              chown -R {{ .Values.shannon.relayminer.chownDataDirTo }}:{{ .Values.shannon.relayminer.chownDataDirTo }} {{ .Values.homeDirectory }} && \
-              chmod -R 755 {{ .Values.homeDirectory }}
+              mkdir -p {{ .Values.homeDirectory }}/config
+              mkdir -p {{ .Values.homeDirectory }}/keyring-test
+              chmod -R 700 {{ .Values.homeDirectory }}
           volumeMounts:
             - name: relayminer-home
               mountPath: {{ .Values.homeDirectory }}
-      {{- end }}
       containers:
-        - name: {{ include "pocket-network.fullname" . }}-relayminer
+        - name: {{ include "pocket-network.fullname" . }}-shannon-relayminer
+          {{- if .Values.shannon.relayminer.containersSecurityContext.enabled }}
           securityContext:
-            {{- toYaml .Values.shannon.relayminer.securityContext | nindent 12 }}
-          image: "{{ .Values.shannon.relayminer.image.repository }}:{{ .Values.shannon.relayminer.image.tag | default .Chart.AppVersion }}"
+            {{- toYaml .Values.shannon.relayminer.containersSecurityContext | nindent 12 }}
+          {{- end }}
+          image: "{{ .Values.shannon.relayminer.image.repository }}:{{ .Values.shannon.relayminer.image.tag | default .Values.version }}"
           imagePullPolicy: {{ .Values.shannon.relayminer.image.pullPolicy }}
-{{- if .Values.shannon.relayminer.development.delve.enabled }}
+          {{- if .Values.shannon.relayminer.development.delve.enabled }}
           command: [ "/go/bin/dlv" ]
           args:
             - exec
             - --listen={{ .Values.shannon.relayminer.development.delve.addr }}
-            - --headless=true
-            - --api-version=2
+            - --headless={{ .Values.shannon.relayminer.development.delve.headless }}
+            - --api-version={{ .Values.shannon.relayminer.development.delve.apiVersion }}
+            {{- if .Values.shannon.relayminer.development.delve.acceptMulticlient }}
             - --accept-multiclient
+            {{- end }}
             - /usr/local/bin/poktrolld
             - --
-{{ else }}
+          {{ else }}
           args:
-{{- end }}
+          {{- end }}
             - "relayminer"
             - "--home={{ .Values.homeDirectory }}"
             - "--keyring-backend={{ .Values.shannon.relayminer.keyringBackend }}"
@@ -77,17 +79,22 @@ spec:
             - "--gas-adjustment={{ .Values.shannon.relayminer.gasAdjustment }}"
             - "--gas-prices={{ .Values.shannon.relayminer.gasPrices }}"
           ports: {{- include "pocket-network.utils.listenURLToPorts" (dict "config" .Values.shannon.relayminer.config "kind" "Deployment") | nindent 12 }}
+            {{- if .Values.shannon.relayminer.config.metrics.enabled }}
             - name: metrics
-              containerPort: {{ .Values.shannon.relayminer.metrics.port }}
+              containerPort: {{- include "pocket-network.utils.extractPort" .Values.shannon.relayminer.config.metrics.addr }}
               protocol: TCP
+            {{- end }}
+            {{- if .Values.shannon.relayminer.config.ping.enabled }}
+            - name: ping
+              containerPort: {{- include "pocket-network.utils.extractPort" .Values.shannon.relayminer.config.metrics.addr }}
+              protocol: TCP
+            {{- end }}
+          {{- if .Values.shannon.relayminer.livenessProbe.enabled }}
           livenessProbe:
             httpGet:
               path: /ping
-              port: http
-          readinessProbe:
-            httpGet:
-              path: /ping
-              port: http
+              port: {{- include "pocket-network.utils.extractPort" .Values.shannon.relayminer.config.metrics.addr }}
+          {{- end }}
           {{- if and .Values.shannon.relayminer.resources.requests .Values.shannon.relayminer.resources.limits }}
           resources: {{- toYaml .Values.shannon.relayminer.resources | nindent 12 }}
           {{- else if ne .Values.shannon.relayminer.resources.preset "none" }}
@@ -114,7 +121,7 @@ spec:
             secretName: {{ .Values.shannon.relayminer.keysSecretName }}
         - name: relayminer-config
           configMap:
-            name: {{ include "pocket-network.fullname" . }}-relayminer
+            name: {{ include "pocket-network.fullname" . }}-shannon-relayminer
         - name: relayminer-home
           emptyDir: {}
       {{- with .Values.shannon.relayminer.nodeSelector }}

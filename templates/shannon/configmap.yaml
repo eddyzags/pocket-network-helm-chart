@@ -2,12 +2,12 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ include "pocket-network.fullname" . }}-relayminer
+  name: {{ include "pocket-network.fullname" . }}-shannon-relayminer
   labels:
-    {{- include "pocket-network.labels" . | nindent 4 }}
-    app.pocket.network/name: {{ include "pocket-network.fullname" . }}-relayminer
+    {{- include "pocket-network.labels" (dict "root" . "nameSuffix" "shannon-relayminer" ) | nindent 4 }}
 data:
-  config.yaml: | {{ toYaml .Values.shannon.relayminer.config | nindent 4 }}
+  config.yaml:
+    {{ toYaml .Values.shannon.relayminer.config | nindent 4 }}
   client.toml: |
     broadcast-mode = "sync"
     chain-id = "{{ .Values.chainId }}"

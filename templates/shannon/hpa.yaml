@@ -2,9 +2,9 @@
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: {{ include "pocket-network.fullname" . }}
+  name: {{ include "pocket-network.fullname" . }}-shannon-relayminer
   labels:
-    {{- include "pocket-network.labels" . | nindent 4 }}
+    {{- include "pocket-network.labels" (dict "root" . "nameSuffix" "shannon-relayminer" ) | nindent 4 }}
 spec:
   scaleTargetRef:
     apiVersion: apps/v1

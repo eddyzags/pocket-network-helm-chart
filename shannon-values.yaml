@@ -21,7 +21,7 @@ version: 0.0.11-rc
 # homeDirectory refers to the poktrolld working directory. This variable is
 # shared across all every procol actors. Meaning that the working directory
 # will be instantiated in the same path for every 
-homeDirectory: /.poktroll
+homeDirectory: /home/pocket/.poktroll
 
 # shannon object refers to the root level values configuration for the shannon
 # protocol to define the configuration for every protocol actors. This
@@ -60,12 +60,6 @@ shannon:
     # keysSecretName injects a Kubernetes Secret that defines the signing key
     # inside the relayminer pod.
     keysSecretName: "poktrolld-keys"
-    # chownDataDirTo explictly chown the .homeDirectory path to the according
-    # UID and GID.
-    #
-    # e.g.
-    # chownDataDirTo: "1001"
-    chownDataDirTo: 1025
     # config defines key-values pairs for the relayminer general configuration.
     #
     # see https://dev.poktroll.com/operate/configs/relayminer_config
@@ -132,14 +126,12 @@ shannon:
         #
         # see https://dev.poktroll.com/operate/configs/relayminer_config#listen_url
         listen_url: http://0.0.0.0:8545
-      # metrics configures a Prometheus Exporter endpoint for clients to read
-      # relayminer metrics.
+      # metrics configures a Prometheus Exporter server for promtheus exporters to
+      # read relayminer metrics.
       metrics:
         # enabled activates a Prometheus Exporter endpoint if set to true.
         enabled: true
         # addr is the address at which the server must listen to.
-        # 
-        # If changing port here, make sure to adjust `metrics.serviceMonitor.port`
         addr: :9090
       # pprof configures a pprof endpoint for visualization and analysis of
       # profiling data.
@@ -148,39 +140,53 @@ shannon:
         enabled: true
         # addr is the address at which the server must listen to.
         addr: localhost:6060
-    # metrics is the root value configuration for the relayminer metric consumer.
-    metrics:
+      # ping configures a ping healh check server to test the connectivity of all backend URLs
+      # https://dev.poktroll.com/operate/configs/relayminer_config#ping
+      ping:
+        # enabled activates the ping server.
+        enabled: false
+        # addr is the address at which the server must listen.
+        addr: localhost:8081
+    # prometheus is the root value configuration for prometheus operator.
+    prometheus:
       # serviceMonitor represents the configuration for a Prometheus Operator
       # ServiceMonitor.
       serviceMonitor:
         # enabled activates the templating of a Prometheus Operator
         # ServiceMonitor.
         enabled: true
-      # port defines the targeted port to consume the metrics.
-      port: 9090
     # development are the globals settings to set up an development environment
     # on the relayminer pod.
     development:
-      # delve configures a debugger for the Go programming language.
+      # delve configures a debugger for the Go programming language. Keep in
+      # mind that debugging may be challenging if the binary was compiled
+      # with optimizations and inlining enabled.
       #
-      # see https://github.com/go-delve/delve/tree/master/Documentation
+      # see https://github.com/go-delve/delve/blob/master/Documentation/usage/dlv_exec.md
       delve:
         # enables executes the poktrolld binary with delve.
         enabled: false
         # addr is the address where the delve server listen to.
         addr: :40004
+        # headless runs debug server only, in headless mode.
+        headless: true
+        # apiVersion selects JSON-RPC API version when headless.
+        apiVersion: 2
+        # acceptMulticlient allows a headless server to accept multiple client
+        # connections via JSON-RPC or DAP.
+        acceptMulticlient: true
     # image is the root configuration for the container image to be used for the
     # relayminer.
     image:
       # repository defines which container image will be pulled from a container
       # registry.
       repository: ghcr.io/pokt-network/poktrolld
-      # pullPolicy defines the pull policy for the relayminer.
+     # pullPolicy defines the pull policy for the relayminer.
       pullPolicy: IfNotPresent
       # tag overrides the image tag whose default is the chart appVersion.
       tag: "latest"
-    # replica defines the number of instances for the relayminer.
-    replica: 3
+    # replicas defines the number of instances for the relayminer.
+    replicas: 1
     # imagePullSecrets defines the information to authenticate with the
     # container registry.
     imagePullSecrets: []
@@ -191,8 +197,6 @@ shannon:
       # defined in .shannon.relayminer.resources.requests or
       # .shannon.relayminer.resources.limits, the preset pre-configuration is
       # discarded.
-      #
-      # More information available here TODO(eddyzags): link to README
       preset: none
       # requests defines the minimum resources a container needs to run.
       requests:
@@ -222,6 +226,15 @@ shannon:
     #   mountPath: "/etc/foo"
     #   readOnly: true
     volumeMounts: []
+    # livenessProbe configures the mechanism that checks whether the relayminer
+    # container is still up and running.
+    livenessProbe:
+      # ping configures a HTTP request as a probe against the ping server in the relayminer.
+      # Make sure to active the ping service in .shannon.relayminer.config.ping
+      # https://dev.poktroll.com/operate/configs/relayminer_config#ping
+      ping:
+        # enabled activates the http client to request the ping server.
+        enabled: true
     # autoscaling ist the root configuration for the HorizontalPodAutoscaler.
     autoscaling:
       # enable activates the templating of a HorizontalPodAutoscaler resource.
@@ -253,8 +266,23 @@ shannon:
     #   runAsGroup: 3000        # Run the Pod as group ID 3000
     #   fsGroup: 2000           # Set file system group ownership to 2000
     podSecurityContext: {}
+    # initContainersSecurityContext are key-values pairs to define the
+    # security settings for all init containers. This field overwrites
+    # the podSecurityContext settings if any defined.
+    #
+    # e.g
+    # initContainers:
+    #   enabled: true
+    #   runAsUser: 1000         # Run the Pod as user ID 1000
+    #   runAsGroup: 3000        # Run the Pod as group ID 3000
+    #   fsGroup: 2000           # Set file system group ownership to 2000
+    initContainersSecurityContext:
+      enabled: true
+      runAsUser: 1025
+      runAsGroup: 1025
     # securityContext are key-values pairs to define the security settings
-    # for the relayminer container.
+    # for the relayminer container. This field overwrites the podSecurityContext
+    # settings if any defined.
     #
     # e.g.
     # capabilities:
@@ -263,7 +291,7 @@ shannon:
     #   readOnlyRootFilesystem: true
     #   runAsNonRoot: true
     #   runAsUser: 1000
-    securityContext: {}
+    containersSecurityContext: {}
     # nodeSelector are key-values pairs to schedule the relayminer pod on a
     # specific node based on labels.
     nodeSelector: {}

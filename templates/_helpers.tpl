@@ -34,19 +34,17 @@ Create chart name and version as used by the chart label.
 Common labels
 */}}
 {{- define "pocket-network.labels" -}}
-helm.sh/chart: {{ include "pocket-network.chart" . }}
-{{- if .Chart.AppVersion }}
-app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
-{{- end }}
-app.kubernetes.io/managed-by: {{ .Release.Service }}
+app.pocket.network/name: {{ include "pocket-network.name" .root }}-{{ .nameSuffix }}
+helm.sh/chart: {{ include "pocket-network.chart" .root }}
+app.pocket.network/managed-by: {{ .root.Release.Service }}
 {{- end }}
 
 {{/*
 Selector labels
 */}}
 {{- define "pocket-network.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "pocket-network.name" . }}
-app.kubernetes.io/instance: {{ .Release.Name }}
+app.pocket.network/name: {{ include "pocket-network.name" .root }}-{{ .nameSuffix }}
+app.pocket.network/release-name: {{ .root.Release.Name }}
 {{- end }}
 
 {{/*
@@ -94,3 +92,19 @@ Parse URL.
 {{- else }}
 {{- fail "Invalid kind for listenURLToPort (must be Service or Deployment)" }}{{- end }}{{- end }}{{- end }}
 {{- end }}
+
+{{/*
+Extract port from URL for a give string.
+*/}}
+
+{{- define "pocket-network.utils.extractPort" -}}
+{{- $address := . }}
+{{- $parts := split ":" $address }}
+{{- if eq (len $parts) 3 }}
+{{- printf " %s" $parts._2 }}
+{{- else if eq (len $parts) 2 }}
+{{- printf " %s" $parts._1 }}
+{{- else }}
+{{- fail "invalid addr to extract port" }}
+{{- end }}
+{{- end -}}

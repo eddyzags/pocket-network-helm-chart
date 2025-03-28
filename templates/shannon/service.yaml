@@ -2,17 +2,18 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "pocket-network.fullname" . }}-relayminer
+  name: {{ include "pocket-network.fullname" . }}-shannon-relayminer
   labels:
-    {{- include "pocket-network.labels" . | nindent 4 }}
-    app.pocket.network/name: {{ include "pocket-network.fullname" . }}-relayminer
+    {{- include "pocket-network.labels" (dict "root" . "nameSuffix" "shannon-relayminer" ) | nindent 4 }}
 spec:
   type: {{ .Values.shannon.relayminer.service.type }}
   ports: {{- include "pocket-network.utils.listenURLToPorts" (dict "config" .Values.shannon.relayminer.config "kind" "Service") | nindent 4 }}
-    - port: {{ .Values.shannon.relayminer.metrics.port }}
-      targetPort: {{ .Values.shannon.relayminer.metrics.port }}
+    {{ if .Values.shannon.relayminer.config.metrics.enabled }}
+    - port: {{- include "pocket-network.utils.extractPort" .Values.shannon.relayminer.config.metrics.addr }}
+      targetPort: {{- include "pocket-network.utils.extractPort" .Values.shannon.relayminer.config.metrics.addr }}
       protocol: TCP
       name: metrics
+    {{- end }}
   selector:
-    app.pocket.network/name: {{ include "pocket-network.fullname" . }}-relayminer
+    app.pocket.network/name: {{ include "pocket-network.fullname" . }}-shannon-relayminer
 {{- end }}
