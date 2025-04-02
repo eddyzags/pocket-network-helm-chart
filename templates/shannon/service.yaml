@@ -1,4 +1,4 @@
-{{- if eq .Values.protocol "shannon" }}
+{{- if and (eq .Values.protocol "shannon") .Values.shannon.relayminer.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -16,4 +16,31 @@ spec:
     {{- end }}
   selector:
     app.pocket.network/name: {{ include "pocket-network.fullname" . }}-shannon-relayminer
+{{- end }}
+{{- if and (eq .Values.protocol "shannon") .Values.shannon.fullnode.enabled }}
+{{- $config := .Values.shannon.fullnode.cometbft.config | fromToml }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "pocket-network.fullname" . }}-shannon-fullnode
+  labels:
+    {{- include "pocket-network.labels" (dict "root" . "nameSuffix" "shannon-fullnode" ) | nindent 4 }}
+spec:
+  type: {{ .Values.shannon.fullnode.service.type }}
+  ports: 
+    - port: {{- include "pocket-network.utils.extractPort" $config.rpc.laddr }}
+      targetPort: {{- include "pocket-network.utils.extractPort" $config.rpc.laddr }}
+      protocol: TCP
+      name: rpc
+    - port: {{- include "pocket-network.utils.extractPort" $config.proxy_app }}
+      targetPort: {{- include "pocket-network.utils.extractPort" $config.proxy_app }}
+      name: abci
+    - port: {{- include "pocket-network.utils.extractPort" $config.grpc.laddr }}
+      targetPort: {{- include "pocket-network.utils.extractPort" $config.grpc.laddr }}
+      name: grpc
+    - port: {{- include "pocket-network.utils.extractPort" $config.p2p.laddr }}
+      targetPort: {{- include "pocket-network.utils.extractPort" $config.p2p.laddr }}
+      name: p2p
+  selector:
+    app.pocket.network/name: {{ include "pocket-network.fullname" . }}-shannon-fullnode
 {{- end }}

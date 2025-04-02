@@ -1,4 +1,4 @@
-{{- if eq .Values.protocol "shannon"}}
+{{- if and .Values.protocol "shannon" .Values.shannon.relayminer.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -25,14 +25,14 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- if .Values.shannon.relayminer.podSecurityContext.enabled }}
+      {{- if .Values.shannon.relayminer.podSecurityContext }}
       securityContext:
         {{- toYaml .Values.shannon.relayminer.podSecurityContext | nindent 8 }}
       {{- end }}
       initContainers:
-        - name: init-relayminer-home-config
+        - name: init-home
           image: busybox
-          {{- if .Values.shannon.relayminer.initContainersSecurityContext.enabled }}
+          {{- if .Values.shannon.relayminer.initContainersSecurityContext }}
           securityContext:
             {{- toYaml .Values.shannon.relayminer.initContainersSecurityContext | nindent 12 }}
           {{- end }}
@@ -47,7 +47,7 @@ spec:
             - name: relayminer-home
               mountPath: {{ .Values.homeDirectory }}
       containers:
-        - name: {{ include "pocket-network.fullname" . }}-shannon-relayminer
+        - name: relayminer
           {{- if .Values.shannon.relayminer.containersSecurityContext.enabled }}
           securityContext:
             {{- toYaml .Values.shannon.relayminer.containersSecurityContext | nindent 12 }}
@@ -75,7 +75,6 @@ spec:
             - "--config={{ .Values.homeDirectory }}/config/config.yaml"
             - "--grpc-insecure={{ .Values.shannon.relayminer.grpcInsecure }}"
             - "--log_level={{ .Values.shannon.relayminer.logs.level }}"
-            - "--chain-id={{ .Values.shannon.relayminer.chainId }}"
             - "--gas-adjustment={{ .Values.shannon.relayminer.gasAdjustment }}"
             - "--gas-prices={{ .Values.shannon.relayminer.gasPrices }}"
           ports: {{- include "pocket-network.utils.listenURLToPorts" (dict "config" .Values.shannon.relayminer.config "kind" "Deployment") | nindent 12 }}

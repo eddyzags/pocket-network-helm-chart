@@ -1,0 +1,94 @@
+{{- if and .Values.protocol "shannon" .Values.shannon.fullnode.enabled }}
+{{- $config := .Values.shannon.fullnode.cometbft.config | fromToml }}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "pocket-network.fullname" . }}-shannon-fullnode
+  labels:
+    {{- include "pocket-network.labels" (dict "root" . "nameSuffix" "shannon-fullnode" ) | nindent 4 }}
+spec:
+  serviceName: {{ include "pocket-network.fullname" . }}-shannon-fullnode
+  replicas: {{ .Values.shannon.fullnode.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "pocket-network.selectorLabels" (dict "root" . "nameSuffix" "shannon-fullnode") | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "pocket-network.labels" (dict "root" . "nameSuffix" "shannon-fullnode" ) | nindent 8 }}
+    spec:
+      initContainers:
+        - name: init-genesis
+          image: busybox
+          {{- if .Values.shannon.fullnode.initContainersSecurityContext }}
+          securityContext:
+            {{- toYaml .Values.shannon.fullnode.initContainersSecurityContext | nindent 12 }}
+          {{- end }}
+          command:
+            - "/bin/sh"
+            - "-c"
+            - |
+              mkdir -p {{ .Values.homeDirectory }}/config
+              wget -0 {{ .Values.homeDirectory }}/config/genesis.json https://raw.githubusercontent.com/pokt-network/pocket-network-genesis/refs/heads/master/shannon/{{ .Values.network}}/genesis.json
+          volumeMounts:
+            - name: home-config
+              mountPath: {{ .Values.homeDirectory }}
+      containers:
+        - name: fullnode
+          image: "{{ .Values.shannon.fullnode.image.repository }}:{{ .Values.shannon.fullnode.image.tag }}"
+          ports:
+            - name: rpc
+              port: {{- include "pocket-network.utils.extractPort" $config.rpc.laddr }}
+              targetPort: {{- include "pocket-network.utils.extractPort" $config.rpc.laddr }}
+              protocol: TCP
+            - name: abci
+              port: {{- include "pocket-network.utils.extractPort" $config.proxy_app }}
+              targetPort: {{- include "pocket-network.utils.extractPort" $config.proxy_app }}
+              protocol: TCP
+            - name: grpc
+              port: {{- include "pocket-network.utils.extractPort" $config.grpc.laddr }}
+              targetPort: {{- include "pocket-network.utils.extractPort" $config.grpc.laddr }}
+              protocol: TCP
+            - name: p2p
+              port: {{- include "pocket-network.utils.extractPort" $config.p2p.laddr }}
+              targetPort: {{- include "pocket-network.utils.extractPort" $config.p2p.laddr }}
+          volumeMounts:
+            - name: data
+              mountPath: "{{ .Values.homeDirectory }}/data"
+            - name: fullnode-config
+              mountPath: "{{ .Values.homeDirectory }}/config/config.toml"
+              subPath: "config.toml"
+            - name: fullnode-config
+              mountPath: "{{ .Values.homeDirectory }}/config/app.toml"
+              subPath: "app.toml"
+            - name: keys
+              mountPath: "{{ .Values.homeDirectory }}/config/node_key.json"
+              subPath: "node_key.json"
+            - name: keys
+              mountPath: "{{ .Values.homeDirectory }}/config/priv_validator_key.json"
+              subPath: "priv_validator_key.json"
+            - name: home-config
+              mountPath: "{{ .Values.homeDirectory }}"
+  volumes:
+    - name: fullnode-config
+      configMap:
+         name: {{ include "pocket-network.fullname" . }}-shannon-fullnode
+    - name: keys
+      secret:
+        secretName: {{ .Values.shannon.fullnode.secret.keyName }}
+    - name: home-config
+      emptyDir: {}
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+        labels:
+          {{- include "pocket-network.labels" (dict "root" . "nameSuffix" "shannon-fullnode" ) | nindent 10 }}
+      spec:
+        accessModes: {{ .Values.shannon.fullnode.storage.accessModes }}
+        {{- with .Values.shannon.fullnode.storage.resources }}
+        resources:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
+        volumeMode: {{ .Values.shannon.fullnode.storage.volumeMode }}
+        storageClassName: {{ .Values.shannon.fullnode.storage.storageClassName }}
+{{- end }}

@@ -6,7 +6,7 @@
 {{- fail "must provide protocol in values file (must be 'shannon' or 'morse')" }}
 {{- end }}
 
-{{- if not (or (eq .Values.network "mainnet") (eq .Values.network "testnet") (eq .Values.network "devnet") (eq .Values.network "alphanet") (eq .Values.network "betanet")) }}
+{{- if not (or (eq .Values.network "mainnet") (eq .Values.network "testnet-alpha") (eq .Values.network "testnet-beta")) }}
 {{- fail "must provide network in values file (must be 'mainnet', 'testnet', 'devnet', 'alphanet' or 'betanet')" }}
 {{- end }}
 

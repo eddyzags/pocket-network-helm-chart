@@ -1,4 +1,4 @@
-{{ if and (eq .Values.shannon.relayminer.prometheus.serviceMonitor.enabled true) (eq .Values.protocol "shannon") }}
+{{ if and (eq .Values.shannon.relayminer.prometheus.serviceMonitor.enabled true) (eq .Values.protocol "shannon") .Values.shannon.relayminer.enabled }}
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
@@ -14,3 +14,20 @@ spec:
       interval: 30s
       path: /metrics
 {{ end }}
+{{- $config := .Values.shannon.fullnode.cometbft.config | fromToml }}
+{{- if and (eq .Values.protocol "shannon") .Values.shannon.fullnode.enabled $config.instrumentation.prometheus }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ include "pocket-network.fullname" . }}-shannon-relayminer
+  labels:
+    {{- include "pocket-network.labels" (dict "root" . "nameSuffix" "shannon-fullnode" ) | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "pocket-network.selectorLabels" (dict "root" . "nameSuffix" "shannon-fullnode") | nindent 6 }}
+  endpoints:
+    - port: metrics
+      interval: 30s
+      path: /metrics
+{{- end }}

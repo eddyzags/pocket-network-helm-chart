@@ -1,4 +1,4 @@
-{{- if and (eq .Values.shannon.relayminer.autoscaling.enabled true) (eq .Values.protocol "shannon") }}
+{{- if and (eq .Values.shannon.relayminer.autoscaling.enabled true) (eq .Values.protocol "shannon") .Values.shannon.relayminer.enabled }}
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
@@ -9,7 +9,7 @@ spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: {{ include "pocket-network.fullname" . }}
+    name: {{ include "pocket-network.fullname" . }}-shannon-relayminer
   minReplicas: {{ .Values.shannon.relayminer.autoscaling.minReplicas }}
   maxReplicas: {{ .Values.shannon.relayminer.autoscaling.maxReplicas }}
   metrics:
