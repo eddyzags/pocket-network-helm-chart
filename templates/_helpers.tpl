@@ -108,11 +108,3 @@ Extract port from URL for a give string.
 {{- fail "invalid addr to extract port" }}
 {{- end }}
 {{- end -}}
-
-{{/*
-Extract port from cosmos sdk config
-*/}}
-
-{{- define "pocket-network.utils.configToPort" -}}
-
-{{- end }}
