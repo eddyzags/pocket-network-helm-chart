@@ -88,6 +88,11 @@ spec:
               containerPort: {{- include "pocket-network.utils.extractPort" .Values.shannon.relayminer.config.metrics.addr }}
               protocol: TCP
             {{- end }}
+            {{- if .Values.shannon.relayminer.config.pprof.enabled }}
+            - name: pprof
+              containerPort: {{- include "pocket-network.utils.extractPort" .Values.shannon.relayminer.config.pprof.addr }}
+              protocol: TCP
+            {{- end }}
           {{- if .Values.shannon.relayminer.livenessProbe.enabled }}
           livenessProbe:
             httpGet:

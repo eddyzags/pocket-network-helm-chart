@@ -1,5 +1,6 @@
 {{- if and .Values.protocol "shannon" .Values.shannon.fullnode.enabled }}
 {{- $config := .Values.shannon.fullnode.cometbft.config | fromToml }}
+{{- $app := .Values.shannon.fullnode.cometbft.app | fromToml }}
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -8,7 +9,7 @@ metadata:
     {{- include "pocket-network.labels" (dict "root" . "nameSuffix" "shannon-fullnode" ) | nindent 4 }}
 spec:
   serviceName: {{ include "pocket-network.fullname" . }}-shannon-fullnode
-  replicas: {{ .Values.shannon.fullnode.replicaCount }}
+  replicas: 1
   selector:
     matchLabels:
       {{- include "pocket-network.selectorLabels" (dict "root" . "nameSuffix" "shannon-fullnode") | nindent 6 }}
@@ -18,7 +19,21 @@ spec:
         {{- include "pocket-network.labels" (dict "root" . "nameSuffix" "shannon-fullnode" ) | nindent 8 }}
     spec:
       initContainers:
-        - name: init-genesis
+        - name: cosmossdk
+          image: "{{ .Values.shannon.fullnode.image.repository }}:{{ .Values.shannon.fullnode.image.tag }}"
+          {{- if .Values.shannon.fullnode.initContainersSecurityContext }}
+          securityContext:
+            {{- toYaml .Values.shannon.fullnode.initContainersSecurityContext | nindent 12 }}
+          {{- end }}
+          command:
+            - "/bin/sh"
+            - "-c"
+            - |
+              pocketd init --home {{.Values.homeDirectory }} {{ .Values.network }}
+          volumeMounts:
+            - name: home-config
+              mountPath: {{ .Values.homeDirectory }}
+        - name: get-genesis
           image: busybox
           {{- if .Values.shannon.fullnode.initContainersSecurityContext }}
           securityContext:
@@ -28,67 +43,84 @@ spec:
             - "/bin/sh"
             - "-c"
             - |
-              mkdir -p {{ .Values.homeDirectory }}/config
-              wget -0 {{ .Values.homeDirectory }}/config/genesis.json https://raw.githubusercontent.com/pokt-network/pocket-network-genesis/refs/heads/master/shannon/{{ .Values.network}}/genesis.json
+              wget -O {{ .Values.homeDirectory }}/config/genesis.json https://raw.githubusercontent.com/pokt-network/pocket-network-genesis/refs/heads/master/shannon/{{ .Values.network}}/genesis.json
           volumeMounts:
             - name: home-config
               mountPath: {{ .Values.homeDirectory }}
       containers:
         - name: fullnode
           image: "{{ .Values.shannon.fullnode.image.repository }}:{{ .Values.shannon.fullnode.image.tag }}"
+          command:
+            - "/bin/pocketd"
+            - "start"
+            - "--home={{ .Values.homeDirectory }}"
           ports:
             - name: rpc
-              port: {{- include "pocket-network.utils.extractPort" $config.rpc.laddr }}
-              targetPort: {{- include "pocket-network.utils.extractPort" $config.rpc.laddr }}
+              containerPort: {{- include "pocket-network.utils.extractPort" $config.rpc.laddr }}
               protocol: TCP
             - name: abci
-              port: {{- include "pocket-network.utils.extractPort" $config.proxy_app }}
-              targetPort: {{- include "pocket-network.utils.extractPort" $config.proxy_app }}
+              containerPort: {{- include "pocket-network.utils.extractPort" $config.proxy_app }}
               protocol: TCP
+            {{- if $config.rpc.grpc_laddr }}
             - name: grpc
-              port: {{- include "pocket-network.utils.extractPort" $config.grpc.laddr }}
-              targetPort: {{- include "pocket-network.utils.extractPort" $config.grpc.laddr }}
+              containerPort: {{- include "pocket-network.utils.extractPort" $config.rpc.grpc_laddr }}
               protocol: TCP
+            {{- end }}
             - name: p2p
-              port: {{- include "pocket-network.utils.extractPort" $config.p2p.laddr }}
-              targetPort: {{- include "pocket-network.utils.extractPort" $config.p2p.laddr }}
+              containerPort: {{- include "pocket-network.utils.extractPort" $config.p2p.laddr }}
+              protocol: TCP
+            {{- if $config.instrumentation.prometheus }}
+            - name: metrics
+              containerPort: {{- include "pocket-network.utils.extractPort" $config.instrumentation.prometheus_listen_addr }}
+            {{- end }}
+            {{- if $app.api.enable }}
+            - name: app-api
+              containerPort: {{- include "pocket-network.utils.extractPort" $app.api.address }}
+              protocol: TCP
+            {{- end }}
+            {{- if $app.grpc.enable }}
+            - name: app-grpc
+              containerPort: {{- include "pocket-network.utils.extractPort" $app.grpc.address }}
+              protocol: TCP
+            {{- end }}
+            {{- if (index $app "grpc-web" "enable") }}
+            - name: app-grpc-web
+              containerPort: {{- include "pocket-network.utils.extractPort" (index $app "grpc-web" "address") }}
+              protocol: TCP
+            {{- end }}
           volumeMounts:
-            - name: data
-              mountPath: "{{ .Values.homeDirectory }}/data"
-            - name: fullnode-config
-              mountPath: "{{ .Values.homeDirectory }}/config/config.toml"
-              subPath: "config.toml"
-            - name: fullnode-config
-              mountPath: "{{ .Values.homeDirectory }}/config/app.toml"
-              subPath: "app.toml"
-            - name: keys
-              mountPath: "{{ .Values.homeDirectory }}/config/node_key.json"
-              subPath: "node_key.json"
-            - name: keys
-              mountPath: "{{ .Values.homeDirectory }}/config/priv_validator_key.json"
-              subPath: "priv_validator_key.json"
             - name: home-config
               mountPath: "{{ .Values.homeDirectory }}"
-  volumes:
-    - name: fullnode-config
-      configMap:
-         name: {{ include "pocket-network.fullname" . }}-shannon-fullnode
-    - name: keys
-      secret:
-        secretName: {{ .Values.shannon.fullnode.secret.keyName }}
-    - name: home-config
-      emptyDir: {}
-  volumeClaimTemplates:
-    - metadata:
-        name: data
-        labels:
-          {{- include "pocket-network.labels" (dict "root" . "nameSuffix" "shannon-fullnode" ) | nindent 10 }}
-      spec:
-        accessModes: {{ .Values.shannon.fullnode.storage.accessModes }}
-        {{- with .Values.shannon.fullnode.storage.resources }}
-        resources:
-          {{- toYaml . | nindent 10 }}
-        {{- end }}
-        volumeMode: {{ .Values.shannon.fullnode.storage.volumeMode }}
-        storageClassName: {{ .Values.shannon.fullnode.storage.storageClassName }}
+            - name: fullnode-config
+              mountPath: "{{ .Values.homeDirectory }}/config/config.toml"
+              subPath: "{{ .Values.shannon.fullnode.cometbft.volumes.config.key.configKeyName }}"
+            - name: fullnode-config
+              mountPath: "{{ .Values.homeDirectory }}/config/app.toml"
+              subPath: "{{ .Values.shannon.fullnode.cometbft.volumes.config.key.appKeyName }}"
+            - name: fullnode-config
+              mountPath: "{{ .Values.homeDirectory }}/config/client.toml"
+              subPath: "{{ .Values.shannon.fullnode.cometbft.volumes.config.key.clientKeyName }}"
+            {{- if eq .Values.shannon.fullnode.cometbft.secret.type "Secret" }}
+            - name: keys
+              mountPath: "{{ .Values.homeDirectory }}/config/node_key.json"
+              subPath: "{{ .Values.shannon.fullnode.cometbft.secret.key.nodeKeyName }}"
+            - name: keys
+              mountPath: "{{ .Values.homeDirectory }}/config/priv_validator_key.json"
+              subPath: "{{ .Values.shannon.fullnode.cometbft.secret.key.privValidatorKeyName }}"
+            {{- end }}
+      volumes:
+      - name: fullnode-config
+        configMap:
+          {{- if .Values.shannon.fullnode.cometbft.volumes.enabled }}
+          name: {{ .Values.shannon.fullnode.cometbft.volumes.config.key.name }}
+          {{- else }}
+          name: {{ include "pocket-network.fullname" . }}-shannon-fullnode
+          {{- end }}
+      {{- if eq .Values.shannon.fullnode.cometbft.secret.type "Secret" }}
+      - name: keys
+        secret:
+          secretName: {{ .Values.shannon.fullnode.cometbft.secret.key.name }}
+      {{- end }}
+      - name: home-config
+        emptyDir: {}
 {{- end }}

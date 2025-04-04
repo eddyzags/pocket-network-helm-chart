@@ -9,9 +9,9 @@ data:
   config.yaml: |
     {{ toYaml .Values.shannon.relayminer.config | nindent 4 }}
   client.toml: |
-    {{ .Values.shannon.relayminer.cosmossdk.clientConfig | nindent 4 }}
+    {{ .Values.shannon.relayminer.cometbft.clientConfig | nindent 4 }}
 {{- end }}
-{{- if and ( eq .Values.protocol "shannon" ) .Values.shannon.fullnode.enabled }}
+{{- if and ( eq .Values.protocol "shannon" ) .Values.shannon.fullnode.enabled ( ne .Values.shannon.fullnode.cometbft.volumes.enabled true ) }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -23,4 +23,6 @@ data:
     {{ .Values.shannon.fullnode.cometbft.config | nindent 4 }}
   app.toml: |
     {{ .Values.shannon.fullnode.cometbft.app | nindent 4 }}
+  client.toml: |
+    {{ .Values.shannon.fullnode.cometbft.client | nindent 4 }}
 {{- end }}

@@ -14,11 +14,18 @@ spec:
       protocol: TCP
       name: metrics
     {{- end }}
+    {{- if .Values.shannon.relayminer.config.pprof.enabled }}
+    - port: {{- include "pocket-network.utils.extractPort" .Values.shannon.relayminer.config.pprof.addr }}
+      targetPort: {{- include "pocket-network.utils.extractPort" .Values.shannon.relayminer.config.pprof.addr }}
+      protocol: TCP
+      name: pprof
+    {{- end }}
   selector:
     app.pocket.network/name: {{ include "pocket-network.fullname" . }}-shannon-relayminer
 {{- end }}
 {{- if and (eq .Values.protocol "shannon") .Values.shannon.fullnode.enabled }}
 {{- $config := .Values.shannon.fullnode.cometbft.config | fromToml }}
+{{- $app := .Values.shannon.fullnode.cometbft.app | fromToml }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -31,16 +38,38 @@ spec:
     - port: {{- include "pocket-network.utils.extractPort" $config.rpc.laddr }}
       targetPort: {{- include "pocket-network.utils.extractPort" $config.rpc.laddr }}
       protocol: TCP
-      name: rpc
+      name: config-rpc
     - port: {{- include "pocket-network.utils.extractPort" $config.proxy_app }}
       targetPort: {{- include "pocket-network.utils.extractPort" $config.proxy_app }}
-      name: abci
-    - port: {{- include "pocket-network.utils.extractPort" $config.grpc.laddr }}
-      targetPort: {{- include "pocket-network.utils.extractPort" $config.grpc.laddr }}
-      name: grpc
+      name: config-abci
+    {{- if $config.rpc.grpc_laddr }}
+    - port: {{- include "pocket-network.utils.extractPort" $config.rpc.grpc_laddr }}
+      targetPort: {{- include "pocket-network.utils.extractPort" $config.rpc.grpc_laddr }}
+      name: config-grpc
+    {{- end }}
     - port: {{- include "pocket-network.utils.extractPort" $config.p2p.laddr }}
       targetPort: {{- include "pocket-network.utils.extractPort" $config.p2p.laddr }}
-      name: p2p
+      name: config-p2p
+    {{- if $config.instrumentation.prometheus }}
+    - port: {{- include "pocket-network.utils.extractPort" $config.instrumentation.prometheus_listen_addr }}
+      targetPort: {{- include "pocket-network.utils.extractPort" $config.instrumentation.prometheus_listen_addr }}
+      name: config-prometheus
+    {{- end }}
+    {{- if $app.api.enable }}
+    - port: {{- include "pocket-network.utils.extractPort" $app.api.address }}
+      targetPort: {{- include "pocket-network.utils.extractPort" $app.api.address }}
+      name: app-api
+    {{- end }}
+    {{- if $app.grpc.enable }}
+    - port: {{- include "pocket-network.utils.extractPort" $app.grpc.address }}
+      targetPort: {{- include "pocket-network.utils.extractPort" $app.grpc.address }}
+      name: app-grpc
+    {{- end }}
+    {{- if (index $app "grpc-web" "enable") }}
+    - port: {{- include "pocket-network.utils.extractPort" (index $app "grpc-web" "address") }}
+      targetPort: {{- include "pocket-network.utils.extractPort" (index $app "grpc-web" "address") }}
+      name: app-grpc-web
+    {{- end }}
   selector:
     app.pocket.network/name: {{ include "pocket-network.fullname" . }}-shannon-fullnode
 {{- end }}

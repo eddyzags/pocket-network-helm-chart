@@ -34,17 +34,20 @@ Create chart name and version as used by the chart label.
 Common labels
 */}}
 {{- define "pocket-network.labels" -}}
-app.pocket.network/name: {{ include "pocket-network.name" .root }}-{{ .nameSuffix }}
-helm.sh/chart: {{ include "pocket-network.chart" .root }}
+app.pocket.network/name: {{ include "pocket-network.fullname" .root }}-{{ .nameSuffix }}
+app.pocket.network/protocol: {{ .root.Values.protocol }}
+app.pocket.network/network: {{ .root.Values.network }}
+app.pocket.network/version: {{ .root.Values.version }}
 app.pocket.network/managed-by: {{ .root.Release.Service }}
+helm.sh/chart: {{ include "pocket-network.chart" .root }}
+helm.sh/release-name: {{ .root.Release.Name }}
 {{- end }}
 
 {{/*
 Selector labels
 */}}
 {{- define "pocket-network.selectorLabels" -}}
-app.pocket.network/name: {{ include "pocket-network.name" .root }}-{{ .nameSuffix }}
-app.pocket.network/release-name: {{ .root.Release.Name }}
+app.pocket.network/name: {{ include "pocket-network.fullname" .root }}-{{ .nameSuffix }}
 {{- end }}
 
 {{/*
