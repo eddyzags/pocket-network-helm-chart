@@ -88,6 +88,20 @@ spec:
               containerPort: {{- include "pocket-network.utils.extractPort" (index $app "grpc-web" "address") }}
               protocol: TCP
             {{- end }}
+          {{- if .Values.shannon.fullnode.livenessProbe.enabled }}
+          livenessProbe:
+            exec:
+              command:
+                - "/bin/sh"
+                - "-c"
+                - |
+                  curl http://localhost:{{- include "pocket-network.utils.extractPort" $config.rpc.laddr }}/status{{- if $app.api.enable }} && \
+                  curl http://localhost:{{- include "pocket-network.utils.extractPort" $app.api.address }}/cosmos/base/tendermint/v1beta1/node_info{{- end }}
+            initialDelaySeconds: {{ .Values.shannon.fullnode.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.shannon.fullnode.livenessProbe.periodSecond }}
+            timeoutSeconds: {{ .Values.shannon.fullnode.livenessProbe.timeoutSeconds }}
+            failureThreshold: {{ .Values.shannon.fullnode.livenessProbe.failureThreshold }}
+          {{- end }}
           volumeMounts:
             - name: home-config
               mountPath: "{{ .Values.homeDirectory }}"
@@ -108,19 +122,25 @@ spec:
               mountPath: "{{ .Values.homeDirectory }}/config/priv_validator_key.json"
               subPath: "{{ .Values.shannon.fullnode.cometbft.secret.key.privValidatorKeyName }}"
             {{- end }}
+            {{- with .Values.shannon.fullnode.volumeMounts }}
+              {{- toYaml . | nindent 14 }}
+            {{- end }}
       volumes:
-      - name: fullnode-config
-        configMap:
-          {{- if .Values.shannon.fullnode.cometbft.volumes.enabled }}
-          name: {{ .Values.shannon.fullnode.cometbft.volumes.config.key.name }}
-          {{- else }}
-          name: {{ include "pocket-network.fullname" . }}-shannon-fullnode
-          {{- end }}
-      {{- if eq .Values.shannon.fullnode.cometbft.secret.type "Secret" }}
-      - name: keys
-        secret:
-          secretName: {{ .Values.shannon.fullnode.cometbft.secret.key.name }}
-      {{- end }}
-      - name: home-config
-        emptyDir: {}
+        - name: fullnode-config
+          configMap:
+            {{- if .Values.shannon.fullnode.cometbft.volumes.enabled }}
+            name: {{ .Values.shannon.fullnode.cometbft.volumes.config.key.name }}
+            {{- else }}
+            name: {{ include "pocket-network.fullname" . }}-shannon-fullnode
+            {{- end }}
+        {{- if eq .Values.shannon.fullnode.cometbft.secret.type "Secret" }}
+        - name: keys
+          secret:
+            secretName: {{ .Values.shannon.fullnode.cometbft.secret.key.name }}
+        {{- end }}
+        - name: home-config
+          emptyDir: {}
+        {{- with .Values.shannon.fullnode.volumes }}
+          {{- toYaml . | nindent 6 }}
+        {{- end }}
 {{- end }}

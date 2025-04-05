@@ -93,11 +93,13 @@ spec:
               containerPort: {{- include "pocket-network.utils.extractPort" .Values.shannon.relayminer.config.pprof.addr }}
               protocol: TCP
             {{- end }}
-          {{- if .Values.shannon.relayminer.livenessProbe.enabled }}
+          {{- if and .Values.shannon.relayminer.config.ping.enabled .Values.shannon.relayminer.livenessProbe.enabled }}
           livenessProbe:
             httpGet:
-              path: /ping
-              port: {{- include "pocket-network.utils.extractPort" .Values.shannon.relayminer.config.metrics.addr }}
+              path: /
+              port: {{- include "pocket-network.utils.extractPort" .Values.shannon.relayminer.config.ping.addr }}
+              initialDelaySeconds: {{ .Values.shannon.relayminer.livenessProbe.initialDelaySeconds }}
+              periodSeconds: {{ .Values.shannon.relayminer.livenessProbe.periodSeconds }}
           {{- end }}
           {{- if and .Values.shannon.relayminer.resources.requests .Values.shannon.relayminer.resources.limits }}
           resources: {{- toYaml .Values.shannon.relayminer.resources | nindent 12 }}

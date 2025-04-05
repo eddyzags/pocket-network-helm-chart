@@ -238,14 +238,22 @@ shannon:
     #   readOnly: true
     volumeMounts: []
     # livenessProbe configures the mechanism that checks whether the relayminer
-    # container is still up and running.
+    # container is healthy.
     livenessProbe:
-      # ping configures a HTTP request as a probe against the ping server in the relayminer.
-      # Make sure to active the ping service in .shannon.relayminer.config.ping
+      # ping configures a HTTP request as a probe against the ping server in the
+      # relayminer. Make sure to active the ping server in
+      # .shannon.relayminer.config.ping, otherwise the livesness probe won't be
+      # declared.
+      # 
       # https://dev.poktroll.com/operate/configs/relayminer_config#ping
       ping:
         # enabled activates the http client to request the ping server.
-        enabled: true
+        enabled: false
+        # initial number of seconds to wait after the container starts the 
+        # liveness probe.
+        initialDelaySeconds: 10
+        # defines how often Kubernetes performs health checks in seconds.
+        periodSeconds: 15
     # autoscaling ist the root configuration for the HorizontalPodAutoscaler.
     autoscaling:
       # enable activates the templating of a HorizontalPodAutoscaler resource.
@@ -535,10 +543,10 @@ shannon:
         external_address = ""
 
         # Comma separated list of seed nodes to connect to
-        seeds = "8b9060703e81129996234350c90f77d6ecddd11c@34.45.40.180:26656"
+        seeds = "78e64eb51f040b86b8e4bed6ba8d895fa2f87839@shannon-grove-seed1.beta.poktroll.com:26656"
 
         # Comma separated list of nodes to keep persistent connections to
-        persistent_peers = "8b9060703e81129996234350c90f77d6ecddd11c@34.45.40.180:26656"
+        persistent_peers = "78e64eb51f040b86b8e4bed6ba8d895fa2f87839@shannon-grove-seed1.beta.poktroll.com:26656"
 
         # Path to address book
         addr_book_file = "config/addrbook.json"
@@ -1124,6 +1132,55 @@ shannon:
       volumeMode: "Filesystem"
       # storage class to use for the fullnode persistent volume.
       storageClassName: ""
+    # volumes are the additional volume for the fullnode pod template.
+    volumes: []
+    # volumeMounts are the additional volume mount point for the fullnode pod
+    # template.
+    #
+    # e.g.
+    # - name: foo
+    #   mountPath: "/etc/foo"
+    #   readOnly: true
+    volumeMounts: []
+    # livenessProbe configures the mechanism that checks the health of the
+    # tendermint consensus layer and the cosmossdk app-level availability.
+    livenessProbe:
+      # actives the liveness probe for the fullnode pod.
+      enabled: true
+      # initial number of seconds to wait after the container starts the 
+      # liveness probe.
+      initialDelaySeconds: 10
+      # defines how often Kubernetes performs health checks in seconds.
+      periodSeconds: 15
+      # defines a duration threshold for the command to execute before it
+      # is considered as failed.
+      timeoutSeconds: 5
+      # defines how many failures before Kubernetes restart the the container
+      failureThreshold: 3
+    # resources is the root configuration for the resource isolation.
+    resources:
+      # preset defines the resource pre-configuration (cpu and memory) for the
+      # fullnode (small, medium, large or none). If one or more values are
+      # defined in .shannon.relayminer.resources.requests or
+      # .shannon.relayminer.resources.limits, the preset pre-configuration is
+      # discarded.
+      preset:
+        # activates the preset definition for the fullnode pod template.
+        enabled: true
+        # select the preset to use for the fullnode pod template.
+        name: none
+      # requests defines the minimum resources a container needs to run.
+      requests:
+        # cpu defines the cpu minimum resources.
+        cpu: 2000m
+        # memory defines the memory minimum resources.
+        memory: 2Gi
+      # limits defines the maximum resources a container can use.
+      limits:
+        # cpu defines the cpu maximum resource.
+        cpu: 3000m
+        # memory defines the memory maximum resource.
+        memory: 3Gi
     # initContainersSecurityContext are key-values pairs to define the
     # security settings for all init containers. This field overwrites
     # the podSecurityContext settings if any defined.
