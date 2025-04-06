@@ -32,7 +32,7 @@ spec:
       {{- end }}
       initContainers:
         - name: cosmossdk
-          image: "{{ .Values.shannon.fullnode.image.repository }}:{{ .Values.shannon.fullnode.image.tag }}"
+          image: "{{ .Values.shannon.fullnode.image.repository }}:{{ .Values.shannon.fullnode.image.tag | default .Values.version }}"
           {{- if .Values.shannon.fullnode.initContainersSecurityContext }}
           securityContext:
             {{- toYaml .Values.shannon.fullnode.initContainersSecurityContext | nindent 12 }}
@@ -67,7 +67,7 @@ spec:
           securityContext:
             {{- toYaml . | nindent 12 }}
           {{- end }}
-          image: "{{ .Values.shannon.fullnode.image.repository }}:{{ .Values.shannon.fullnode.image.tag }}"
+          image: "{{ .Values.shannon.fullnode.image.repository }}:{{ .Values.shannon.fullnode.image.tag | default .Values.version }}"
           command:
             - "/bin/pocketd"
             - "start"

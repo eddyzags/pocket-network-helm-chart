@@ -16,7 +16,7 @@ network: testnet-beta
 # software.
 #
 # see https://dev.poktroll.com/operate/faq/full_node_faq?_highlight=version#how-do-i-check-the-node-version
-version: 0.0.11-rc
+version: 0.1.1
 
 # homeDirectory refers to the poktrolld working directory. This variable is
 # shared across all every procol actors. Meaning that the working directory
@@ -194,8 +194,9 @@ shannon:
       repository: ghcr.io/pokt-network/poktrolld
      # pullPolicy defines the pull policy for the relayminer.
       pullPolicy: IfNotPresent
-      # tag overrides the image tag.
-      tag: "latest"
+      # tag overrides the image tag. If not tag are defined, the chart will rely
+      # on the .Values.version value.
+      tag: ""
     # replicas defines the number of instances for the relayminer.
     replicas: 1
     # imagePullSecrets defines the information to authenticate with the
@@ -1111,8 +1112,9 @@ shannon:
       # repository defines which container image will be pulled from a container
       # registry.
       repository: ghcr.io/pokt-network/poktrolld
-      # tag overrides the image tag.
-      tag: "latest"
+      # tag overrides the image tag. If not tag are defined, the chart will rely
+      # on the .Values.version value.
+      tag: ""
     # imagePullSecrets defines the information to authenticate with the
     # container registry.
     imagePullSecrets: []
