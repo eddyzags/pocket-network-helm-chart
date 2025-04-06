@@ -17,7 +17,19 @@ spec:
     metadata:
       labels:
         {{- include "pocket-network.labels" (dict "root" . "nameSuffix" "shannon-fullnode" ) | nindent 8 }}
+      {{- with .Values.shannon.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
     spec:
+      {{- with .Values.shannon.fullnode.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- if .Values.shannon.fullnode.podSecurityContext }}
+      securityContext:
+        {{- toYaml | nindent 8 }}
+      {{- end }}
       initContainers:
         - name: cosmossdk
           image: "{{ .Values.shannon.fullnode.image.repository }}:{{ .Values.shannon.fullnode.image.tag }}"
@@ -51,6 +63,10 @@ spec:
               mountPath: {{ .Values.homeDirectory }}
       containers:
         - name: fullnode
+          {{- with .Values.shannon.fullnode.containersSecurityContext }}
+          securityContext:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           image: "{{ .Values.shannon.fullnode.image.repository }}:{{ .Values.shannon.fullnode.image.tag }}"
           command:
             - "/bin/pocketd"
@@ -104,6 +120,11 @@ spec:
             timeoutSeconds: {{ .Values.shannon.fullnode.livenessProbe.timeoutSeconds }}
             failureThreshold: {{ .Values.shannon.fullnode.livenessProbe.failureThreshold }}
           {{- end }}
+          {{- if .Values.shannon.fullnode.resources.preset.enabled }}
+          resources: {{- include "pocket-network.shannon.preset" (dict "type" .Values.shannon.fullnode.resources.preset.name) | nindent 12 }}
+          {{- else }}
+          resources: {{- toYaml .Values.shannon.fullnode.resources.values | nindent 12 }}
+          {{- end }}
           volumeMounts:
             - name: home-config
               mountPath: "{{ .Values.homeDirectory }}"
@@ -120,9 +141,11 @@ spec:
             - name: keys
               mountPath: "{{ .Values.homeDirectory }}/config/node_key.json"
               subPath: "{{ .Values.shannon.fullnode.cometbft.secret.key.nodeKeyName }}"
+              readOnly: true
             - name: keys
               mountPath: "{{ .Values.homeDirectory }}/config/priv_validator_key.json"
               subPath: "{{ .Values.shannon.fullnode.cometbft.secret.key.privValidatorKeyName }}"
+              readOnly: true
             {{- end }}
             {{- with .Values.shannon.fullnode.volumeMounts }}
               {{- toYaml . | nindent 14 }}
@@ -147,6 +170,18 @@ spec:
         {{- with .Values.shannon.fullnode.volumes }}
           {{- toYaml . | nindent 6 }}
         {{- end }}
+      {{- with .Values.shannon.fullnode.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.shannon.fullnode.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.shannon.fullnode.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
   {{- if .Values.shannon.fullnode.storage.data.enabled }}
   volumeClaimTemplates:
     - metadata:

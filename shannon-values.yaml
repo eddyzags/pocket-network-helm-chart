@@ -204,11 +204,12 @@ shannon:
     # resources is the root configuration for the resource isolation.
     resources:
       # preset defines the resource pre-configuration (cpu and memory) for the
-      # relayminer (small, medium, large or none). If one or more values are
-      # defined in .shannon.relayminer.resources.requests or
-      # .shannon.relayminer.resources.limits, the preset pre-configuration is
-      # discarded.
-      preset: none
+      # relayminer (small, medium, large or none).
+      preset:
+        # activates the preset definition for the fullnode pod template.
+        enabled: false
+        # select the preset to use for the fullnode pod template.
+        name: medium
       # requests defines the minimum resources a container needs to run.
       requests:
         # cpu defines the cpu minimum resources.
@@ -298,8 +299,8 @@ shannon:
       runAsUser: 1025
       runAsGroup: 1025
     # securityContext are key-values pairs to define the security settings
-    # for the relayminer container. This field overwrites the podSecurityContext
-    # settings if any defined.
+    # for the relayminer pod containers. This field overwrites the
+    # podSecurityContext settings if any defined.
     #
     # e.g.
     # capabilities:
@@ -1112,7 +1113,10 @@ shannon:
       repository: ghcr.io/pokt-network/poktrolld
       # tag overrides the image tag.
       tag: "latest"
-      # service is the root configuration when defining a Kubernetes Service object for the fullnode.
+    # imagePullSecrets defines the information to authenticate with the
+    # container registry.
+    imagePullSecrets: []
+    # service is the root configuration when defining a Kubernetes Service object for the fullnode.
     service:
       # type defines the type of service we want to use for the fullnode servers
       # (ClusterIP, NodePort, etc...).
@@ -1170,30 +1174,47 @@ shannon:
       timeoutSeconds: 5
       # defines how many failures before Kubernetes restart the the container
       failureThreshold: 3
-    # resources is the root configuration for the resource isolation.
+    # resources is the root configuration for the cpu and memory resource
+    # limitations.
     resources:
       # preset defines the resource pre-configuration (cpu and memory) for the
-      # fullnode (small, medium, large or none). If one or more values are
-      # defined in .shannon.relayminer.resources.requests or
-      # .shannon.relayminer.resources.limits, the preset pre-configuration is
-      # discarded.
+      # fullnode (small, medium, large or none).
       preset:
         # activates the preset definition for the fullnode pod template.
-        enabled: true
+        enabled: false
         # select the preset to use for the fullnode pod template.
-        name: none
-      # requests defines the minimum resources a container needs to run.
-      requests:
-        # cpu defines the cpu minimum resources.
-        cpu: 2000m
-        # memory defines the memory minimum resources.
-        memory: 2Gi
-      # limits defines the maximum resources a container can use.
-      limits:
-        # cpu defines the cpu maximum resource.
-        cpu: 3000m
-        # memory defines the memory maximum resource.
-        memory: 3Gi
+        name: medium
+      # values are the resources requests and limit to used if the preset
+      # isn't enabled for the fullnode pod container.
+      values:
+        # requests defines the minimum resources a container needs to run.
+        requests:
+          # cpu defines the cpu minimum resources.
+          cpu: 2000m
+          # memory defines the memory minimum resources.
+          memory: 2Gi
+        # limits defines the maximum resources a container can use.
+        limits:
+          # cpu defines the cpu maximum resource.
+          cpu: 3000m
+          # memory defines the memory maximum resource.
+          memory: 3Gi
+    # podAnnotations are key-values pairs metadata attched to the fullnode Pods.
+    #
+    # e.g.
+    # podAnnotations:
+    #   version: "1.2.3"
+    #   commitHash: "abc123def456"
+    podAnnotations: {}
+    # podSecurityContext are key-values pairs to define the security settings
+    # for all containers within a pod.
+    #
+    # e.g
+    # podSecurityContext
+    #   runAsUser: 1000         # Run the Pod as user ID 1000
+    #   runAsGroup: 3000        # Run the Pod as group ID 3000
+    #   fsGroup: 2000           # Set file system group ownership to 2000
+    podSecurityContext: {}
     # initContainersSecurityContext are key-values pairs to define the
     # security settings for all init containers. This field overwrites
     # the podSecurityContext settings if any defined.
@@ -1206,3 +1227,22 @@ shannon:
     initContainersSecurityContext:
       runAsUser: 1025
       runAsGroup: 1025
+    # securityContext are key-values pairs to define the security settings
+    # for the fullnode pod containers. This field overwrites the
+    # podSecurityContext settings if any defined.
+    #
+    # e.g.
+    # capabilities:
+    #     drop:
+    #     - ALL
+    #   readOnlyRootFilesystem: true
+    #   runAsNonRoot: true
+    #   runAsUser: 1000
+    containersSecurityContext: {}
+    # nodeSelector are key-values pairs to schedule the fullnode pod on a
+    # specific node based on labels.
+    nodeSelector: {}
+    # affinity defines the settings for complex scheduling preferences.
+    affinity: {}
+    # tolerations defines policies for taints.
+    tolerations: []

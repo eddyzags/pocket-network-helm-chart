@@ -32,9 +32,9 @@ spec:
       initContainers:
         - name: init-home
           image: busybox
-          {{- if .Values.shannon.relayminer.initContainersSecurityContext }}
+          {{- with .Values.shannon.relayminer.initContainersSecurityContext }}
           securityContext:
-            {{- toYaml .Values.shannon.relayminer.initContainersSecurityContext | nindent 12 }}
+            {{- toYaml . | nindent 12 }}
           {{- end }}
           command:
             - sh
@@ -48,9 +48,9 @@ spec:
               mountPath: {{ .Values.homeDirectory }}
       containers:
         - name: relayminer
-          {{- if .Values.shannon.relayminer.containersSecurityContext.enabled }}
+          {{- with .Values.shannon.relayminer.containersSecurityContext }}
           securityContext:
-            {{- toYaml .Values.shannon.relayminer.containersSecurityContext | nindent 12 }}
+            {{- toYaml . | nindent 12 }}
           {{- end }}
           image: "{{ .Values.shannon.relayminer.image.repository }}:{{ .Values.shannon.relayminer.image.tag | default .Values.version }}"
           imagePullPolicy: {{ .Values.shannon.relayminer.image.pullPolicy }}
@@ -101,10 +101,10 @@ spec:
               initialDelaySeconds: {{ .Values.shannon.relayminer.livenessProbe.initialDelaySeconds }}
               periodSeconds: {{ .Values.shannon.relayminer.livenessProbe.periodSeconds }}
           {{- end }}
-          {{- if and .Values.shannon.relayminer.resources.requests .Values.shannon.relayminer.resources.limits }}
+          {{- if .Values.shannon.relayminer.resources.preset.enabled }}
+          resources: {{- include "pocket-network.shannon.preset" (dict "type" .Values.shannon.relayminer.resources.preset.name) | nindent 12 }}
+          {{- else }}
           resources: {{- toYaml .Values.shannon.relayminer.resources | nindent 12 }}
-          {{- else if ne .Values.shannon.relayminer.resources.preset "none" }}
-          resources: {{- include "pocket-network.shannon.preset" (dict "type" .Values.shannon.relayminer.resources.preset) | nindent 12 }}
           {{- end }}
           volumeMounts:
             - name: relayminer-keys
