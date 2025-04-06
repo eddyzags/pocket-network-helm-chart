@@ -1121,17 +1121,30 @@ shannon:
       type: ClusterIP
     # storage is the root configuration for the fullnode persistent volume.
     storage:
-      # defines how the the persistent volume can be mounted and access by the
-      # fullnode Pod.
-      accessModes: ["ReadWriteOnce"]
-      # various storage configuration.
-      resources:
-        requests:
-          200Gi
-      # defines the filesystem layer between the pod and the volume.
-      volumeMode: "Filesystem"
-      # storage class to use for the fullnode persistent volume.
-      storageClassName: ""
+      data:
+        # activates the mount of data directory into the fullnode pod.
+        enabled: true
+        # automatically creates a persistent volume claim with the following fields.
+        volumeClaimTemplate:
+          # defines non-selectable metadata attached to the persistent volume claim template
+          # for the fullnode.
+          annotations: {}
+          # defines how a persistent volume (PV) can be accessed by the fullnode pod.
+          accessModes: ["ReadWriteOnce"]
+          # controls how the persistent volume claim (PVC) is dynamically provisioned.
+          storageClassName: ""
+          # used for binding to pre-existing persistent volume (PV) with matching labels.
+          selector:
+            matchLabels:
+              app.pocket.network: pocket-network-test-shannon
+          # defines how the volume will be accessed by the fullnode container.
+          volumeMode: Filesystem
+          # defines how big the volume should be for the fullnode pod.
+          resources:
+            requests:
+              storage: 1000Gi
+            limits:
+              storage: 1500Gi
     # volumes are the additional volume for the fullnode pod template.
     volumes: []
     # volumeMounts are the additional volume mount point for the fullnode pod
@@ -1146,7 +1159,7 @@ shannon:
     # tendermint consensus layer and the cosmossdk app-level availability.
     livenessProbe:
       # actives the liveness probe for the fullnode pod.
-      enabled: true
+      enabled: false
       # initial number of seconds to wait after the container starts the 
       # liveness probe.
       initialDelaySeconds: 10

@@ -29,7 +29,9 @@ spec:
             - "/bin/sh"
             - "-c"
             - |
-              pocketd init --home {{.Values.homeDirectory }} {{ .Values.network }}
+              pocketd init --home {{.Values.homeDirectory }} {{ .Values.network }} > /dev/null 2>&1 && \
+              echo genesis file initialized || \
+              echo genesis file already exists. Continuing...
           volumeMounts:
             - name: home-config
               mountPath: {{ .Values.homeDirectory }}
@@ -138,9 +140,34 @@ spec:
           secret:
             secretName: {{ .Values.shannon.fullnode.cometbft.secret.key.name }}
         {{- end }}
+        {{- if ne .Values.shannon.fullnode.storage.data.enabled true }}
         - name: home-config
           emptyDir: {}
+        {{- end }}
         {{- with .Values.shannon.fullnode.volumes }}
           {{- toYaml . | nindent 6 }}
         {{- end }}
+  {{- if .Values.shannon.fullnode.storage.data.enabled }}
+  volumeClaimTemplates:
+    - metadata:
+        name: home-config
+        labels:
+          {{- include "pocket-network.labels" (dict "root" . "nameSuffix" "shannon-fullnode" ) | nindent 12 }}
+        annotations:
+        {{- with .Values.shannon.fullnode.storage.data.annotations }}
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
+      spec:
+        accessModes: {{ .Values.shannon.fullnode.storage.data.volumeClaimTemplate.accessModes }}
+        storageClassName: {{ .Values.shannon.fullnode.storage.data.volumeClaimTemplate.storageClassName }}
+        volumeMode: {{ .Values.shannon.fullnode.storage.data.volumeClaimTemplate.volumeMode }}
+        selector:
+        {{- with .Values.shannon.fullnode.storage.data.volumeClaimTemplate.selector }}
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
+        resources:
+        {{- with .Values.shannon.fullnode.storage.data.volumeClaimTemplate.resources }}
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
+  {{- end }}
 {{- end }}
