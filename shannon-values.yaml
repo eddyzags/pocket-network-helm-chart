@@ -1278,7 +1278,7 @@ shannon:
     # tendermint consensus layer and the cosmossdk app-level availability.
     livenessProbe:
       # actives the liveness probe for the fullnode pod.
-      enabled: false
+      enabled: true
       # initial number of seconds to wait after the container starts the 
       # liveness probe.
       initialDelaySeconds: 10
@@ -1287,8 +1287,10 @@ shannon:
       # defines a duration threshold for the command to execute before it
       # is considered as failed.
       timeoutSeconds: 5
-      # defines how many failures before Kubernetes restart the the container
-      failureThreshold: 3
+      # defines how many failures before Kubernetes restart the the container.
+      failureThreshold: 5
+      # defines how many successful probes before considering it healthy.
+      successThreshold: 1
     # resources is the root configuration for the cpu and memory resource
     # limitations.
     resources:

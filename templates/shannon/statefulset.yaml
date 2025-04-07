@@ -108,17 +108,14 @@ spec:
             {{- end }}
           {{- if .Values.shannon.fullnode.livenessProbe.enabled }}
           livenessProbe:
-            exec:
-              command:
-                - "/bin/sh"
-                - "-c"
-                - |
-                  curl http://localhost:{{- include "pocket-network.utils.extractPort" $config.rpc.laddr }}/status{{- if $app.api.enable }} && \
-                  curl http://localhost:{{- include "pocket-network.utils.extractPort" $app.api.address }}/cosmos/base/tendermint/v1beta1/node_info{{- end }}
+            httpGet:
+              path: /status
+              port: {{- include "pocket-network.utils.extractPort" $config.rpc.laddr }}
             initialDelaySeconds: {{ .Values.shannon.fullnode.livenessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.shannon.fullnode.livenessProbe.periodSecond }}
             timeoutSeconds: {{ .Values.shannon.fullnode.livenessProbe.timeoutSeconds }}
             failureThreshold: {{ .Values.shannon.fullnode.livenessProbe.failureThreshold }}
+            successThreshold: {{ .Values.shannon.fullnode.livenessProbe.successThreshold }}
           {{- end }}
           {{- if .Values.shannon.fullnode.resources.preset.enabled }}
           resources: {{- include "pocket-network.shannon.preset" (dict "type" .Values.shannon.fullnode.resources.preset.name) | nindent 12 }}
