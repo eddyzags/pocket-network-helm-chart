@@ -51,12 +51,12 @@ This chart can be integrated with Prometheus by setting `metrics.enabled` to `tr
 
 ### Global parameters
 
-| Name            | Description                                    | Value |
-|-----------------|------------------------------------------------|-------|
-| `protocol`      | decentralized framework to access network      | ""    |
-| `network`       | different stage of the protocol testing phase  | ""    |
-| `version`       | Semantic versionning of the poktrolld software | ""    |
-| `homeDirectory` | poktrolld working directory                    | ""    |
+| Name            | Description                                   | Value |
+|-----------------|-----------------------------------------------|-------|
+| `protocol`      | decentralized framework to access network     | ""    |
+| `network`       | different stage of the protocol testing phase | ""    |
+| `version`       | Semantic versionning of the pocketd software  | ""    |
+| `homeDirectory` | pocketd working directory                     | ""    |
 
 ### Shannon parameters
 | Name                                | Description                                                               | Value |

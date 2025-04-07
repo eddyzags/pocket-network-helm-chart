@@ -64,7 +64,7 @@ spec:
             {{- if .Values.shannon.relayminer.development.delve.acceptMulticlient }}
             - --accept-multiclient
             {{- end }}
-            - /usr/local/bin/poktrolld
+            - /usr/local/bin/pocketd
             - --
           {{ else }}
           args:
@@ -107,10 +107,12 @@ spec:
           resources: {{- toYaml .Values.shannon.relayminer.resources | nindent 12 }}
           {{- end }}
           volumeMounts:
+            {{- if eq .Values.shannon.relayminer.secret.type "Secret" }}
             - name: relayminer-keys
               mountPath: {{ .Values.homeDirectory }}/keyring-test/{{ .Values.shannon.relayminer.config.signing_key_name }}.info
-              subPath: {{ .Values.shannon.relayminer.config.signing_key_name }}.info
+              subPath: {{ .Values.shannon.relayminer.secret.key.keyName }}
               readOnly: true
+            {{- end }}
             - name: relayminer-config
               mountPath: "{{ .Values.homeDirectory }}/config/config.yaml"
               subPath: "config.yaml"
@@ -123,9 +125,11 @@ spec:
             {{- toYaml . | nindent 12 }}
           {{- end }}
       volumes:
+        {{- if eq .Values.shannon.relayminer.secret.type "Secret" }}
         - name: relayminer-keys
           secret:
-            secretName: {{ .Values.shannon.relayminer.keysSecretName }}
+            secretName: {{ .Values.shannon.relayminer.secret.key.name }}
+        {{- end }}
         - name: relayminer-config
           configMap:
             name: {{ include "pocket-network.fullname" . }}-shannon-relayminer

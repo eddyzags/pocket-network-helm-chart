@@ -12,13 +12,13 @@ protocol: shannon
 # see https://dev.poktroll.com/category/networks
 network: testnet-beta
 
-# version string refers to the unique version of the poktrolld computer
+# version string refers to the unique version of the pocketd computer
 # software.
 #
 # see https://dev.poktroll.com/operate/faq/full_node_faq?_highlight=version#how-do-i-check-the-node-version
 version: 0.1.1
 
-# homeDirectory refers to the poktrolld working directory. This variable is
+# homeDirectory refers to the pocketd working directory. This variable is
 # shared across all every procol actors. Meaning that the working directory
 # will be instantiated in the same path for every 
 homeDirectory: /home/pocket/.poktroll
@@ -58,7 +58,16 @@ shannon:
       level: info
     # keysSecretName injects a Kubernetes Secret that defines the signing key
     # inside the relayminer pod.
-    keysSecretName: "poktrolld-keys"
+    #keysSecretName: "pocketd-keys" TODO DELETE
+    # define the configuration to provide the keyring for the relayminer.
+    secret:
+      # defines the type of resources the chart needs to mount for the
+      # fullnode to access the network credentials.
+      type: Secret
+      # represents the secret metadata.
+      key:
+        name: pocket-network-eddyzags-shannon-relayminer
+        keyName: supplier1.info
     # config defines key-values pairs for the relayminer general configuration.
     #
     # see https://dev.poktroll.com/operate/configs/relayminer_config
@@ -70,7 +79,7 @@ shannon:
       default_signing_key_names: [supplier1]
       # smt_store_path path to working directory for Sparse Merkle Tree.
       smt_store_path: /.poktroll/smt
-      # pocket_node defines the different connectivity for the poktrolld node.
+      # pocket_node defines the different connectivity for the pocketd node.
       #
       # see https://dev.poktroll.com/operate/configs/relayminer_config#pocket-node-connectivity
       pocket_node:
@@ -175,7 +184,7 @@ shannon:
       #
       # see https://github.com/go-delve/delve/blob/master/Documentation/usage/dlv_exec.md
       delve:
-        # enables executes the poktrolld binary with delve.
+        # enables executes the pocketd binary with delve.
         enabled: false
         # addr is the address where the delve server listen to.
         addr: :40004
@@ -191,7 +200,7 @@ shannon:
     image:
       # repository defines which container image will be pulled from a container
       # registry.
-      repository: ghcr.io/pokt-network/poktrolld
+      repository: ghcr.io/pokt-network/pocketd
      # pullPolicy defines the pull policy for the relayminer.
       pullPolicy: IfNotPresent
       # tag overrides the image tag. If not tag are defined, the chart will rely
@@ -1095,6 +1104,7 @@ shannon:
         node = "tcp://pocket-network-eddyzags-shannon-fullnode:26657"
         # client output format (json|text)
         output = "json"
+      # define the configuration to provide the private keys for the fullnode.
       secret:
         # defines the type of resources the chart needs to mount for the
         # fullnode to access the network credentials.
@@ -1111,7 +1121,7 @@ shannon:
     image:
       # repository defines which container image will be pulled from a container
       # registry.
-      repository: ghcr.io/pokt-network/poktrolld
+      repository: ghcr.io/pokt-network/pocketd
       # tag overrides the image tag. If not tag are defined, the chart will rely
       # on the .Values.version value.
       tag: ""
