@@ -270,34 +270,16 @@ shannon:
       # defines the hostnames this ingress rule applies to.
       #
       # e.g
-      # - host: app.myexample.com
+      # - host: relayminer.pocket.network
       #   paths:
       #     - path: /
       #       pathType: Prefix
       #       backend:
       #         service:
-      #           name: app-service
+      #           name: relayminer-service
       #           port:
       #             number: 8080
-      hosts:
-        - host: app.myexample.com
-          paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: app-service
-                port:
-                  number: 8080
-        - host: database.myexample.com
-          paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: database-service
-                port:
-                  number: 9999
+      hosts: []
     # livenessProbe configures the mechanism that checks whether the relayminer
     # container is healthy.
     livenessProbe:
@@ -1204,40 +1186,22 @@ shannon:
       #
       # e.g
       # - hosts:
-      #     - https-example.foo.com
-      #   secretName: testsecret-tls
+      #     - fullnode.pocket.network
+      #   secretName: fullnode-tls
       tls: {}
       # defines the hostnames this ingress rule applies to.
       #
       # e.g
-      # - host: app.myexample.com
+      # - host: fullnode.pocket.network
       #   paths:
       #     - path: /
       #       pathType: Prefix
       #       backend:
       #         service:
-      #           name: app-service
+      #           name: fullnode-service
       #           port:
       #             number: 8080
-      hosts:
-        - host: app.myexample.com
-          paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: app-service
-                port:
-                  number: 8080
-        - host: database.myexample.com
-          paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: database-service
-                port:
-                  number: 9999
+      hosts: []
     # storage is the root configuration for the fullnode persistent volume.
     storage:
       data:
