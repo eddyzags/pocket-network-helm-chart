@@ -19,7 +19,7 @@ spec:
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  name: {{ include "pocket-network.fullname" . }}-shannon-relayminer
+  name: {{ include "pocket-network.fullname" . }}-shannon-fullnode
   labels:
     {{- include "pocket-network.labels" (dict "root" . "nameSuffix" "shannon-fullnode" ) | nindent 4 }}
 spec:

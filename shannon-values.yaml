@@ -248,6 +248,59 @@ shannon:
     #   mountPath: "/etc/foo"
     #   readOnly: true
     volumeMounts: []
+    # configures a ingress resource that manages external access to services for
+    # the relayminer.
+    #
+    # https://kubernetes.io/docs/concepts/services-networking/ingress
+    ingress:
+      # activates the definition of an ingress resource.
+      enabled: true
+      # controls how the ingress resource is dynamically provisioned.
+      className: ""
+      # defines non-selectable metadata attached to the ingress resource
+      # for the relayminer.
+      annotations: {}
+      # secures an ingress host by specifying a Secret that contains a TLS
+      # private key and certificates.
+      #
+      # https://kubernetes.io/docs/concepts/services-networking/ingress/#tls
+      #
+      # e.g
+      # - hosts:
+      #     - https-example.foo.com
+      #   secretName: testsecret-tls
+      tls: {}
+      # defines the hostnames this ingress rule applies to.
+      #
+      # e.g
+      # - host: app.myexample.com
+      #   paths:
+      #     - path: /
+      #       pathType: Prefix
+      #       backend:
+      #         service:
+      #           name: app-service
+      #           port:
+      #             number: 8080
+      hosts:
+        - host: app.myexample.com
+          paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: app-service
+                port:
+                  number: 8080
+        - host: database.myexample.com
+          paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: database-service
+                port:
+                  number: 9999
     # livenessProbe configures the mechanism that checks whether the relayminer
     # container is healthy.
     livenessProbe:
@@ -1135,6 +1188,59 @@ shannon:
       #
       # see https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types
       type: ClusterIP
+    # configures a ingress resource that manages external access to services for
+    # the fullnode.
+    #
+    # https://kubernetes.io/docs/concepts/services-networking/ingress
+    ingress:
+      # activates the definition of an ingress resource.
+      enabled: true
+      # controls how the ingress resource is dynamically provisioned.
+      className: ""
+      # defines non-selectable metadata attached to the ingress resource
+      # for the relayminer.
+      annotations: {}
+      # secures an ingress host by specifying a Secret that contains a TLS
+      # private key and certificates.
+      #
+      # https://kubernetes.io/docs/concepts/services-networking/ingress/#tls
+      #
+      # e.g
+      # - hosts:
+      #     - https-example.foo.com
+      #   secretName: testsecret-tls
+      tls: {}
+      # defines the hostnames this ingress rule applies to.
+      #
+      # e.g
+      # - host: app.myexample.com
+      #   paths:
+      #     - path: /
+      #       pathType: Prefix
+      #       backend:
+      #         service:
+      #           name: app-service
+      #           port:
+      #             number: 8080
+      hosts:
+        - host: app.myexample.com
+          paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: app-service
+                port:
+                  number: 8080
+        - host: database.myexample.com
+          paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: database-service
+                port:
+                  number: 9999
     # storage is the root configuration for the fullnode persistent volume.
     storage:
       data:
