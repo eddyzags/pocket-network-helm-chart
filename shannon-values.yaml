@@ -56,9 +56,6 @@ shannon:
       #
       # see https://github.com/pokt-network/poktroll/blob/6759eec9f586358a12306fa8c92d18cb03ef6530/pkg/polylog/polyzero/levels.go#L39-L54
       level: info
-    # keysSecretName injects a Kubernetes Secret that defines the signing key
-    # inside the relayminer pod.
-    #keysSecretName: "pocketd-keys" TODO DELETE
     # define the configuration to provide the keyring for the relayminer.
     secret:
       # defines the type of resources the chart needs to mount for the
