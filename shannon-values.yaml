@@ -266,7 +266,7 @@ shannon:
       # - hosts:
       #     - https-example.foo.com
       #   secretName: testsecret-tls
-      tls: {}
+      tls: []
       # defines the hostnames this ingress rule applies to.
       #
       # e.g
@@ -1188,7 +1188,7 @@ shannon:
       # - hosts:
       #     - fullnode.pocket.network
       #   secretName: fullnode-tls
-      tls: {}
+      tls: []
       # defines the hostnames this ingress rule applies to.
       #
       # e.g
