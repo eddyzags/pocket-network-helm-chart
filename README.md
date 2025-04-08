@@ -130,7 +130,7 @@ tpl/string
 </pre>
 </div>
 			</td>
-			<td> @default ""</td>
+			<td> @description ""</td>
 		</tr>
 		<tr>
 			<td id="shannon--fullnode--cometbft--client"><a href="./values.yaml#L1139">shannon.fullnode.cometbft.client</a></td>
@@ -144,7 +144,7 @@ tpl/string
 </pre>
 </div>
 			</td>
-			<td> @default ""</td>
+			<td> @description ""</td>
 		</tr>
 		<tr>
 			<td id="shannon--fullnode--cometbft--config"><a href="./values.yaml#L382">shannon.fullnode.cometbft.config</a></td>
@@ -158,7 +158,7 @@ tpl/string
 </pre>
 </div>
 			</td>
-			<td> @default ""</td>
+			<td> @description ""</td>
 		</tr>
 		<tr>
 			<td id="shannon--fullnode--cometbft--secret--key--name"><a href="./values.yaml#L1157">shannon.fullnode.cometbft.secret.key.name</a></td>
@@ -942,7 +942,7 @@ tpl/string
 </pre>
 </div>
 			</td>
-			<td> @default ""</td>
+			<td> @description ""</td>
 		</tr>
 		<tr>
 			<td id="shannon--relayminer--config"><a href="./values.yaml#L74">shannon.relayminer.config</a></td>
@@ -991,7 +991,7 @@ tpl/string
 </pre>
 </div>
 			</td>
-			<td> @default ""</td>
+			<td> @description ""</td>
 		</tr>
 		<tr>
 			<td id="shannon--relayminer--containersSecurityContext"><a href="./values.yaml#L359">shannon.relayminer.containersSecurityContext</a></td>
