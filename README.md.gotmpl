@@ -8,7 +8,7 @@ Pocket Network is permissionless decentralized physical infrastructure (DePin) p
 
 ## TL;DR
 ```shell
-?> helm install release-1 https://github.com/eddyzags/pocket-network-helm-charts
+?> helm install release-1 https://github.com/eddyzags/pocket-network-helm-charts -f shannon-values.yaml
 ```
 
 ## Introduction
@@ -36,29 +36,30 @@ This section refers to the key management capabilities this chart offers to conf
 
 #### Relayminer
 
-In Pocket Network, all relayminers needs a signing key to sign each relays he serves with a private key. Therefore, each key name listed in `shannon.relayminer.config.default_signing_key_names` must be present in the keyring backend used to start the Relayminer instances.
+In Pocket Network, all relayminers needs one or multiple signing key to sign each relays he serves with a private key. Therefore, each key name listed in `shannon.relayminer.config.default_signing_key_names` must be present in the keyring backend used to start the Relayminer instances.
 This example demonstrates how to provision a key through Kubernetes secret while using a `keyring-backend=test`:
 
 ```
+# values.yaml
+
 shannon:
   relayminer:
     secret:
-      # defines the type of resources the chart needs to mount for the
-      # fullnode to access the network credentials.
       type: Secret
-      # represents the secret metadata.
       key:
         name: pocket-network-release-1-shannon-relayminer
         keyName: supplier1.info
 ```
 
-> Note: Every signing key names (`shannon.relayminer.config.default_signing_key_names`) must have a corresponding secret that matches the keyName. Therefore, if I have `shannon.relayminer.config.default_signing_key_names=["relayminer"], we must provide a secret with `shannon.relayminer.secret.key.keyName="relayminer.info"`
+> Note: Every signing key names (`shannon.relayminer.config.default_signing_key_names`) must have a corresponding secret key. Therefore, if I have `shannon.relayminer.config.default_signing_key_names=["relayminer"]`, we must provide a secret with `shannon.relayminer.secret.key.keyName="relayminer.info"` (name must be the same without file extension .info)
 
 #### Fullnode
 
 A Shannon Fullnode requires two important key files. The node key as a unique identifier for your node on the P2P network used solely for identifying and authenticating with others, and the validator private key used for signing consensus messages (e.g. block proposals, votes). This example demonstrates how to provision a node and validator private key for a fullnode:
 
 ```
+# values.yaml
+
 shannon:
   fullnode:
     combetbft:
@@ -72,18 +73,37 @@ shannon:
 
 ### Resources and limits
 
-Pocket Network charts allow setting resource requests and limits for every protocol actors (containers) inside the chart deployment. There are inside the `resources` values.
+Pocket Network charts allow setting resource requests and limits for every containers inside the chart deployment. There are inside the `resources` values.
 To make this resource and limit definition easier to define, this chart contains a `resources.preset` attribute that sets the `resources.limits` and `resources.requests`. These presets are recommended by the community, but you can define your own.
 
-> Note: You can either define a preset (`resources.preset=small` for example) or an explicit . If you define both, the `resources.limits` and `resources.requests` will be used.
+```
+# values.yaml
+
+shannon:
+  fullnode:
+    resources:
+      preset:
+        enabled: false
+        name: medium
+      requests:
+        cpu: 2000m
+        memory: 2Gi
+      limits:
+        cpu: 3000m
+        memory: 3Gi
+```
+
+> Note: If the preset is enabled, the templating engine will ignore the `shannon.fullnode.resources.requests` and `shannon.fullnode.resources.limits` fields.
 
 ### Fullnode Persistence
 
-The Shannon Full node images stores the various runtime data such as state information, configuration files, and other crucial data required for the operation of a node inside the `.Values.homeDirectory/data` path of the container. This chart provides multiple options to manage this volume for the fullnode
+The Shannon Full node images stores the various runtime data such as state information, configuration files, and other crucial data required for the operation of a node inside the volume mount of the container. This chart provides multiple options to manage this volume for the fullnode
 
 * Option A) Use an empty data directory to start the fullnode on a clean slate. This can be useful for test purposes.
 
 ```
+# values.yaml
+
 shannon:
   fullnode:
     storage:
@@ -96,6 +116,8 @@ shannon:
 * Option B) Use a Persistent Volume Claim (PVC) to start the fullnode on a clean slate, or an existing slate. Persistent Volume Claims are used to keep data across deployments. This integration is known to work in Google Cloud Platform (GCP), Amazon Web services (AWS), on-premise, and minikube.
 
 ```
+# values.yaml
+
 shannon:
   fullnode:
     storage:
@@ -122,7 +144,27 @@ As the image run as non-root by default, it is necessary to adjust the ownership
 
 ### Prometheus metrics
 
-This chart can be integrated with Prometheus by setting `metrics.enabled` to `true`. This will expose a prometheus metrics endpoint, and a `ServiceMonitor` object. This chart will define the necessary configurations to be automatically scraped by Prometheus.
+The applications can be integrated with Prometheus by defining a custom resource to automatically scrapped the metrics.
+
+#### Relayminer
+
+For the relayminer, setting `shannon.relayminer.config.metrics.enabled` and `shannon.relayminer.prometheus.serviceMonitor.enabled` to `true` will send the application metrics to Prometheus. `shannon.relayminer.config.metrics.enabled` exposes a Prometheus endpoint to consume applications metrics. And `shannon.relayminer.prometheus.serviceMonitor.enabled` creates a `ServiceMonitor` custom resource that points to the `shannon.relayminer.config.metrics.addr`.
+
+```
+shannon:
+  relayminer:
+    config:
+      metrics:
+        enabled: true
+        addr: :9090
+    prometheus:
+      serviceMonitor:
+        enabled: true
+```
+
+#### Fullnode
+
+For the fullnode, the CosmosSDK `shannon.fullnode.cometbft.config` configuration file gives us the ability to activate a prometheus collector connections at a specific endpoint.
 
 > Note: it is necessary to have a working installation of Prometheus Operator for the integration to work.
 
