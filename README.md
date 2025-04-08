@@ -126,7 +126,8 @@ tpl/string
 			<td>
 				<div style="max-width: 300px;">
 <pre lang="tpl">
-shannon.fullnode.cometbft.app: |  # This is a TOML config file.
+shannon.fullnode.cometbft.app: |
+  # This is a TOML config file.
   # For more information, see https://github.com/toml-lang/toml
  
   ###############################################################################
@@ -393,7 +394,8 @@ tpl/string
 			<td>
 				<div style="max-width: 300px;">
 <pre lang="tpl">
-shannon.fullnode.cometbft.client: |  # specifies the broadcast mode for the TxService.Broadcast RPC
+shannon.fullnode.cometbft.client: |
+  # specifies the broadcast mode for the TxService.Broadcast RPC
   broadcast-mode = "sync"
   # name of the targeted chain to send transaction
   chain-id = "pocket-beta"
@@ -417,7 +419,8 @@ tpl/string
 			<td>
 				<div style="max-width: 300px;">
 <pre lang="tpl">
-shannon.fullnode.cometbft.config: |  # This is a TOML config file.
+shannon.fullnode.cometbft.config: |
+  # This is a TOML config file.
   # For more information, see https://github.com/toml-lang/toml
  
   # NOTE: Any path below can be absolute (e.g. "/var/myawesomeapp/data") or
@@ -1699,7 +1702,8 @@ tpl/string
 			<td>
 				<div style="max-width: 300px;">
 <pre lang="tpl">
-shannon.relayminer.cometbft.clientConfig: |  # specifies the broadcast mode for the TxService.Broadcast RPC
+shannon.relayminer.cometbft.clientConfig: |
+  # specifies the broadcast mode for the TxService.Broadcast RPC
   broadcast-mode = "sync"
   # name of the targeted chain to send transaction
   chain-id = "pocket-beta"
