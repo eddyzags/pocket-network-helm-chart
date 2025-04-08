@@ -68,8 +68,10 @@ shannon:
     # config defines key-values pairs for the relayminer general configuration.
     #
     # see https://dev.poktroll.com/operate/configs/relayminer_config
+    #
+    # -- (tpl/string)
+    # @notationType -- toml
     config:
-      signing_key_name: supplier1
       # default_signing_key_names defines the list of key names from the keyring.
       # 
       # https://dev.poktroll.com/operate/configs/relayminer_config
@@ -153,6 +155,8 @@ shannon:
         # addr is the address at which the server must listen.
         addr: localhost:8081
     cometbft:
+      # -- (tpl/string)
+      # @notationType -- toml
       clientConfig: |
         # specifies the broadcast mode for the TxService.Broadcast RPC
         broadcast-mode = "sync"
@@ -372,6 +376,8 @@ shannon:
             configKeyName: config.toml
             clientKeyName: client.toml
             appKeyName: app.toml
+      # -- (tpl/string)
+      # @notationType -- toml
       config: |
         # This is a TOML config file.
         # For more information, see https://github.com/toml-lang/toml
@@ -871,6 +877,8 @@ shannon:
 
         # Instrumentation namespace
         namespace = "cometbft"
+      # -- (tpl/string)
+      # @notationType -- toml
       app: |
         # This is a TOML config file.
         # For more information, see https://github.com/toml-lang/toml
@@ -1125,6 +1133,8 @@ shannon:
           [poktroll.telemetry]
 
           cardinality-level = "medium"
+      # -- (tpl/string)
+      # @notationType -- toml
       client: |
         # specifies the broadcast mode for the TxService.Broadcast RPC
         broadcast-mode = "sync"

@@ -109,7 +109,7 @@ spec:
           volumeMounts:
             {{- if eq .Values.shannon.relayminer.secret.type "Secret" }}
             - name: relayminer-keys
-              mountPath: {{ .Values.homeDirectory }}/keyring-test/{{ .Values.shannon.relayminer.config.signing_key_name }}.info
+              mountPath: {{ .Values.homeDirectory }}/keyring-test/{{ .Values.shannon.relayminer.secret.key.keyName }}
               subPath: {{ .Values.shannon.relayminer.secret.key.keyName }}
               readOnly: true
             {{- end }}
