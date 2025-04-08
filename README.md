@@ -14,6 +14,9 @@ Pocket Network is permissionless decentralized physical infrastructure (DePin) p
 ## Introduction
 
 ## Prerequisites
+* Kubernetes 1.23+
+* Helm 3.9.0+
+* Provisionning keys for Pocket Network Kubernetes Pods (e.g fullnode and relayminer)
 
 ## Installing the Chart
 
@@ -27,6 +30,10 @@ This command deploy the different Pocket Network actors based on the values prov
 
 ## Configuration and installation details
 
+### Provisionning keys
+
+#TODO(eddyzags): write steps to configure keys
+
 ### Resources and limits
 
 Pocket Network charts allow setting resource requests and limits for every protocol actors (containers) inside the chart deployment. There are inside the `resources` values.
@@ -34,19 +41,60 @@ To make this resource and limit definition easier to define, this chart contains
 
 > Note: You can either define a preset (`resources.preset=small` for example) or an explicit . If you define both, the `resources.limits` and `resources.requests` will be used.
 
+### Fullnode Persistence
+
+The Shannon Full node images stores the various runtime data such as state information, configuration files, and other crucial data required for the operation of a node inside the `\{\{ .Values.homeDirectory\}\}/data` path of the container. This chart provides multiple options to manage this volume for the fullnode
+
+* Option A) Use an empty data directory to start the fullnode on a clean slate. This can be useful for test purposes.
+
+```
+shannon:
+  fullnode:
+    storage:
+      data:
+      enabled: false
+```
+
+> Note: This options doesn't persistent the data across deployments. In other words, if the Kubernetes Pod restarts, you will loose all your data.
+
+* Option B) Use a Persistent Volume Claim (PVC) to start the fullnode on a clean slate, or an existing slate. Persistent Volume Claims are used to keep data across deployments. This integration is known to work in Google Cloud Platform (GCP), Amazon Web services (AWS), on-premise, and minikube.
+
+```
+shannon:
+  fullnode:
+    storage:
+      data:
+      enabled: true
+      volumeClaimTemplate:
+        annotations: {}
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: ""
+        selector:
+          matchLabels:
+            app.pocket.network: pocket-network-pv-shannon
+        volumeMode: Filesystem
+        resources:
+          requests:
+            storage: 1000Gi
+          limits:
+            storage: 1500Gi
+```
+
+#### Adjust permissions of persistent volume mountpoint
+
+As the image run as non-root by default, it is necessary to adjust the ownership of the persistent volume so that the container process can write data into it.
+
+By default, the chart is configured to use Kubernetes Security Context at the Pod, init containers, and containers level.
+
 ### Prometheus metrics
 
 This chart can be integrated with Prometheus by setting `metrics.enabled` to `true`. This will expose a prometheus metrics endpoint, and a `ServiceMonitor` object. This chart will define the necessary configurations to be automatically scraped by Prometheus.
 
 > Note: it is necessary to have a working installation of Prometheus Operator for the integration to work.
 
-### Ingress
+### Accessing Pocket Network Services from outside the cluster
 
 #TODO(eddyzags): define integration with ingress
-
-### Provisionning keys
-
-#TODO(eddyzags): write steps to configure keys
 
 ## Parameters
 
