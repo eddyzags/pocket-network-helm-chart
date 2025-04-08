@@ -1216,7 +1216,7 @@ shannon:
     storage:
       data:
         # activates the mount of data directory into the fullnode pod.
-        enabled: true
+        enabled: false
         # automatically creates a persistent volume claim with the following fields.
         volumeClaimTemplate:
           # defines non-selectable metadata attached to the persistent volume claim template
@@ -1272,7 +1272,7 @@ shannon:
       # fullnode (small, medium, large or none).
       preset:
         # activates the preset definition for the fullnode pod template.
-        enabled: false
+        enabled: true
         # select the preset to use for the fullnode pod template.
         name: medium
       # values are the resources requests and limit to used if the preset

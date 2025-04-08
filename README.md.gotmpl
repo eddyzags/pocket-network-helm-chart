@@ -11,8 +11,6 @@ Pocket Network is permissionless decentralized physical infrastructure (DePin) p
 ?> helm install release-1 https://github.com/eddyzags/pocket-network-helm-charts -f shannon-values.yaml
 ```
 
-## Introduction
-
 ## Prerequisites
 * Kubernetes 1.23+
 * Helm 3.9.0+
@@ -26,9 +24,82 @@ helm install my-release https://github.com/eddyzags/pocket-network-helm-charts -
 ```
 > Note: You must specify the value in yaml file. This is an example with the values related to Shannon protocol.
 
-This command deploy the different Pocket Network actors based on the values provided in the 
+This command deploy a fullnode with default values.
 
 ## Configuration and installation details
+
+### Customizing relayminer and fullnode using configuration
+
+### Fullnode
+
+A fullnode requires a more in-depth setup to configure Tendermint (consensus engine), the P2P network, the RPC servers, and the consensus parameters. Additionally, it requires the application-specific settings related to staking, gas, API, block prunning. This chart provides multiple solutions to provision these configuration files.
+
+* Option A) Define the configuration file as input values while installing the chart. This can be useful if you already have these configuration files in your local machine.
+
+```
+?> helm install my-release https://github.com/eddyzags/pocket-network-helm-charts --set-file 'shannon.fullnode.cometbft.config=config.toml' --set-file 'shannon.fullnode.cometbft.app=app.toml' --set-file 'shannon.fullnode.cometbft.client=client.toml'
+```
+
+* Option B) Use Kubernetes `ConfigMap` to mount configuration files. This can be useful if you want to use a single configuration for all your fullnode for example.
+
+```
+# values.yaml
+
+shannon:
+  fullnode:
+    enabled: true
+    cometbft:
+      volumes:
+        enabled: true
+        type: ConfigMap
+        config:
+          key:
+            name: pocket-network-release-1-shannon
+            configKeyName: config.toml
+            clientKeyName: client.toml
+            appKeyName: app.toml
+```
+
+* Option C) Use default value define in the `shannon-values.yaml`. It can be useful for testing purposes.
+
+```
+?> helm install my-release https://github.com/eddyzags/pocket-network-helm-charts --values shannon-values.yaml
+```
+
+#### Relayminer
+
+A relayminer configuration typically involves service endpoint you want to send relays to, a pocket rpc node (you can use the fullnode of this chart for example) to sign each processed relays. This configuration can be tailored to your need by providing a `shannon.relayminer.config` in the Helm values. This a personalized configuration for the relayminer:
+
+```
+# values.yaml
+
+shannon:
+  relayminer:
+    enabled: true
+    config:
+      default_signing_key_names: [supplier1]
+      smt_store_path: /.pocket/smt
+      pocket_node:
+        query_node_rpc_url: tcp://node:26657
+        query_node_grpc_url: tcp://node:9090
+        tx_node_rpc_url: tcp://node:26657
+      suppliers:
+      - service_id: anvil
+        service_config:
+          backend_url: http://anvil:8547/
+          publicly_exposed_endpoints:
+            - relayminer1
+        listen_url: http://0.0.0.0:8545
+      metrics:
+        enabled: true
+        addr: :9090
+      pprof:
+        enabled: true
+        addr: localhost:6060
+      ping:
+        enabled: true
+        addr: localhost:8081
+```
 
 ### Provisionning keys
 
@@ -44,6 +115,7 @@ This example demonstrates how to provision a key through Kubernetes secret while
 
 shannon:
   relayminer:
+    enabled: true
     secret:
       type: Secret
       key:
@@ -62,6 +134,7 @@ A Shannon Fullnode requires two important key files. The node key as a unique id
 
 shannon:
   fullnode:
+    enabled: true
     combetbft:
       secret:
         type: Secret
@@ -81,6 +154,7 @@ To make this resource and limit definition easier to define, this chart contains
 
 shannon:
   fullnode:
+    enabled: true
     resources:
       preset:
         enabled: false
@@ -97,7 +171,7 @@ shannon:
 
 ### Fullnode Persistence
 
-The Shannon Full node images stores the various runtime data such as state information, configuration files, and other crucial data required for the operation of a node inside the volume mount of the container. This chart provides multiple options to manage this volume for the fullnode
+The fullnode software stores the various runtime data such as state information, configuration files, and other crucial data required for the operation of a node inside the volume mount of the container. This chart provides multiple options to manage this volume for the fullnode
 
 * Option A) Use an empty data directory to start the fullnode on a clean slate. This can be useful for test purposes.
 
@@ -106,6 +180,7 @@ The Shannon Full node images stores the various runtime data such as state infor
 
 shannon:
   fullnode:
+    enabled: true
     storage:
       data:
       enabled: false
@@ -120,6 +195,7 @@ shannon:
 
 shannon:
   fullnode:
+    enabled: true
     storage:
       data:
       enabled: true
@@ -153,6 +229,7 @@ For the relayminer, setting `shannon.relayminer.config.metrics.enabled` and `sha
 ```
 shannon:
   relayminer:
+    enabled: true
     config:
       metrics:
         enabled: true
