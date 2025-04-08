@@ -21,7 +21,7 @@ version: 0.1.1
 # homeDirectory refers to the pocketd working directory. This variable is
 # shared across all every procol actors. Meaning that the working directory
 # will be instantiated in the same path for every 
-homeDirectory: /home/pocket/.poktroll
+homeDirectory: /home/pocket/.pocket
 
 # shannon object refers to the root level values configuration for the shannon
 # protocol to define the configuration for every protocol actors. This
@@ -63,7 +63,7 @@ shannon:
       type: Secret
       # represents the secret metadata.
       key:
-        name: pocket-network-eddyzags-shannon-relayminer
+        name: pocket-network-release-1-shannon-relayminer
         keyName: supplier1.info
     # config defines key-values pairs for the relayminer general configuration.
     #
@@ -75,7 +75,7 @@ shannon:
       # https://dev.poktroll.com/operate/configs/relayminer_config
       default_signing_key_names: [supplier1]
       # smt_store_path path to working directory for Sparse Merkle Tree.
-      smt_store_path: /.poktroll/smt
+      smt_store_path: /.pocket/smt
       # pocket_node defines the different connectivity for the pocketd node.
       #
       # see https://dev.poktroll.com/operate/configs/relayminer_config#pocket-node-connectivity
@@ -83,15 +83,15 @@ shannon:
         # query_node_rpc_url sets the websocket connection to a pocket network node.
         #
         # see https://dev.poktroll.com/operate/configs/relayminer_config#query_node_rpc_url
-        query_node_rpc_url: tcp://validator-poktroll-validator:26657
+        query_node_rpc_url: tcp://node:26657
         # query_node_grpc_url sets the pocket node endpoint to read from Pocket Network.
         #
         # see https://dev.poktroll.com/operate/configs/relayminer_config#query_node_rpc_url
-        query_node_grpc_url: tcp://validator-poktroll-validator:9090
+        query_node_grpc_url: tcp://node:9090
         # tx_node_rpc_url sets the pocket node endpoint to write into Pocket Network.
         #
         # see https://dev.poktroll.com/operate/configs/relayminer_config#tx_node_rpc_url
-        tx_node_rpc_url: tcp://validator-poktroll-validator:26657
+        tx_node_rpc_url: tcp://node:26657
       # suppliers defines a list of key-values pairs to define the suppliers managed
       # by this relayminer.
       #
@@ -149,7 +149,7 @@ shannon:
       # https://dev.poktroll.com/operate/configs/relayminer_config#ping
       ping:
         # enabled activates the ping server.
-        enabled: false
+        enabled: true
         # addr is the address at which the server must listen.
         addr: localhost:8081
     cometbft:
@@ -161,7 +161,7 @@ shannon:
         # specifies where keys are stored
         keyring-backend = "test"
         # rpc interface for the specified chain.
-        node = "tcp://pocket-network-eddyzags-shannon-fullnode:26657"
+        node = "tcp://node:26657"
         # client output format (json|text)
         output = "text"
     # prometheus is the root value configuration for prometheus operator.
@@ -251,7 +251,7 @@ shannon:
     # https://kubernetes.io/docs/concepts/services-networking/ingress
     ingress:
       # activates the definition of an ingress resource.
-      enabled: true
+      enabled: false
       # controls how the ingress resource is dynamically provisioned.
       className: ""
       # defines non-selectable metadata attached to the ingress resource
@@ -368,7 +368,7 @@ shannon:
         type: ConfigMap
         config:
           key:
-            name: pocket-network-eddyzags-shannon
+            name: pocket-network-release-1-shannon
             configKeyName: config.toml
             clientKeyName: client.toml
             appKeyName: app.toml
@@ -1133,7 +1133,7 @@ shannon:
         # specifies where keys are stored
         keyring-backend = "test"
         # rpc interface for the specified chain.
-        node = "tcp://pocket-network-eddyzags-shannon-fullnode:26657"
+        node = "tcp://node:26657"
         # client output format (json|text)
         output = "json"
       # define the configuration to provide the private keys for the fullnode.
@@ -1143,7 +1143,7 @@ shannon:
         type: Secret
         # nodeKey is the long term private key specific to a P2P node.
         key:
-          name: pocket-network-eddyzags-shannon
+          name: pocket-network-release-1-shannon
           nodeKeyName: node_key.json
           # privValidatorKeyName is the long term private key specific to a node
           # in the consensus.
@@ -1173,7 +1173,7 @@ shannon:
     # https://kubernetes.io/docs/concepts/services-networking/ingress
     ingress:
       # activates the definition of an ingress resource.
-      enabled: true
+      enabled: false
       # controls how the ingress resource is dynamically provisioned.
       className: ""
       # defines non-selectable metadata attached to the ingress resource
