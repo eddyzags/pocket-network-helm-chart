@@ -63,7 +63,7 @@ This chart can be integrated with Prometheus by setting `metrics.enabled` to `tr
 	</thead>
 	<tbody>
 		<tr>
-			<td id="homeDirectory"><a href="./shannon-values.yaml#L24">homeDirectory</a></td>
+			<td id="homeDirectory">`homeDirectory`</td>
 			<td>
 string
 </td>
@@ -77,7 +77,7 @@ string
 			<td></td>
 		</tr>
 		<tr>
-			<td id="network"><a href="./shannon-values.yaml#L13">network</a></td>
+			<td id="network">`network`</td>
 			<td>
 string
 </td>
@@ -91,7 +91,7 @@ string
 			<td></td>
 		</tr>
 		<tr>
-			<td id="protocol"><a href="./shannon-values.yaml#L7">protocol</a></td>
+			<td id="protocol">`protocol`</td>
 			<td>
 string
 </td>
@@ -105,7 +105,7 @@ string
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--fullnode--affinity"><a href="./shannon-values.yaml#L1338">shannon.fullnode.affinity</a></td>
+			<td id="shannon--fullnode--affinity">`shannon.fullnode.affinity`</td>
 			<td>
 object
 </td>
@@ -119,43 +119,43 @@ object
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--fullnode--cometbft--app"><a href="./shannon-values.yaml#L883">shannon.fullnode.cometbft.app</a></td>
+			<td id="shannon--fullnode--cometbft--app">`shannon.fullnode.cometbft.app`</td>
 			<td>
 tpl/string
 </td>
 			<td>
 				<div style="max-width: 300px;">
-<a href="./shannon-values.yaml#L883">see example</a>
+<a href="./shannon-values.yaml">see example in shannon-values.yaml</a>
 </div>
 			</td>
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--fullnode--cometbft--client"><a href="./shannon-values.yaml#L1139">shannon.fullnode.cometbft.client</a></td>
+			<td id="shannon--fullnode--cometbft--client">`shannon.fullnode.cometbft.client`</td>
 			<td>
 tpl/string
 </td>
 			<td>
 				<div style="max-width: 300px;">
-<a href="./shannon-values.yaml#L1139">see example</a>
+<a href="./shannon-values.yaml">see example in shannon-values.yaml</a>
 </div>
 			</td>
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--fullnode--cometbft--config"><a href="./shannon-values.yaml#L382">shannon.fullnode.cometbft.config</a></td>
+			<td id="shannon--fullnode--cometbft--config">`shannon.fullnode.cometbft.config`</td>
 			<td>
 tpl/string
 </td>
 			<td>
 				<div style="max-width: 300px;">
-<a href="./shannon-values.yaml#L382">see example</a>
+<a href="./shannon-values.yaml">see example in shannon-values.yaml</a>
 </div>
 			</td>
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--fullnode--cometbft--secret--key--name"><a href="./shannon-values.yaml#L1157">shannon.fullnode.cometbft.secret.key.name</a></td>
+			<td id="shannon--fullnode--cometbft--secret--key--name">`shannon.fullnode.cometbft.secret.key.name`</td>
 			<td>
 string
 </td>
@@ -169,7 +169,7 @@ string
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--fullnode--cometbft--secret--key--nodeKeyName"><a href="./shannon-values.yaml#L1158">shannon.fullnode.cometbft.secret.key.nodeKeyName</a></td>
+			<td id="shannon--fullnode--cometbft--secret--key--nodeKeyName">`shannon.fullnode.cometbft.secret.key.nodeKeyName`</td>
 			<td>
 string
 </td>
@@ -183,7 +183,7 @@ string
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--fullnode--cometbft--secret--key--privValidatorKeyName"><a href="./shannon-values.yaml#L1161">shannon.fullnode.cometbft.secret.key.privValidatorKeyName</a></td>
+			<td id="shannon--fullnode--cometbft--secret--key--privValidatorKeyName">`shannon.fullnode.cometbft.secret.key.privValidatorKeyName`</td>
 			<td>
 string
 </td>
@@ -197,7 +197,7 @@ string
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--fullnode--cometbft--secret--type"><a href="./shannon-values.yaml#L1154">shannon.fullnode.cometbft.secret.type</a></td>
+			<td id="shannon--fullnode--cometbft--secret--type">`shannon.fullnode.cometbft.secret.type`</td>
 			<td>
 string
 </td>
@@ -211,7 +211,7 @@ string
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--fullnode--cometbft--volumes--config--key--appKeyName"><a href="./shannon-values.yaml#L379">shannon.fullnode.cometbft.volumes.config.key.appKeyName</a></td>
+			<td id="shannon--fullnode--cometbft--volumes--config--key--appKeyName">`shannon.fullnode.cometbft.volumes.config.key.appKeyName`</td>
 			<td>
 string
 </td>
@@ -225,7 +225,7 @@ string
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--fullnode--cometbft--volumes--config--key--clientKeyName"><a href="./shannon-values.yaml#L378">shannon.fullnode.cometbft.volumes.config.key.clientKeyName</a></td>
+			<td id="shannon--fullnode--cometbft--volumes--config--key--clientKeyName">`shannon.fullnode.cometbft.volumes.config.key.clientKeyName`</td>
 			<td>
 string
 </td>
@@ -239,7 +239,7 @@ string
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--fullnode--cometbft--volumes--config--key--configKeyName"><a href="./shannon-values.yaml#L377">shannon.fullnode.cometbft.volumes.config.key.configKeyName</a></td>
+			<td id="shannon--fullnode--cometbft--volumes--config--key--configKeyName">`shannon.fullnode.cometbft.volumes.config.key.configKeyName`</td>
 			<td>
 string
 </td>
@@ -253,7 +253,7 @@ string
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--fullnode--cometbft--volumes--config--key--name"><a href="./shannon-values.yaml#L376">shannon.fullnode.cometbft.volumes.config.key.name</a></td>
+			<td id="shannon--fullnode--cometbft--volumes--config--key--name">`shannon.fullnode.cometbft.volumes.config.key.name`</td>
 			<td>
 string
 </td>
@@ -267,7 +267,7 @@ string
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--fullnode--cometbft--volumes--enabled"><a href="./shannon-values.yaml#L372">shannon.fullnode.cometbft.volumes.enabled</a></td>
+			<td id="shannon--fullnode--cometbft--volumes--enabled">`shannon.fullnode.cometbft.volumes.enabled`</td>
 			<td>
 bool
 </td>
@@ -281,7 +281,7 @@ false
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--fullnode--cometbft--volumes--type"><a href="./shannon-values.yaml#L373">shannon.fullnode.cometbft.volumes.type</a></td>
+			<td id="shannon--fullnode--cometbft--volumes--type">`shannon.fullnode.cometbft.volumes.type`</td>
 			<td>
 string
 </td>
@@ -295,7 +295,7 @@ string
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--fullnode--containersSecurityContext"><a href="./shannon-values.yaml#L1333">shannon.fullnode.containersSecurityContext</a></td>
+			<td id="shannon--fullnode--containersSecurityContext">`shannon.fullnode.containersSecurityContext`</td>
 			<td>
 object
 </td>
@@ -309,7 +309,7 @@ object
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--fullnode--enabled"><a href="./shannon-values.yaml#L369">shannon.fullnode.enabled</a></td>
+			<td id="shannon--fullnode--enabled">`shannon.fullnode.enabled`</td>
 			<td>
 bool
 </td>
@@ -323,7 +323,7 @@ true
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--fullnode--image--repository"><a href="./shannon-values.yaml#L1167">shannon.fullnode.image.repository</a></td>
+			<td id="shannon--fullnode--image--repository">`shannon.fullnode.image.repository`</td>
 			<td>
 string
 </td>
@@ -337,7 +337,7 @@ string
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--fullnode--image--tag"><a href="./shannon-values.yaml#L1170">shannon.fullnode.image.tag</a></td>
+			<td id="shannon--fullnode--image--tag">`shannon.fullnode.image.tag`</td>
 			<td>
 string
 </td>
@@ -351,7 +351,7 @@ string
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--fullnode--imagePullSecrets"><a href="./shannon-values.yaml#L1173">shannon.fullnode.imagePullSecrets</a></td>
+			<td id="shannon--fullnode--imagePullSecrets">`shannon.fullnode.imagePullSecrets`</td>
 			<td>
 list
 </td>
@@ -365,7 +365,7 @@ list
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--fullnode--ingress--annotations"><a href="./shannon-values.yaml#L1192">shannon.fullnode.ingress.annotations</a></td>
+			<td id="shannon--fullnode--ingress--annotations">`shannon.fullnode.ingress.annotations`</td>
 			<td>
 object
 </td>
@@ -379,7 +379,7 @@ object
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--fullnode--ingress--className"><a href="./shannon-values.yaml#L1189">shannon.fullnode.ingress.className</a></td>
+			<td id="shannon--fullnode--ingress--className">`shannon.fullnode.ingress.className`</td>
 			<td>
 string
 </td>
@@ -393,7 +393,7 @@ string
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--fullnode--ingress--enabled"><a href="./shannon-values.yaml#L1187">shannon.fullnode.ingress.enabled</a></td>
+			<td id="shannon--fullnode--ingress--enabled">`shannon.fullnode.ingress.enabled`</td>
 			<td>
 bool
 </td>
@@ -407,7 +407,7 @@ false
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--fullnode--ingress--hosts"><a href="./shannon-values.yaml#L1215">shannon.fullnode.ingress.hosts</a></td>
+			<td id="shannon--fullnode--ingress--hosts">`shannon.fullnode.ingress.hosts`</td>
 			<td>
 list
 </td>
@@ -421,7 +421,7 @@ list
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--fullnode--ingress--tls"><a href="./shannon-values.yaml#L1202">shannon.fullnode.ingress.tls</a></td>
+			<td id="shannon--fullnode--ingress--tls">`shannon.fullnode.ingress.tls`</td>
 			<td>
 list
 </td>
@@ -435,7 +435,7 @@ list
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--fullnode--initContainersSecurityContext--runAsGroup"><a href="./shannon-values.yaml#L1321">shannon.fullnode.initContainersSecurityContext.runAsGroup</a></td>
+			<td id="shannon--fullnode--initContainersSecurityContext--runAsGroup">`shannon.fullnode.initContainersSecurityContext.runAsGroup`</td>
 			<td>
 int
 </td>
@@ -449,7 +449,7 @@ int
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--fullnode--initContainersSecurityContext--runAsUser"><a href="./shannon-values.yaml#L1320">shannon.fullnode.initContainersSecurityContext.runAsUser</a></td>
+			<td id="shannon--fullnode--initContainersSecurityContext--runAsUser">`shannon.fullnode.initContainersSecurityContext.runAsUser`</td>
 			<td>
 int
 </td>
@@ -463,7 +463,7 @@ int
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--fullnode--livenessProbe--enabled"><a href="./shannon-values.yaml#L1256">shannon.fullnode.livenessProbe.enabled</a></td>
+			<td id="shannon--fullnode--livenessProbe--enabled">`shannon.fullnode.livenessProbe.enabled`</td>
 			<td>
 bool
 </td>
@@ -477,7 +477,7 @@ true
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--fullnode--livenessProbe--failureThreshold"><a href="./shannon-values.yaml#L1266">shannon.fullnode.livenessProbe.failureThreshold</a></td>
+			<td id="shannon--fullnode--livenessProbe--failureThreshold">`shannon.fullnode.livenessProbe.failureThreshold`</td>
 			<td>
 int
 </td>
@@ -491,7 +491,7 @@ int
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--fullnode--livenessProbe--initialDelaySeconds"><a href="./shannon-values.yaml#L1259">shannon.fullnode.livenessProbe.initialDelaySeconds</a></td>
+			<td id="shannon--fullnode--livenessProbe--initialDelaySeconds">`shannon.fullnode.livenessProbe.initialDelaySeconds`</td>
 			<td>
 int
 </td>
@@ -505,7 +505,7 @@ int
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--fullnode--livenessProbe--periodSeconds"><a href="./shannon-values.yaml#L1261">shannon.fullnode.livenessProbe.periodSeconds</a></td>
+			<td id="shannon--fullnode--livenessProbe--periodSeconds">`shannon.fullnode.livenessProbe.periodSeconds`</td>
 			<td>
 int
 </td>
@@ -519,7 +519,7 @@ int
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--fullnode--livenessProbe--successThreshold"><a href="./shannon-values.yaml#L1268">shannon.fullnode.livenessProbe.successThreshold</a></td>
+			<td id="shannon--fullnode--livenessProbe--successThreshold">`shannon.fullnode.livenessProbe.successThreshold`</td>
 			<td>
 int
 </td>
@@ -533,7 +533,7 @@ int
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--fullnode--livenessProbe--timeoutSeconds"><a href="./shannon-values.yaml#L1264">shannon.fullnode.livenessProbe.timeoutSeconds</a></td>
+			<td id="shannon--fullnode--livenessProbe--timeoutSeconds">`shannon.fullnode.livenessProbe.timeoutSeconds`</td>
 			<td>
 int
 </td>
@@ -547,7 +547,7 @@ int
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--fullnode--nodeSelector"><a href="./shannon-values.yaml#L1336">shannon.fullnode.nodeSelector</a></td>
+			<td id="shannon--fullnode--nodeSelector">`shannon.fullnode.nodeSelector`</td>
 			<td>
 object
 </td>
@@ -561,7 +561,7 @@ object
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--fullnode--podAnnotations"><a href="./shannon-values.yaml#L1300">shannon.fullnode.podAnnotations</a></td>
+			<td id="shannon--fullnode--podAnnotations">`shannon.fullnode.podAnnotations`</td>
 			<td>
 object
 </td>
@@ -575,7 +575,7 @@ object
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--fullnode--podSecurityContext"><a href="./shannon-values.yaml#L1309">shannon.fullnode.podSecurityContext</a></td>
+			<td id="shannon--fullnode--podSecurityContext">`shannon.fullnode.podSecurityContext`</td>
 			<td>
 object
 </td>
@@ -589,7 +589,7 @@ object
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--fullnode--resources--preset--enabled"><a href="./shannon-values.yaml#L1276">shannon.fullnode.resources.preset.enabled</a></td>
+			<td id="shannon--fullnode--resources--preset--enabled">`shannon.fullnode.resources.preset.enabled`</td>
 			<td>
 bool
 </td>
@@ -603,7 +603,7 @@ false
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--fullnode--resources--preset--name"><a href="./shannon-values.yaml#L1278">shannon.fullnode.resources.preset.name</a></td>
+			<td id="shannon--fullnode--resources--preset--name">`shannon.fullnode.resources.preset.name`</td>
 			<td>
 string
 </td>
@@ -617,7 +617,7 @@ string
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--fullnode--resources--values--limits--cpu"><a href="./shannon-values.yaml#L1291">shannon.fullnode.resources.values.limits.cpu</a></td>
+			<td id="shannon--fullnode--resources--values--limits--cpu">`shannon.fullnode.resources.values.limits.cpu`</td>
 			<td>
 string
 </td>
@@ -631,7 +631,7 @@ string
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--fullnode--resources--values--limits--memory"><a href="./shannon-values.yaml#L1293">shannon.fullnode.resources.values.limits.memory</a></td>
+			<td id="shannon--fullnode--resources--values--limits--memory">`shannon.fullnode.resources.values.limits.memory`</td>
 			<td>
 string
 </td>
@@ -645,7 +645,7 @@ string
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--fullnode--resources--values--requests--cpu"><a href="./shannon-values.yaml#L1285">shannon.fullnode.resources.values.requests.cpu</a></td>
+			<td id="shannon--fullnode--resources--values--requests--cpu">`shannon.fullnode.resources.values.requests.cpu`</td>
 			<td>
 string
 </td>
@@ -659,7 +659,7 @@ string
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--fullnode--resources--values--requests--memory"><a href="./shannon-values.yaml#L1287">shannon.fullnode.resources.values.requests.memory</a></td>
+			<td id="shannon--fullnode--resources--values--requests--memory">`shannon.fullnode.resources.values.requests.memory`</td>
 			<td>
 string
 </td>
@@ -673,7 +673,7 @@ string
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--fullnode--service--type"><a href="./shannon-values.yaml#L1180">shannon.fullnode.service.type</a></td>
+			<td id="shannon--fullnode--service--type">`shannon.fullnode.service.type`</td>
 			<td>
 string
 </td>
@@ -687,7 +687,7 @@ string
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--fullnode--storage--data--enabled"><a href="./shannon-values.yaml#L1220">shannon.fullnode.storage.data.enabled</a></td>
+			<td id="shannon--fullnode--storage--data--enabled">`shannon.fullnode.storage.data.enabled`</td>
 			<td>
 bool
 </td>
@@ -701,7 +701,7 @@ true
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--fullnode--storage--data--volumeClaimTemplate--accessModes[0]"><a href="./shannon-values.yaml#L1227">shannon.fullnode.storage.data.volumeClaimTemplate.accessModes[0]</a></td>
+			<td id="shannon--fullnode--storage--data--volumeClaimTemplate--accessModes[0]">`shannon.fullnode.storage.data.volumeClaimTemplate.accessModes[0]`</td>
 			<td>
 string
 </td>
@@ -715,7 +715,7 @@ string
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--fullnode--storage--data--volumeClaimTemplate--annotations"><a href="./shannon-values.yaml#L1225">shannon.fullnode.storage.data.volumeClaimTemplate.annotations</a></td>
+			<td id="shannon--fullnode--storage--data--volumeClaimTemplate--annotations">`shannon.fullnode.storage.data.volumeClaimTemplate.annotations`</td>
 			<td>
 object
 </td>
@@ -729,7 +729,7 @@ object
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--fullnode--storage--data--volumeClaimTemplate--resources--limits--storage"><a href="./shannon-values.yaml#L1241">shannon.fullnode.storage.data.volumeClaimTemplate.resources.limits.storage</a></td>
+			<td id="shannon--fullnode--storage--data--volumeClaimTemplate--resources--limits--storage">`shannon.fullnode.storage.data.volumeClaimTemplate.resources.limits.storage`</td>
 			<td>
 string
 </td>
@@ -743,7 +743,7 @@ string
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--fullnode--storage--data--volumeClaimTemplate--resources--requests--storage"><a href="./shannon-values.yaml#L1239">shannon.fullnode.storage.data.volumeClaimTemplate.resources.requests.storage</a></td>
+			<td id="shannon--fullnode--storage--data--volumeClaimTemplate--resources--requests--storage">`shannon.fullnode.storage.data.volumeClaimTemplate.resources.requests.storage`</td>
 			<td>
 string
 </td>
@@ -757,7 +757,7 @@ string
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--fullnode--storage--data--volumeClaimTemplate--selector--matchLabels--"app--pocket--network""><a href="./shannon-values.yaml#L1233">shannon.fullnode.storage.data.volumeClaimTemplate.selector.matchLabels."app.pocket.network"</a></td>
+			<td id="shannon--fullnode--storage--data--volumeClaimTemplate--selector--matchLabels--"app--pocket--network"">`shannon.fullnode.storage.data.volumeClaimTemplate.selector.matchLabels."app.pocket.network"`</td>
 			<td>
 string
 </td>
@@ -771,7 +771,7 @@ string
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--fullnode--storage--data--volumeClaimTemplate--storageClassName"><a href="./shannon-values.yaml#L1229">shannon.fullnode.storage.data.volumeClaimTemplate.storageClassName</a></td>
+			<td id="shannon--fullnode--storage--data--volumeClaimTemplate--storageClassName">`shannon.fullnode.storage.data.volumeClaimTemplate.storageClassName`</td>
 			<td>
 string
 </td>
@@ -785,7 +785,7 @@ string
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--fullnode--storage--data--volumeClaimTemplate--volumeMode"><a href="./shannon-values.yaml#L1235">shannon.fullnode.storage.data.volumeClaimTemplate.volumeMode</a></td>
+			<td id="shannon--fullnode--storage--data--volumeClaimTemplate--volumeMode">`shannon.fullnode.storage.data.volumeClaimTemplate.volumeMode`</td>
 			<td>
 string
 </td>
@@ -799,7 +799,7 @@ string
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--fullnode--tolerations"><a href="./shannon-values.yaml#L1340">shannon.fullnode.tolerations</a></td>
+			<td id="shannon--fullnode--tolerations">`shannon.fullnode.tolerations`</td>
 			<td>
 list
 </td>
@@ -813,7 +813,7 @@ list
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--fullnode--volumeMounts"><a href="./shannon-values.yaml#L1251">shannon.fullnode.volumeMounts</a></td>
+			<td id="shannon--fullnode--volumeMounts">`shannon.fullnode.volumeMounts`</td>
 			<td>
 list
 </td>
@@ -827,7 +827,7 @@ list
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--fullnode--volumes"><a href="./shannon-values.yaml#L1243">shannon.fullnode.volumes</a></td>
+			<td id="shannon--fullnode--volumes">`shannon.fullnode.volumes`</td>
 			<td>
 list
 </td>
@@ -841,7 +841,7 @@ list
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--relayminer--affinity"><a href="./shannon-values.yaml#L364">shannon.relayminer.affinity</a></td>
+			<td id="shannon--relayminer--affinity">`shannon.relayminer.affinity`</td>
 			<td>
 object
 </td>
@@ -855,7 +855,7 @@ object
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--relayminer--autoscaling--enabled"><a href="./shannon-values.yaml#L308">shannon.relayminer.autoscaling.enabled</a></td>
+			<td id="shannon--relayminer--autoscaling--enabled">`shannon.relayminer.autoscaling.enabled`</td>
 			<td>
 bool
 </td>
@@ -869,7 +869,7 @@ false
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--relayminer--autoscaling--maxReplicas"><a href="./shannon-values.yaml#L313">shannon.relayminer.autoscaling.maxReplicas</a></td>
+			<td id="shannon--relayminer--autoscaling--maxReplicas">`shannon.relayminer.autoscaling.maxReplicas`</td>
 			<td>
 int
 </td>
@@ -883,7 +883,7 @@ int
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--relayminer--autoscaling--minReplicas"><a href="./shannon-values.yaml#L310">shannon.relayminer.autoscaling.minReplicas</a></td>
+			<td id="shannon--relayminer--autoscaling--minReplicas">`shannon.relayminer.autoscaling.minReplicas`</td>
 			<td>
 int
 </td>
@@ -897,7 +897,7 @@ int
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--relayminer--autoscaling--targetCPUUtilizationPercentage"><a href="./shannon-values.yaml#L316">shannon.relayminer.autoscaling.targetCPUUtilizationPercentage</a></td>
+			<td id="shannon--relayminer--autoscaling--targetCPUUtilizationPercentage">`shannon.relayminer.autoscaling.targetCPUUtilizationPercentage`</td>
 			<td>
 int
 </td>
@@ -911,7 +911,7 @@ int
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--relayminer--autoscaling--targetMemoryUtilizationPercentage"><a href="./shannon-values.yaml#L319">shannon.relayminer.autoscaling.targetMemoryUtilizationPercentage</a></td>
+			<td id="shannon--relayminer--autoscaling--targetMemoryUtilizationPercentage">`shannon.relayminer.autoscaling.targetMemoryUtilizationPercentage`</td>
 			<td>
 int
 </td>
@@ -925,19 +925,19 @@ int
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--relayminer--cometbft--clientConfig"><a href="./shannon-values.yaml#L161">shannon.relayminer.cometbft.clientConfig</a></td>
+			<td id="shannon--relayminer--cometbft--clientConfig">`shannon.relayminer.cometbft.clientConfig`</td>
 			<td>
 tpl/string
 </td>
 			<td>
 				<div style="max-width: 300px;">
-<a href="./shannon-values.yaml#L161">see example</a>
+<a href="./shannon-values.yaml">see example in shannon-values.yaml</a>
 </div>
 			</td>
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--relayminer--config--default_signing_key_names[0]"><a href="./shannon-values.yaml#L79">shannon.relayminer.config.default_signing_key_names[0]</a></td>
+			<td id="shannon--relayminer--config--default_signing_key_names[0]">`shannon.relayminer.config.default_signing_key_names[0]`</td>
 			<td>
 string
 </td>
@@ -951,7 +951,7 @@ string
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--relayminer--config--metrics--addr"><a href="./shannon-values.yaml#L143">shannon.relayminer.config.metrics.addr</a></td>
+			<td id="shannon--relayminer--config--metrics--addr">`shannon.relayminer.config.metrics.addr`</td>
 			<td>
 string
 </td>
@@ -965,7 +965,7 @@ string
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--relayminer--config--metrics--enabled"><a href="./shannon-values.yaml#L141">shannon.relayminer.config.metrics.enabled</a></td>
+			<td id="shannon--relayminer--config--metrics--enabled">`shannon.relayminer.config.metrics.enabled`</td>
 			<td>
 bool
 </td>
@@ -979,7 +979,7 @@ true
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--relayminer--config--ping--addr"><a href="./shannon-values.yaml#L157">shannon.relayminer.config.ping.addr</a></td>
+			<td id="shannon--relayminer--config--ping--addr">`shannon.relayminer.config.ping.addr`</td>
 			<td>
 string
 </td>
@@ -993,7 +993,7 @@ string
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--relayminer--config--ping--enabled"><a href="./shannon-values.yaml#L155">shannon.relayminer.config.ping.enabled</a></td>
+			<td id="shannon--relayminer--config--ping--enabled">`shannon.relayminer.config.ping.enabled`</td>
 			<td>
 bool
 </td>
@@ -1007,7 +1007,7 @@ true
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--relayminer--config--pocket_node--query_node_grpc_url"><a href="./shannon-values.yaml#L93">shannon.relayminer.config.pocket_node.query_node_grpc_url</a></td>
+			<td id="shannon--relayminer--config--pocket_node--query_node_grpc_url">`shannon.relayminer.config.pocket_node.query_node_grpc_url`</td>
 			<td>
 string
 </td>
@@ -1021,7 +1021,7 @@ string
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--relayminer--config--pocket_node--query_node_rpc_url"><a href="./shannon-values.yaml#L89">shannon.relayminer.config.pocket_node.query_node_rpc_url</a></td>
+			<td id="shannon--relayminer--config--pocket_node--query_node_rpc_url">`shannon.relayminer.config.pocket_node.query_node_rpc_url`</td>
 			<td>
 string
 </td>
@@ -1035,7 +1035,7 @@ string
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--relayminer--config--pocket_node--tx_node_rpc_url"><a href="./shannon-values.yaml#L97">shannon.relayminer.config.pocket_node.tx_node_rpc_url</a></td>
+			<td id="shannon--relayminer--config--pocket_node--tx_node_rpc_url">`shannon.relayminer.config.pocket_node.tx_node_rpc_url`</td>
 			<td>
 string
 </td>
@@ -1049,7 +1049,7 @@ string
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--relayminer--config--pprof--addr"><a href="./shannon-values.yaml#L150">shannon.relayminer.config.pprof.addr</a></td>
+			<td id="shannon--relayminer--config--pprof--addr">`shannon.relayminer.config.pprof.addr`</td>
 			<td>
 string
 </td>
@@ -1063,7 +1063,7 @@ string
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--relayminer--config--pprof--enabled"><a href="./shannon-values.yaml#L148">shannon.relayminer.config.pprof.enabled</a></td>
+			<td id="shannon--relayminer--config--pprof--enabled">`shannon.relayminer.config.pprof.enabled`</td>
 			<td>
 bool
 </td>
@@ -1077,7 +1077,7 @@ true
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--relayminer--config--signing_key_name"><a href="./shannon-values.yaml#L75">shannon.relayminer.config.signing_key_name</a></td>
+			<td id="shannon--relayminer--config--signing_key_name">`shannon.relayminer.config.signing_key_name`</td>
 			<td>
 string
 </td>
@@ -1091,7 +1091,7 @@ string
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--relayminer--config--smt_store_path"><a href="./shannon-values.yaml#L81">shannon.relayminer.config.smt_store_path</a></td>
+			<td id="shannon--relayminer--config--smt_store_path">`shannon.relayminer.config.smt_store_path`</td>
 			<td>
 string
 </td>
@@ -1105,7 +1105,7 @@ string
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--relayminer--config--suppliers[0]--listen_url"><a href="./shannon-values.yaml#L136">shannon.relayminer.config.suppliers[0].listen_url</a></td>
+			<td id="shannon--relayminer--config--suppliers[0]--listen_url">`shannon.relayminer.config.suppliers[0].listen_url`</td>
 			<td>
 string
 </td>
@@ -1119,7 +1119,7 @@ string
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--relayminer--config--suppliers[0]--service_config--backend_url"><a href="./shannon-values.yaml#L127">shannon.relayminer.config.suppliers[0].service_config.backend_url</a></td>
+			<td id="shannon--relayminer--config--suppliers[0]--service_config--backend_url">`shannon.relayminer.config.suppliers[0].service_config.backend_url`</td>
 			<td>
 string
 </td>
@@ -1133,7 +1133,7 @@ string
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--relayminer--config--suppliers[0]--service_config--publicly_exposed_endpoints[0]"><a href="./shannon-values.yaml#L131">shannon.relayminer.config.suppliers[0].service_config.publicly_exposed_endpoints[0]</a></td>
+			<td id="shannon--relayminer--config--suppliers[0]--service_config--publicly_exposed_endpoints[0]">`shannon.relayminer.config.suppliers[0].service_config.publicly_exposed_endpoints[0]`</td>
 			<td>
 string
 </td>
@@ -1147,7 +1147,7 @@ string
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--relayminer--config--suppliers[0]--service_id"><a href="./shannon-values.yaml#L120">shannon.relayminer.config.suppliers[0].service_id</a></td>
+			<td id="shannon--relayminer--config--suppliers[0]--service_id">`shannon.relayminer.config.suppliers[0].service_id`</td>
 			<td>
 string
 </td>
@@ -1161,7 +1161,7 @@ string
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--relayminer--containersSecurityContext"><a href="./shannon-values.yaml#L359">shannon.relayminer.containersSecurityContext</a></td>
+			<td id="shannon--relayminer--containersSecurityContext">`shannon.relayminer.containersSecurityContext`</td>
 			<td>
 object
 </td>
@@ -1175,7 +1175,7 @@ object
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--relayminer--development--delve--acceptMulticlient"><a href="./shannon-values.yaml#L199">shannon.relayminer.development.delve.acceptMulticlient</a></td>
+			<td id="shannon--relayminer--development--delve--acceptMulticlient">`shannon.relayminer.development.delve.acceptMulticlient`</td>
 			<td>
 bool
 </td>
@@ -1189,7 +1189,7 @@ true
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--relayminer--development--delve--addr"><a href="./shannon-values.yaml#L192">shannon.relayminer.development.delve.addr</a></td>
+			<td id="shannon--relayminer--development--delve--addr">`shannon.relayminer.development.delve.addr`</td>
 			<td>
 string
 </td>
@@ -1203,7 +1203,7 @@ string
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--relayminer--development--delve--apiVersion"><a href="./shannon-values.yaml#L196">shannon.relayminer.development.delve.apiVersion</a></td>
+			<td id="shannon--relayminer--development--delve--apiVersion">`shannon.relayminer.development.delve.apiVersion`</td>
 			<td>
 int
 </td>
@@ -1217,7 +1217,7 @@ int
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--relayminer--development--delve--enabled"><a href="./shannon-values.yaml#L190">shannon.relayminer.development.delve.enabled</a></td>
+			<td id="shannon--relayminer--development--delve--enabled">`shannon.relayminer.development.delve.enabled`</td>
 			<td>
 bool
 </td>
@@ -1231,7 +1231,7 @@ false
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--relayminer--development--delve--headless"><a href="./shannon-values.yaml#L194">shannon.relayminer.development.delve.headless</a></td>
+			<td id="shannon--relayminer--development--delve--headless">`shannon.relayminer.development.delve.headless`</td>
 			<td>
 bool
 </td>
@@ -1245,7 +1245,7 @@ true
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--relayminer--enabled"><a href="./shannon-values.yaml#L35">shannon.relayminer.enabled</a></td>
+			<td id="shannon--relayminer--enabled">`shannon.relayminer.enabled`</td>
 			<td>
 bool
 </td>
@@ -1259,7 +1259,7 @@ false
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--relayminer--gasAdjustment"><a href="./shannon-values.yaml#L44">shannon.relayminer.gasAdjustment</a></td>
+			<td id="shannon--relayminer--gasAdjustment">`shannon.relayminer.gasAdjustment`</td>
 			<td>
 float
 </td>
@@ -1273,7 +1273,7 @@ float
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--relayminer--gasPrices"><a href="./shannon-values.yaml#L48">shannon.relayminer.gasPrices</a></td>
+			<td id="shannon--relayminer--gasPrices">`shannon.relayminer.gasPrices`</td>
 			<td>
 string
 </td>
@@ -1287,7 +1287,7 @@ string
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--relayminer--grpcInsecure"><a href="./shannon-values.yaml#L39">shannon.relayminer.grpcInsecure</a></td>
+			<td id="shannon--relayminer--grpcInsecure">`shannon.relayminer.grpcInsecure`</td>
 			<td>
 bool
 </td>
@@ -1301,7 +1301,7 @@ true
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--relayminer--image--pullPolicy"><a href="./shannon-values.yaml#L207">shannon.relayminer.image.pullPolicy</a></td>
+			<td id="shannon--relayminer--image--pullPolicy">`shannon.relayminer.image.pullPolicy`</td>
 			<td>
 string
 </td>
@@ -1315,7 +1315,7 @@ string
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--relayminer--image--repository"><a href="./shannon-values.yaml#L205">shannon.relayminer.image.repository</a></td>
+			<td id="shannon--relayminer--image--repository">`shannon.relayminer.image.repository`</td>
 			<td>
 string
 </td>
@@ -1329,7 +1329,7 @@ string
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--relayminer--image--tag"><a href="./shannon-values.yaml#L210">shannon.relayminer.image.tag</a></td>
+			<td id="shannon--relayminer--image--tag">`shannon.relayminer.image.tag`</td>
 			<td>
 string
 </td>
@@ -1343,7 +1343,7 @@ string
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--relayminer--imagePullSecrets"><a href="./shannon-values.yaml#L215">shannon.relayminer.imagePullSecrets</a></td>
+			<td id="shannon--relayminer--imagePullSecrets">`shannon.relayminer.imagePullSecrets`</td>
 			<td>
 list
 </td>
@@ -1357,7 +1357,7 @@ list
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--relayminer--ingress--annotations"><a href="./shannon-values.yaml#L264">shannon.relayminer.ingress.annotations</a></td>
+			<td id="shannon--relayminer--ingress--annotations">`shannon.relayminer.ingress.annotations`</td>
 			<td>
 object
 </td>
@@ -1371,7 +1371,7 @@ object
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--relayminer--ingress--className"><a href="./shannon-values.yaml#L261">shannon.relayminer.ingress.className</a></td>
+			<td id="shannon--relayminer--ingress--className">`shannon.relayminer.ingress.className`</td>
 			<td>
 string
 </td>
@@ -1385,7 +1385,7 @@ string
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--relayminer--ingress--enabled"><a href="./shannon-values.yaml#L259">shannon.relayminer.ingress.enabled</a></td>
+			<td id="shannon--relayminer--ingress--enabled">`shannon.relayminer.ingress.enabled`</td>
 			<td>
 bool
 </td>
@@ -1399,7 +1399,7 @@ false
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--relayminer--ingress--hosts"><a href="./shannon-values.yaml#L287">shannon.relayminer.ingress.hosts</a></td>
+			<td id="shannon--relayminer--ingress--hosts">`shannon.relayminer.ingress.hosts`</td>
 			<td>
 list
 </td>
@@ -1413,7 +1413,7 @@ list
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--relayminer--ingress--tls"><a href="./shannon-values.yaml#L274">shannon.relayminer.ingress.tls</a></td>
+			<td id="shannon--relayminer--ingress--tls">`shannon.relayminer.ingress.tls`</td>
 			<td>
 list
 </td>
@@ -1427,7 +1427,7 @@ list
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--relayminer--initContainersSecurityContext--runAsGroup"><a href="./shannon-values.yaml#L347">shannon.relayminer.initContainersSecurityContext.runAsGroup</a></td>
+			<td id="shannon--relayminer--initContainersSecurityContext--runAsGroup">`shannon.relayminer.initContainersSecurityContext.runAsGroup`</td>
 			<td>
 int
 </td>
@@ -1441,7 +1441,7 @@ int
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--relayminer--initContainersSecurityContext--runAsUser"><a href="./shannon-values.yaml#L346">shannon.relayminer.initContainersSecurityContext.runAsUser</a></td>
+			<td id="shannon--relayminer--initContainersSecurityContext--runAsUser">`shannon.relayminer.initContainersSecurityContext.runAsUser`</td>
 			<td>
 int
 </td>
@@ -1455,7 +1455,7 @@ int
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--relayminer--keyringBackend"><a href="./shannon-values.yaml#L52">shannon.relayminer.keyringBackend</a></td>
+			<td id="shannon--relayminer--keyringBackend">`shannon.relayminer.keyringBackend`</td>
 			<td>
 string
 </td>
@@ -1469,7 +1469,7 @@ string
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--relayminer--livenessProbe--ping--enabled"><a href="./shannon-values.yaml#L299">shannon.relayminer.livenessProbe.ping.enabled</a></td>
+			<td id="shannon--relayminer--livenessProbe--ping--enabled">`shannon.relayminer.livenessProbe.ping.enabled`</td>
 			<td>
 bool
 </td>
@@ -1483,7 +1483,7 @@ false
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--relayminer--livenessProbe--ping--initialDelaySeconds"><a href="./shannon-values.yaml#L302">shannon.relayminer.livenessProbe.ping.initialDelaySeconds</a></td>
+			<td id="shannon--relayminer--livenessProbe--ping--initialDelaySeconds">`shannon.relayminer.livenessProbe.ping.initialDelaySeconds`</td>
 			<td>
 int
 </td>
@@ -1497,7 +1497,7 @@ int
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--relayminer--livenessProbe--ping--periodSeconds"><a href="./shannon-values.yaml#L304">shannon.relayminer.livenessProbe.ping.periodSeconds</a></td>
+			<td id="shannon--relayminer--livenessProbe--ping--periodSeconds">`shannon.relayminer.livenessProbe.ping.periodSeconds`</td>
 			<td>
 int
 </td>
@@ -1511,7 +1511,7 @@ int
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--relayminer--logs--level"><a href="./shannon-values.yaml#L58">shannon.relayminer.logs.level</a></td>
+			<td id="shannon--relayminer--logs--level">`shannon.relayminer.logs.level`</td>
 			<td>
 string
 </td>
@@ -1525,7 +1525,7 @@ string
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--relayminer--nodeSelector"><a href="./shannon-values.yaml#L362">shannon.relayminer.nodeSelector</a></td>
+			<td id="shannon--relayminer--nodeSelector">`shannon.relayminer.nodeSelector`</td>
 			<td>
 object
 </td>
@@ -1539,7 +1539,7 @@ object
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--relayminer--podAnnotations"><a href="./shannon-values.yaml#L326">shannon.relayminer.podAnnotations</a></td>
+			<td id="shannon--relayminer--podAnnotations">`shannon.relayminer.podAnnotations`</td>
 			<td>
 object
 </td>
@@ -1553,7 +1553,7 @@ object
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--relayminer--podSecurityContext"><a href="./shannon-values.yaml#L335">shannon.relayminer.podSecurityContext</a></td>
+			<td id="shannon--relayminer--podSecurityContext">`shannon.relayminer.podSecurityContext`</td>
 			<td>
 object
 </td>
@@ -1567,7 +1567,7 @@ object
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--relayminer--prometheus--serviceMonitor--enabled"><a href="./shannon-values.yaml#L179">shannon.relayminer.prometheus.serviceMonitor.enabled</a></td>
+			<td id="shannon--relayminer--prometheus--serviceMonitor--enabled">`shannon.relayminer.prometheus.serviceMonitor.enabled`</td>
 			<td>
 bool
 </td>
@@ -1581,7 +1581,7 @@ true
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--relayminer--replicas"><a href="./shannon-values.yaml#L212">shannon.relayminer.replicas</a></td>
+			<td id="shannon--relayminer--replicas">`shannon.relayminer.replicas`</td>
 			<td>
 int
 </td>
@@ -1595,7 +1595,7 @@ int
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--relayminer--resources--limits--cpu"><a href="./shannon-values.yaml#L234">shannon.relayminer.resources.limits.cpu</a></td>
+			<td id="shannon--relayminer--resources--limits--cpu">`shannon.relayminer.resources.limits.cpu`</td>
 			<td>
 string
 </td>
@@ -1609,7 +1609,7 @@ string
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--relayminer--resources--limits--memory"><a href="./shannon-values.yaml#L236">shannon.relayminer.resources.limits.memory</a></td>
+			<td id="shannon--relayminer--resources--limits--memory">`shannon.relayminer.resources.limits.memory`</td>
 			<td>
 string
 </td>
@@ -1623,7 +1623,7 @@ string
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--relayminer--resources--preset--enabled"><a href="./shannon-values.yaml#L222">shannon.relayminer.resources.preset.enabled</a></td>
+			<td id="shannon--relayminer--resources--preset--enabled">`shannon.relayminer.resources.preset.enabled`</td>
 			<td>
 bool
 </td>
@@ -1637,7 +1637,7 @@ false
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--relayminer--resources--preset--name"><a href="./shannon-values.yaml#L224">shannon.relayminer.resources.preset.name</a></td>
+			<td id="shannon--relayminer--resources--preset--name">`shannon.relayminer.resources.preset.name`</td>
 			<td>
 string
 </td>
@@ -1651,7 +1651,7 @@ string
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--relayminer--resources--requests--cpu"><a href="./shannon-values.yaml#L228">shannon.relayminer.resources.requests.cpu</a></td>
+			<td id="shannon--relayminer--resources--requests--cpu">`shannon.relayminer.resources.requests.cpu`</td>
 			<td>
 string
 </td>
@@ -1665,7 +1665,7 @@ string
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--relayminer--resources--requests--memory"><a href="./shannon-values.yaml#L230">shannon.relayminer.resources.requests.memory</a></td>
+			<td id="shannon--relayminer--resources--requests--memory">`shannon.relayminer.resources.requests.memory`</td>
 			<td>
 string
 </td>
@@ -1679,7 +1679,7 @@ string
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--relayminer--secret--key--keyName"><a href="./shannon-values.yaml#L67">shannon.relayminer.secret.key.keyName</a></td>
+			<td id="shannon--relayminer--secret--key--keyName">`shannon.relayminer.secret.key.keyName`</td>
 			<td>
 string
 </td>
@@ -1693,7 +1693,7 @@ string
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--relayminer--secret--key--name"><a href="./shannon-values.yaml#L66">shannon.relayminer.secret.key.name</a></td>
+			<td id="shannon--relayminer--secret--key--name">`shannon.relayminer.secret.key.name`</td>
 			<td>
 string
 </td>
@@ -1707,7 +1707,7 @@ string
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--relayminer--secret--type"><a href="./shannon-values.yaml#L63">shannon.relayminer.secret.type</a></td>
+			<td id="shannon--relayminer--secret--type">`shannon.relayminer.secret.type`</td>
 			<td>
 string
 </td>
@@ -1721,7 +1721,7 @@ string
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--relayminer--service--type"><a href="./shannon-values.yaml#L243">shannon.relayminer.service.type</a></td>
+			<td id="shannon--relayminer--service--type">`shannon.relayminer.service.type`</td>
 			<td>
 string
 </td>
@@ -1735,7 +1735,7 @@ string
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--relayminer--tolerations"><a href="./shannon-values.yaml#L366">shannon.relayminer.tolerations</a></td>
+			<td id="shannon--relayminer--tolerations">`shannon.relayminer.tolerations`</td>
 			<td>
 list
 </td>
@@ -1749,7 +1749,7 @@ list
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--relayminer--volumeMounts"><a href="./shannon-values.yaml#L252">shannon.relayminer.volumeMounts</a></td>
+			<td id="shannon--relayminer--volumeMounts">`shannon.relayminer.volumeMounts`</td>
 			<td>
 list
 </td>
@@ -1763,7 +1763,7 @@ list
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--relayminer--volumes"><a href="./shannon-values.yaml#L245">shannon.relayminer.volumes</a></td>
+			<td id="shannon--relayminer--volumes">`shannon.relayminer.volumes`</td>
 			<td>
 list
 </td>
@@ -1777,7 +1777,7 @@ list
 			<td></td>
 		</tr>
 		<tr>
-			<td id="version"><a href="./shannon-values.yaml#L19">version</a></td>
+			<td id="version">`version`</td>
 			<td>
 string
 </td>
