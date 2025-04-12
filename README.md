@@ -1,4 +1,4 @@
-# Helm Chart package for Pocket Network
+# Helm Chart for Pocket Network
 
 ![Version: 0.1.0](https://img.shields.io/badge/Version-0.1.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
@@ -252,7 +252,85 @@ An example is available in the default values - [see here](https://github.com/ed
 
 ### Accessing Pocket Network Services from outside the cluster
 
-#TODO(eddyzags): define integration with ingress
+This section outlines how to configure external access, allowing users to interact with your service through the Pocket Network's decentralized infrastructure.
+
+#### Relayminer
+
+The Relayminer exposes one or more services that a supplier has staked on-chain to the Pocket Network. This chart provides the ability to expose those services using a Kubernetes Ingress custom resource. The following example demonstrates how to define external access to one or more services for the Relayminer:
+
+```
+# values.yaml
+
+shannon:
+  relayminer:
+    config:
+      suppliers:
+      - service_id: anvil
+        service_config:
+          backend_url: http://anvil:8547/
+          publicly_exposed_endpoints:
+            - servera.relayminer.example.com
+        listen_url: http://0.0.0.0:8545
+      - service_id: ollama
+        service_config:
+          backend_url: http://ollama:8080/
+          publicly_exposed_endpoints:
+            - serverb.relayminer.example.com
+        listen_url: http://0.0.0.0:8546
+    ingress:
+      enabled: true
+      className: ""
+      annotations: {}
+      tls:
+      - hosts:
+          - servera.relayminer.example.com
+        secretName: servera-realyminer-example-com
+      - hosts:
+          - serverb.relayminer.example.com
+        secretName: serverb-realyminer-example-com
+      hosts:
+      - host: servera.relayminer.example.com
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: relayminer-service
+                port:
+                  number: 8545
+      - host: serverb.relayminer.example.com
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: relayminer-service
+                port:
+                  number: 8546
+```
+
+> Note: For Kubernetes to route traffic from the Service to the Relayminer pod, the value of `shannon.relayminer.ingress.hosts[].paths[].backend.service.port.number` must match the port specified in `shannon.relayminer.config.suppliers[].listen_url`.
+
+#### Fullnode
+
+The full node can expose two public-facing ports to allow other nodes to connect, query its status, and broadcast transactions. This chart allows configuration of an external service using Kubernetes NodePort, exposing both ports on each node’s IP at a static port.
+
+```
+shannon:
+  fullnode:
+    service:
+      local:
+        type: ClusterIP
+      external:
+        enabled: true
+        type: NodePort
+        p2p:
+          nodePort: 26656
+        rpc:
+          nodePort: 26657
+```
+
+> Note: the `shannon.fullnode.service.local` field creates a Kubernetes Service resource for internal service communication inside the Kubernetes cluster.
 
 ## Parameters
 
@@ -877,7 +955,63 @@ string
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--fullnode--service--type">shannon.fullnode.service.type</td>
+			<td id="shannon--fullnode--service--external--enabled">shannon.fullnode.service.external.enabled</td>
+			<td>
+bool
+</td>
+			<td>
+				<div style="max-width: 300px;">
+<pre lang="json">
+true
+</pre>
+</div>
+			</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td id="shannon--fullnode--service--external--p2p--nodePort">shannon.fullnode.service.external.p2p.nodePort</td>
+			<td>
+int
+</td>
+			<td>
+				<div style="max-width: 300px;">
+<pre lang="json">
+26656
+</pre>
+</div>
+			</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td id="shannon--fullnode--service--external--rpc--nodePort">shannon.fullnode.service.external.rpc.nodePort</td>
+			<td>
+int
+</td>
+			<td>
+				<div style="max-width: 300px;">
+<pre lang="json">
+26657
+</pre>
+</div>
+			</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td id="shannon--fullnode--service--external--type">shannon.fullnode.service.external.type</td>
+			<td>
+string
+</td>
+			<td>
+				<div style="max-width: 300px;">
+<pre lang="json">
+"NodePort"
+</pre>
+</div>
+			</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td id="shannon--fullnode--service--local--type">shannon.fullnode.service.local.type</td>
 			<td>
 string
 </td>
@@ -1659,14 +1793,140 @@ false
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--relayminer--ingress--hosts">shannon.relayminer.ingress.hosts</td>
+			<td id="shannon--relayminer--ingress--hosts[0]--host">shannon.relayminer.ingress.hosts[0].host</td>
 			<td>
-list
+string
 </td>
 			<td>
 				<div style="max-width: 300px;">
 <pre lang="json">
-[]
+"servera.relayminer.example.com"
+</pre>
+</div>
+			</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td id="shannon--relayminer--ingress--hosts[0]--paths[0]--backend--service--name">shannon.relayminer.ingress.hosts[0].paths[0].backend.service.name</td>
+			<td>
+string
+</td>
+			<td>
+				<div style="max-width: 300px;">
+<pre lang="json">
+"relayminer-service"
+</pre>
+</div>
+			</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td id="shannon--relayminer--ingress--hosts[0]--paths[0]--backend--service--port--number">shannon.relayminer.ingress.hosts[0].paths[0].backend.service.port.number</td>
+			<td>
+int
+</td>
+			<td>
+				<div style="max-width: 300px;">
+<pre lang="json">
+8545
+</pre>
+</div>
+			</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td id="shannon--relayminer--ingress--hosts[0]--paths[0]--path">shannon.relayminer.ingress.hosts[0].paths[0].path</td>
+			<td>
+string
+</td>
+			<td>
+				<div style="max-width: 300px;">
+<pre lang="json">
+"/"
+</pre>
+</div>
+			</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td id="shannon--relayminer--ingress--hosts[0]--paths[0]--pathType">shannon.relayminer.ingress.hosts[0].paths[0].pathType</td>
+			<td>
+string
+</td>
+			<td>
+				<div style="max-width: 300px;">
+<pre lang="json">
+"Prefix"
+</pre>
+</div>
+			</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td id="shannon--relayminer--ingress--hosts[1]--host">shannon.relayminer.ingress.hosts[1].host</td>
+			<td>
+string
+</td>
+			<td>
+				<div style="max-width: 300px;">
+<pre lang="json">
+"serverb.relayminer.example.com"
+</pre>
+</div>
+			</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td id="shannon--relayminer--ingress--hosts[1]--paths[0]--backend--service--name">shannon.relayminer.ingress.hosts[1].paths[0].backend.service.name</td>
+			<td>
+string
+</td>
+			<td>
+				<div style="max-width: 300px;">
+<pre lang="json">
+"relayminer-service"
+</pre>
+</div>
+			</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td id="shannon--relayminer--ingress--hosts[1]--paths[0]--backend--service--port--number">shannon.relayminer.ingress.hosts[1].paths[0].backend.service.port.number</td>
+			<td>
+string
+</td>
+			<td>
+				<div style="max-width: 300px;">
+<pre lang="json">
+null
+</pre>
+</div>
+			</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td id="shannon--relayminer--ingress--hosts[1]--paths[0]--path">shannon.relayminer.ingress.hosts[1].paths[0].path</td>
+			<td>
+string
+</td>
+			<td>
+				<div style="max-width: 300px;">
+<pre lang="json">
+"/"
+</pre>
+</div>
+			</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td id="shannon--relayminer--ingress--hosts[1]--paths[0]--pathType">shannon.relayminer.ingress.hosts[1].paths[0].pathType</td>
+			<td>
+string
+</td>
+			<td>
+				<div style="max-width: 300px;">
+<pre lang="json">
+"Prefix"
 </pre>
 </div>
 			</td>
