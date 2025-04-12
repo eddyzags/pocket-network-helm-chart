@@ -246,6 +246,7 @@ shannon:
 #### Fullnode
 
 For the fullnode, the CosmosSDK `shannon.fullnode.cometbft.config` configuration file gives us the ability to activate a prometheus collector connections at a specific endpoint. Every metrics in this [CosmosBFT - Metrics](https://docs.cometbft.com/main/explanation/core/metrics) documentation will be available to you.
+When the `prometheus` option is enabled in `config.toml` and an address and port are specified using `prometheus_laddr`, this chart automatically adds the port to a Kubernetes Service and creates a corresponding `ServiceMonitor` pointing to it.
 
 An example is available in the default values - [see here](https://github.com/eddyzags/pocket-network-helm-chart/blob/6aca94ba72ee7a792bf71110a399c50596119ce0/shannon-values.yaml#L861-L881)
 
