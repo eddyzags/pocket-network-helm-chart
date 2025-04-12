@@ -37,7 +37,7 @@ A fullnode requires a more in-depth setup to configure Tendermint (consensus eng
 * Option A) Define the configuration file as input values while installing the chart. This can be useful if you already have these configuration files in your local machine.
 
 ```
-?> helm install my-release https://github.com/eddyzags/pocket-network-helm-charts --set-file 'shannon.fullnode.cometbft.config=config.toml' --set-file 'shannon.fullnode.cometbft.app=app.toml' --set-file 'shannon.fullnode.cometbft.client=client.toml'
+?> helm install my-release https://github.com/eddyzags/pocket-network-helm-charts --values shannon-values.yaml --set-file 'shannon.fullnode.cometbft.config=config.toml' --set-file 'shannon.fullnode.cometbft.app=app.toml' --set-file 'shannon.fullnode.cometbft.client=client.toml'
 ```
 
 * Option B) Use Kubernetes `ConfigMap` to mount configuration files. This can be useful if you want to use a single configuration for all your fullnode for example.
@@ -361,7 +361,7 @@ string
 			<td>
 				<div style="max-width: 300px;">
 <pre lang="json">
-"pocket-network-release-1-shannon"
+"pocket-network-eddyzags-shannon"
 </pre>
 </div>
 			</td>
@@ -992,6 +992,76 @@ string
 				<div style="max-width: 300px;">
 <pre lang="json">
 "Filesystem"
+</pre>
+</div>
+			</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td id="shannon--fullnode--telemetry--logs--format">shannon.fullnode.telemetry.logs.format</td>
+			<td>
+string
+</td>
+			<td>
+				<div style="max-width: 300px;">
+<pre lang="json">
+"json"
+</pre>
+</div>
+			</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td id="shannon--fullnode--telemetry--logs--level">shannon.fullnode.telemetry.logs.level</td>
+			<td>
+string
+</td>
+			<td>
+				<div style="max-width: 300px;">
+<pre lang="json">
+"info"
+</pre>
+</div>
+			</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td id="shannon--fullnode--telemetry--logs--noColor">shannon.fullnode.telemetry.logs.noColor</td>
+			<td>
+bool
+</td>
+			<td>
+				<div style="max-width: 300px;">
+<pre lang="json">
+true
+</pre>
+</div>
+			</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td id="shannon--fullnode--telemetry--trace--enabled">shannon.fullnode.telemetry.trace.enabled</td>
+			<td>
+bool
+</td>
+			<td>
+				<div style="max-width: 300px;">
+<pre lang="json">
+false
+</pre>
+</div>
+			</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td id="shannon--fullnode--telemetry--trace--store">shannon.fullnode.telemetry.trace.store</td>
+			<td>
+string
+</td>
+			<td>
+				<div style="max-width: 300px;">
+<pre lang="json">
+""
 </pre>
 </div>
 			</td>
@@ -1696,20 +1766,6 @@ int
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--relayminer--logs--level">shannon.relayminer.logs.level</td>
-			<td>
-string
-</td>
-			<td>
-				<div style="max-width: 300px;">
-<pre lang="json">
-"info"
-</pre>
-</div>
-			</td>
-			<td></td>
-		</tr>
-		<tr>
 			<td id="shannon--relayminer--nodeSelector">shannon.relayminer.nodeSelector</td>
 			<td>
 object
@@ -1914,6 +1970,20 @@ string
 				<div style="max-width: 300px;">
 <pre lang="json">
 "ClusterIP"
+</pre>
+</div>
+			</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td id="shannon--relayminer--telemetry--logs--level">shannon.relayminer.telemetry.logs.level</td>
+			<td>
+string
+</td>
+			<td>
+				<div style="max-width: 300px;">
+<pre lang="json">
+"info"
 </pre>
 </div>
 			</td>
