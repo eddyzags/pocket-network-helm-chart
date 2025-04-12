@@ -72,6 +72,17 @@ spec:
             - "/bin/pocketd"
             - "start"
             - "--home={{ .Values.homeDirectory }}"
+            - "--log_level={{ .Values.shannon.fullnode.telemetry.logs.level }}"
+            - "--log_format={{ .Values.shannon.fullnode.telemetry.logs.format }}"
+            {{ if .Values.shannon.fullnode.telemetry.logs.noColor }}
+            - "--log_no_color"
+            {{- end }}
+            {{ if .Values.shannon.fullnode.telemetry.trace.enabled }}
+            - "--trace"
+            {{- end }}
+            {{ if .Values.shannon.fullnode.telemetry.trace.store }}
+            - "--store={{ .Values.shannon.fullnode.telemetry.trace.store }}"
+            {{- end }}
           ports:
             - name: rpc
               containerPort: {{- include "pocket-network.utils.extractPort" $config.rpc.laddr }}

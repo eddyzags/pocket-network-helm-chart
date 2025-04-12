@@ -50,12 +50,14 @@ shannon:
     #
     # see https://docs.cosmos.network/v0.46/run-node/keyring.html#available-backends-for-the-keyring
     keyringBackend: test
-    # logs refers to the logging configuration
-    logs:
-      # level defines the log severity.
-      #
-      # see https://github.com/pokt-network/poktroll/blob/6759eec9f586358a12306fa8c92d18cb03ef6530/pkg/polylog/polyzero/levels.go#L39-L54
-      level: info
+    # root configuration for pocketd instrumentation.
+    telemetry:
+      # logs refers to the logging configuration
+      logs:
+        # level defines the log severity.
+        #
+        # see https://github.com/pokt-network/poktroll/blob/6759eec9f586358a12306fa8c92d18cb03ef6530/pkg/polylog/polyzero/levels.go#L39-L54
+        level: info
     # define the configuration to provide the keyring for the relayminer.
     secret:
       # defines the type of resources the chart needs to mount for the
@@ -1153,7 +1155,7 @@ shannon:
         type: Secret
         # nodeKey is the long term private key specific to a P2P node.
         key:
-          name: pocket-network-release-1-shannon
+          name: pocket-network-eddyzags-shannon
           nodeKeyName: node_key.json
           # privValidatorKeyName is the long term private key specific to a node
           # in the consensus.
@@ -1170,6 +1172,20 @@ shannon:
     # imagePullSecrets defines the information to authenticate with the
     # container registry.
     imagePullSecrets: []
+    # root configuration for pocketd instrumentation.
+    telemetry:
+      logs:
+        # defines the log severity.
+        level: info
+        # sets the structure of the log.
+        format: json
+        # disabled colored logs.
+        noColor: true
+      trace:
+        # provides full stack traces for pocketd.
+        enabled: false
+        # enable kvstore tracing to an output file.
+        store: ""
     # service is the root configuration when defining a Kubernetes Service object for the fullnode.
     service:
       # type defines the type of service we want to use for the fullnode servers

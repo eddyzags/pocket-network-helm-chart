@@ -37,7 +37,7 @@ A fullnode requires a more in-depth setup to configure Tendermint (consensus eng
 * Option A) Define the configuration file as input values while installing the chart. This can be useful if you already have these configuration files in your local machine.
 
 ```
-?> helm install my-release https://github.com/eddyzags/pocket-network-helm-charts --set-file 'shannon.fullnode.cometbft.config=config.toml' --set-file 'shannon.fullnode.cometbft.app=app.toml' --set-file 'shannon.fullnode.cometbft.client=client.toml'
+?> helm install my-release https://github.com/eddyzags/pocket-network-helm-charts --values shannon-values.yaml --set-file 'shannon.fullnode.cometbft.config=config.toml' --set-file 'shannon.fullnode.cometbft.app=app.toml' --set-file 'shannon.fullnode.cometbft.client=client.toml'
 ```
 
 * Option B) Use Kubernetes `ConfigMap` to mount configuration files. This can be useful if you want to use a single configuration for all your fullnode for example.
