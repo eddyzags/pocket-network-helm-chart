@@ -222,11 +222,15 @@ As the image run as non-root by default, it is necessary to adjust the ownership
 
 The applications can be integrated with Prometheus by defining a custom resource to automatically scrapped the metrics.
 
+> Note: A functional installation of Prometheus Operator with the necessary permissions to access required resources in the target namespace is essential for this integration to work.
+
 #### Relayminer
 
 For the relayminer, setting `shannon.relayminer.config.metrics.enabled` and `shannon.relayminer.prometheus.serviceMonitor.enabled` to `true` will send the application metrics to Prometheus. `shannon.relayminer.config.metrics.enabled` exposes a Prometheus endpoint to consume applications metrics. And `shannon.relayminer.prometheus.serviceMonitor.enabled` creates a `ServiceMonitor` custom resource that points to the `shannon.relayminer.config.metrics.addr`.
 
 ```
+# values.yaml
+
 shannon:
   relayminer:
     enabled: true
@@ -241,9 +245,9 @@ shannon:
 
 #### Fullnode
 
-For the fullnode, the CosmosSDK `shannon.fullnode.cometbft.config` configuration file gives us the ability to activate a prometheus collector connections at a specific endpoint.
+For the fullnode, the CosmosSDK `shannon.fullnode.cometbft.config` configuration file gives us the ability to activate a prometheus collector connections at a specific endpoint. Every metrics in this [CosmosBFT - Metrics](https://docs.cometbft.com/main/explanation/core/metrics) documentation will be available to you.
 
-> Note: it is necessary to have a working installation of Prometheus Operator for the integration to work.
+An example is available in the default values - [see here](https://github.com/eddyzags/pocket-network-helm-chart/blob/6aca94ba72ee7a792bf71110a399c50596119ce0/shannon-values.yaml#L861-L881)
 
 ### Accessing Pocket Network Services from outside the cluster
 
