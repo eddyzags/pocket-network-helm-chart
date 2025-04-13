@@ -1188,11 +1188,25 @@ shannon:
         store: ""
     # service is the root configuration when defining a Kubernetes Service object for the fullnode.
     service:
-      # type defines the type of service we want to use for the fullnode servers
-      # (ClusterIP, NodePort, etc...).
-      #
-      # see https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types
-      type: ClusterIP
+      local:
+        # type defines the type of service we want to use for the fullnode servers
+        # (ClusterIP, NodePort, etc...).
+        #
+        # see https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types
+        type: ClusterIP
+      external:
+        enabled: true
+        # type defines the type of service we want to use for the fullnode servers
+        # (ClusterIP, NodePort, etc...).
+        #
+        # see https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types
+        type: NodePort
+        # p2p represents the service configuration for allowing nodes to connect.
+        p2p:
+          nodePort: 26656
+        # rpc represents the service configuration for querying node status and broadcasting txs.
+        rpc:
+          nodePort: 26657
     # configures a ingress resource that manages external access to services for
     # the fullnode.
     #

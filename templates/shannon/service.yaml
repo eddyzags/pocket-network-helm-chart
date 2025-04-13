@@ -33,7 +33,7 @@ metadata:
   labels:
     {{- include "pocket-network.labels" (dict "root" . "nameSuffix" "shannon-fullnode" ) | nindent 4 }}
 spec:
-  type: {{ .Values.shannon.fullnode.service.type }}
+  type: {{ .Values.shannon.fullnode.local.service.type }}
   ports: 
     - port: {{- include "pocket-network.utils.extractPort" $config.rpc.laddr }}
       targetPort: {{- include "pocket-network.utils.extractPort" $config.rpc.laddr }}
@@ -72,4 +72,23 @@ spec:
     {{- end }}
   selector:
     app.pocket.network/name: {{ include "pocket-network.fullname" . }}-shannon-fullnode
+{{- if .Values.shannon.fullnode.service.external.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "pocket-network.fullname" . }}-shannon-fullnode-external
+  labels:
+    {{- include "pocket-network.labels" (dict "root" . "nameSuffix" "shannon-fullnode" ) | nindent 4 }}
+spec:
+  type: {{ .Values.shannon.fullnode.external.service.type }}
+  ports:
+    - port: {{- include "pocket-network.utils.extractPort" $config.rpc.laddr }}
+      targetPort: {{- include "pocket-network.utils.extractPort" $config.rpc.laddr }}
+      nodePort: {{ .Values.shannon.fullnode.service.external.rpc.nodePort }}
+    - port: {{- include "pocket-network.utils.extractPort" $config.p2p.laddr }}
+      targetPort: {{- include "pocket-network.utils.extractPort" $config.p2p.laddr }}
+      nodePort: {{ .Values.shannon.fullnode.service.external.p2p.nodePort }}
+  selector:
+    app.pocket.network/name: {{ include "pocket-network.fullname" . }}-shannon-fullnode
+{{- end }}
 {{- end }}
