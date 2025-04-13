@@ -8,7 +8,9 @@ Pocket Network is permissionless decentralized physical infrastructure (DePin) p
 
 ## TL;DR
 ```shell
-?> helm install release-1 https://github.com/eddyzags/pocket-network-helm-charts -f shannon-values.yaml
+?> git clone git@github.com:eddyzags/pocket-network-helm-chart.git && cd pocket-helm-chart
+
+?> helm install release-1 . -f shannon-values.yaml
 ```
 
 ## Prerequisites
@@ -20,7 +22,9 @@ Pocket Network is permissionless decentralized physical infrastructure (DePin) p
 
 To install the chart with name `my-release`
 ```
-helm install my-release https://github.com/eddyzags/pocket-network-helm-charts --values shannon-values.yaml
+?> git clone git@github.com:eddyzags/pocket-network-helm-chart.git && cd pocket-helm-chart
+
+?> helm install my-release .  --values shannon-values.yaml
 ```
 > Note: You must specify the value in yaml file. This is an example with the values related to Shannon protocol.
 
@@ -37,7 +41,7 @@ A fullnode requires a more in-depth setup to configure Tendermint (consensus eng
 * Option A) Define the configuration file as input values while installing the chart. This can be useful if you already have these configuration files in your local machine.
 
 ```
-?> helm install my-release https://github.com/eddyzags/pocket-network-helm-charts --values shannon-values.yaml --set-file 'shannon.fullnode.cometbft.config=config.toml' --set-file 'shannon.fullnode.cometbft.app=app.toml' --set-file 'shannon.fullnode.cometbft.client=client.toml'
+?> helm install my-release . --values shannon-values.yaml --set-file 'shannon.fullnode.cometbft.config=config.toml' --set-file 'shannon.fullnode.cometbft.app=app.toml' --set-file 'shannon.fullnode.cometbft.client=client.toml'
 ```
 
 * Option B) Use Kubernetes `ConfigMap` to mount configuration files. This can be useful if you want to use a single configuration for all your fullnode for example.
@@ -63,7 +67,7 @@ shannon:
 * Option C) Use default value define in the `shannon-values.yaml`. It can be useful for testing purposes.
 
 ```
-?> helm install my-release https://github.com/eddyzags/pocket-network-helm-charts --values shannon-values.yaml
+?> helm install my-release . --values shannon-values.yaml
 ```
 
 #### Relayminer
@@ -1793,140 +1797,14 @@ false
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--relayminer--ingress--hosts[0]--host">shannon.relayminer.ingress.hosts[0].host</td>
+			<td id="shannon--relayminer--ingress--hosts">shannon.relayminer.ingress.hosts</td>
 			<td>
-string
+list
 </td>
 			<td>
 				<div style="max-width: 300px;">
 <pre lang="json">
-"servera.relayminer.example.com"
-</pre>
-</div>
-			</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td id="shannon--relayminer--ingress--hosts[0]--paths[0]--backend--service--name">shannon.relayminer.ingress.hosts[0].paths[0].backend.service.name</td>
-			<td>
-string
-</td>
-			<td>
-				<div style="max-width: 300px;">
-<pre lang="json">
-"relayminer-service"
-</pre>
-</div>
-			</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td id="shannon--relayminer--ingress--hosts[0]--paths[0]--backend--service--port--number">shannon.relayminer.ingress.hosts[0].paths[0].backend.service.port.number</td>
-			<td>
-int
-</td>
-			<td>
-				<div style="max-width: 300px;">
-<pre lang="json">
-8545
-</pre>
-</div>
-			</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td id="shannon--relayminer--ingress--hosts[0]--paths[0]--path">shannon.relayminer.ingress.hosts[0].paths[0].path</td>
-			<td>
-string
-</td>
-			<td>
-				<div style="max-width: 300px;">
-<pre lang="json">
-"/"
-</pre>
-</div>
-			</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td id="shannon--relayminer--ingress--hosts[0]--paths[0]--pathType">shannon.relayminer.ingress.hosts[0].paths[0].pathType</td>
-			<td>
-string
-</td>
-			<td>
-				<div style="max-width: 300px;">
-<pre lang="json">
-"Prefix"
-</pre>
-</div>
-			</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td id="shannon--relayminer--ingress--hosts[1]--host">shannon.relayminer.ingress.hosts[1].host</td>
-			<td>
-string
-</td>
-			<td>
-				<div style="max-width: 300px;">
-<pre lang="json">
-"serverb.relayminer.example.com"
-</pre>
-</div>
-			</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td id="shannon--relayminer--ingress--hosts[1]--paths[0]--backend--service--name">shannon.relayminer.ingress.hosts[1].paths[0].backend.service.name</td>
-			<td>
-string
-</td>
-			<td>
-				<div style="max-width: 300px;">
-<pre lang="json">
-"relayminer-service"
-</pre>
-</div>
-			</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td id="shannon--relayminer--ingress--hosts[1]--paths[0]--backend--service--port--number">shannon.relayminer.ingress.hosts[1].paths[0].backend.service.port.number</td>
-			<td>
-string
-</td>
-			<td>
-				<div style="max-width: 300px;">
-<pre lang="json">
-null
-</pre>
-</div>
-			</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td id="shannon--relayminer--ingress--hosts[1]--paths[0]--path">shannon.relayminer.ingress.hosts[1].paths[0].path</td>
-			<td>
-string
-</td>
-			<td>
-				<div style="max-width: 300px;">
-<pre lang="json">
-"/"
-</pre>
-</div>
-			</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td id="shannon--relayminer--ingress--hosts[1]--paths[0]--pathType">shannon.relayminer.ingress.hosts[1].paths[0].pathType</td>
-			<td>
-string
-</td>
-			<td>
-				<div style="max-width: 300px;">
-<pre lang="json">
-"Prefix"
+[]
 </pre>
 </div>
 			</td>
