@@ -29,11 +29,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "pocket-network.fullname" . }}-shannon-fullnode
+  name: {{ include "pocket-network.fullname" . }}-shannon-fullnode-internal
   labels:
     {{- include "pocket-network.labels" (dict "root" . "nameSuffix" "shannon-fullnode" ) | nindent 4 }}
 spec:
-  type: {{ .Values.shannon.fullnode.local.service.type }}
+  type: {{ .Values.shannon.fullnode.service.local.type }}
   ports: 
     - port: {{- include "pocket-network.utils.extractPort" $config.rpc.laddr }}
       targetPort: {{- include "pocket-network.utils.extractPort" $config.rpc.laddr }}
@@ -80,7 +80,7 @@ metadata:
   labels:
     {{- include "pocket-network.labels" (dict "root" . "nameSuffix" "shannon-fullnode" ) | nindent 4 }}
 spec:
-  type: {{ .Values.shannon.fullnode.external.service.type }}
+  type: {{ .Values.shannon.fullnode.service.external.type }}
   ports:
     - port: {{- include "pocket-network.utils.extractPort" $config.rpc.laddr }}
       targetPort: {{- include "pocket-network.utils.extractPort" $config.rpc.laddr }}
