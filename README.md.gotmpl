@@ -317,7 +317,7 @@ shannon:
 
 #### Fullnode
 
-The full node can expose two public-facing ports to allow other nodes to connect, query its status, and broadcast transactions. This chart allows configuration of an external service using Kubernetes NodePort, exposing both ports on each node’s IP at a static port.
+The full node can expose one public-facing port to allow other nodes to connect, query its status, and broadcast transactions. This chart allows configuration of an external service using Kubernetes NodePort, exposing the port on each node’s IP at a static port.
 
 ```
 shannon:
@@ -330,8 +330,6 @@ shannon:
         type: NodePort
         p2p:
           nodePort: 26656
-        rpc:
-          nodePort: 26657
 ```
 
 > Note: the `shannon.fullnode.service.local` field creates a Kubernetes Service resource for internal service communication inside the Kubernetes cluster.

@@ -317,7 +317,7 @@ shannon:
 
 #### Fullnode
 
-The full node can expose two public-facing ports to allow other nodes to connect, query its status, and broadcast transactions. This chart allows configuration of an external service using Kubernetes NodePort, exposing both ports on each node’s IP at a static port.
+The full node can expose one public-facing port to allow other nodes to connect, query its status, and broadcast transactions. This chart allows configuration of an external service using Kubernetes NodePort, exposing the port on each node’s IP at a static port.
 
 ```
 shannon:
@@ -330,8 +330,6 @@ shannon:
         type: NodePort
         p2p:
           nodePort: 26656
-        rpc:
-          nodePort: 26657
 ```
 
 > Note: the `shannon.fullnode.service.local` field creates a Kubernetes Service resource for internal service communication inside the Kubernetes cluster.
@@ -882,7 +880,7 @@ bool
 			<td>
 				<div style="max-width: 300px;">
 <pre lang="json">
-true
+false
 </pre>
 </div>
 			</td>
@@ -910,7 +908,7 @@ string
 			<td>
 				<div style="max-width: 300px;">
 <pre lang="json">
-"3000m"
+"4000m"
 </pre>
 </div>
 			</td>
@@ -924,7 +922,7 @@ string
 			<td>
 				<div style="max-width: 300px;">
 <pre lang="json">
-"3Gi"
+"20Gi"
 </pre>
 </div>
 			</td>
@@ -952,7 +950,7 @@ string
 			<td>
 				<div style="max-width: 300px;">
 <pre lang="json">
-"2Gi"
+"16Gi"
 </pre>
 </div>
 			</td>
@@ -981,20 +979,6 @@ int
 				<div style="max-width: 300px;">
 <pre lang="json">
 26656
-</pre>
-</div>
-			</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td id="shannon--fullnode--service--external--rpc--nodePort">shannon.fullnode.service.external.rpc.nodePort</td>
-			<td>
-int
-</td>
-			<td>
-				<div style="max-width: 300px;">
-<pre lang="json">
-26657
 </pre>
 </div>
 			</td>
