@@ -1204,9 +1204,6 @@ shannon:
         # p2p represents the service configuration for allowing nodes to connect.
         p2p:
           nodePort: 26656
-        # rpc represents the service configuration for querying node status and broadcasting txs.
-        rpc:
-          nodePort: 26657
     # configures a ingress resource that manages external access to services for
     # the fullnode.
     #
@@ -1302,7 +1299,7 @@ shannon:
       # fullnode (small, medium, large or none).
       preset:
         # activates the preset definition for the fullnode pod template.
-        enabled: true
+        enabled: false
         # select the preset to use for the fullnode pod template.
         name: medium
       # values are the resources requests and limit to used if the preset
@@ -1313,13 +1310,13 @@ shannon:
           # cpu defines the cpu minimum resources.
           cpu: 2000m
           # memory defines the memory minimum resources.
-          memory: 2Gi
+          memory: 16Gi
         # limits defines the maximum resources a container can use.
         limits:
           # cpu defines the cpu maximum resource.
-          cpu: 3000m
+          cpu: 4000m
           # memory defines the memory maximum resource.
-          memory: 3Gi
+          memory: 20Gi
     # podAnnotations are key-values pairs metadata attched to the fullnode Pods.
     #
     # e.g.

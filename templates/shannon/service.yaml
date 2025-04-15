@@ -23,6 +23,7 @@ spec:
   selector:
     app.pocket.network/name: {{ include "pocket-network.fullname" . }}-shannon-relayminer
 {{- end }}
+---
 {{- if and (eq .Values.protocol "shannon") .Values.shannon.fullnode.enabled }}
 {{- $config := .Values.shannon.fullnode.cometbft.config | fromToml }}
 {{- $app := .Values.shannon.fullnode.cometbft.app | fromToml }}
@@ -73,6 +74,7 @@ spec:
   selector:
     app.pocket.network/name: {{ include "pocket-network.fullname" . }}-shannon-fullnode
 {{- if .Values.shannon.fullnode.service.external.enabled }}
+---
 apiVersion: v1
 kind: Service
 metadata:
@@ -82,12 +84,10 @@ metadata:
 spec:
   type: {{ .Values.shannon.fullnode.service.external.type }}
   ports:
-    - port: {{- include "pocket-network.utils.extractPort" $config.rpc.laddr }}
-      targetPort: {{- include "pocket-network.utils.extractPort" $config.rpc.laddr }}
-      nodePort: {{ .Values.shannon.fullnode.service.external.rpc.nodePort }}
     - port: {{- include "pocket-network.utils.extractPort" $config.p2p.laddr }}
       targetPort: {{- include "pocket-network.utils.extractPort" $config.p2p.laddr }}
       nodePort: {{ .Values.shannon.fullnode.service.external.p2p.nodePort }}
+      name: p2p
   selector:
     app.pocket.network/name: {{ include "pocket-network.fullname" . }}-shannon-fullnode
 {{- end }}

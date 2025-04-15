@@ -58,7 +58,7 @@ spec:
           {{- end }}
     {{- end }}
 {{- end }}
-
+---
 {{- if .Values.shannon.fullnode.ingress.enabled -}}
 {{- if and .Values.shannon.fullnode.ingress.className (not (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion)) }}
   {{- if not (hasKey .Values.shannon.fullnode.ingress.annotations "kubernetes.io/ingress.class") }}
