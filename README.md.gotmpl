@@ -67,7 +67,7 @@ shannon:
 * Option C) Use default value define in the `shannon-values.yaml`. It can be useful for testing purposes.
 
 ```
-?> helm install my-release . --values shannon-values.yaml
+?> helm install my-release . --f shannon-values.yaml
 ```
 
 #### Relayminer
@@ -260,13 +260,14 @@ This section outlines how to configure external access, allowing users to intera
 
 #### Relayminer
 
-The Relayminer exposes one or more services that a supplier has staked on-chain to the Pocket Network. This chart provides the ability to expose those services using a Kubernetes Ingress custom resource. The following example demonstrates how to define external access to one or more services for the Relayminer:
+The Relayminer exposes servers, each hosting one or more services that a supplier has staked on-chain to the Pocket Network. This chart provides the ability to expose those servers using a Kubernetes Ingress custom resource. The following example demonstrates how to define external access to two servers for the Relayminer:
 
 ```
 # values.yaml
 
 shannon:
   relayminer:
+    enabled: true
     config:
       suppliers:
       - service_id: anvil
@@ -313,13 +314,14 @@ shannon:
                   number: 8546
 ```
 
-> Note: For Kubernetes to route traffic from the Service to the Relayminer pod, the value of `shannon.relayminer.ingress.hosts[].paths[].backend.service.port.number` must match the port specified in `shannon.relayminer.config.suppliers[].listen_url`.
+> Note: For Kubernetes to route traffic properly, the value of `shannon.relayminer.ingress.hosts[].paths[].backend.service.port.number` must match the port specified in `shannon.relayminer.config.suppliers[].listen_url`.
 
 This example demonstrates how to define an external access with a certificate request using cert-manager.
 
 ```
 shannon:
   relayminer:
+    enabled: true
     config:
       suppliers:
       - service_id: anvil
