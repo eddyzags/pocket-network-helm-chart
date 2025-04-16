@@ -41,7 +41,7 @@ A fullnode requires a more in-depth setup to configure Tendermint (consensus eng
 * Option A) Define the configuration file as input values while installing the chart. This can be useful if you already have these configuration files in your local machine.
 
 ```
-?> helm install release-1 . --values shannon-values.yaml --set-file 'shannon.fullnode.cometbft.config=config.toml' --set-file 'shannon.fullnode.cometbft.app=app.toml' --set-file 'shannon.fullnode.cometbft.client=client.toml'
+?> helm install release-1 . -f shannon-values.yaml --set-file 'shannon.fullnode.cometbft.config=config.toml' --set-file 'shannon.fullnode.cometbft.app=app.toml' --set-file 'shannon.fullnode.cometbft.client=client.toml'
 ```
 
 * Option B) Use Kubernetes `ConfigMap` to mount configuration files. This can be useful if you want to use a single configuration for all your fullnode for example.
@@ -1470,7 +1470,7 @@ string
 			<td>
 				<div style="max-width: 300px;">
 <pre lang="json">
-"tcp://pocket-network-eddyzags-shannon-fullnode-internal.pocket-network.svc.cluster.local:9090"
+"tcp://node-1:9090"
 </pre>
 </div>
 			</td>
@@ -1484,7 +1484,7 @@ string
 			<td>
 				<div style="max-width: 300px;">
 <pre lang="json">
-"tcp://pocket-network-eddyzags-shannon-fullnode-internal.pocket-network.svc.cluster.local:26657"
+"tcp://node-1:26657"
 </pre>
 </div>
 			</td>
@@ -1498,7 +1498,7 @@ string
 			<td>
 				<div style="max-width: 300px;">
 <pre lang="json">
-"tcp://pocket-network-eddyzags-shannon-fullnode-internal.pocket-network.svc.cluster.local:26657"
+"tcp://node-1:26657"
 </pre>
 </div>
 			</td>
@@ -1568,7 +1568,7 @@ string
 			<td>
 				<div style="max-width: 300px;">
 <pre lang="json">
-"http://anvil.apps.svc.cluster.local:8547/"
+"http://anvil:8547/"
 </pre>
 </div>
 			</td>
@@ -1582,7 +1582,7 @@ string
 			<td>
 				<div style="max-width: 300px;">
 <pre lang="json">
-"relayminer.pokt.nodes.eddyzags.com"
+"relayminer1"
 </pre>
 </div>
 			</td>
@@ -1841,98 +1841,28 @@ true
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--relayminer--ingress--hosts[0]--host">shannon.relayminer.ingress.hosts[0].host</td>
+			<td id="shannon--relayminer--ingress--hosts">shannon.relayminer.ingress.hosts</td>
 			<td>
-string
+list
 </td>
 			<td>
 				<div style="max-width: 300px;">
 <pre lang="json">
-"relayminer.pokt.nodes.eddyzags.com"
+[]
 </pre>
 </div>
 			</td>
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--relayminer--ingress--hosts[0]--paths[0]--backend--service--name">shannon.relayminer.ingress.hosts[0].paths[0].backend.service.name</td>
+			<td id="shannon--relayminer--ingress--tls">shannon.relayminer.ingress.tls</td>
 			<td>
-string
+list
 </td>
 			<td>
 				<div style="max-width: 300px;">
 <pre lang="json">
-"pocket-network-supplier-shannon-relayminer"
-</pre>
-</div>
-			</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td id="shannon--relayminer--ingress--hosts[0]--paths[0]--backend--service--port--number">shannon.relayminer.ingress.hosts[0].paths[0].backend.service.port.number</td>
-			<td>
-int
-</td>
-			<td>
-				<div style="max-width: 300px;">
-<pre lang="json">
-8545
-</pre>
-</div>
-			</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td id="shannon--relayminer--ingress--hosts[0]--paths[0]--path">shannon.relayminer.ingress.hosts[0].paths[0].path</td>
-			<td>
-string
-</td>
-			<td>
-				<div style="max-width: 300px;">
-<pre lang="json">
-"/"
-</pre>
-</div>
-			</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td id="shannon--relayminer--ingress--hosts[0]--paths[0]--pathType">shannon.relayminer.ingress.hosts[0].paths[0].pathType</td>
-			<td>
-string
-</td>
-			<td>
-				<div style="max-width: 300px;">
-<pre lang="json">
-"Prefix"
-</pre>
-</div>
-			</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td id="shannon--relayminer--ingress--tls[0]--hosts[0]">shannon.relayminer.ingress.tls[0].hosts[0]</td>
-			<td>
-string
-</td>
-			<td>
-				<div style="max-width: 300px;">
-<pre lang="json">
-"relayminer.pokt.nodes.eddyzags.com"
-</pre>
-</div>
-			</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td id="shannon--relayminer--ingress--tls[0]--secretName">shannon.relayminer.ingress.tls[0].secretName</td>
-			<td>
-string
-</td>
-			<td>
-				<div style="max-width: 300px;">
-<pre lang="json">
-"pocket-network-shannon-relayminer-cert-eddyzags-com"
+[]
 </pre>
 </div>
 			</td>
