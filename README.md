@@ -24,7 +24,7 @@ To install the chart with name `my-release`
 ```
 ?> git clone git@github.com:eddyzags/pocket-network-helm-chart.git && cd pocket-helm-chart
 
-?> helm install my-release .  --values shannon-values.yaml
+?> helm install fullnode .  -f shannon-values.yaml
 ```
 > Note: You must specify the value in yaml file. This is an example with the values related to Shannon protocol.
 
@@ -41,7 +41,7 @@ A fullnode requires a more in-depth setup to configure Tendermint (consensus eng
 * Option A) Define the configuration file as input values while installing the chart. This can be useful if you already have these configuration files in your local machine.
 
 ```
-?> helm install my-release . --values shannon-values.yaml --set-file 'shannon.fullnode.cometbft.config=config.toml' --set-file 'shannon.fullnode.cometbft.app=app.toml' --set-file 'shannon.fullnode.cometbft.client=client.toml'
+?> helm install release-1 . --values shannon-values.yaml --set-file 'shannon.fullnode.cometbft.config=config.toml' --set-file 'shannon.fullnode.cometbft.app=app.toml' --set-file 'shannon.fullnode.cometbft.client=client.toml'
 ```
 
 * Option B) Use Kubernetes `ConfigMap` to mount configuration files. This can be useful if you want to use a single configuration for all your fullnode for example.
@@ -314,6 +314,66 @@ shannon:
 ```
 
 > Note: For Kubernetes to route traffic from the Service to the Relayminer pod, the value of `shannon.relayminer.ingress.hosts[].paths[].backend.service.port.number` must match the port specified in `shannon.relayminer.config.suppliers[].listen_url`.
+
+This example demonstrates how to define an external access with a certificate request using cert-manager.
+
+```
+shannon:
+  relayminer:
+    config:
+      suppliers:
+      - service_id: anvil
+        service_config:
+          backend_url: http://anvil:8547/
+          publicly_exposed_endpoints:
+            - servera.relayminer.example.com
+        listen_url: http://0.0.0.0:8545
+      - service_id: ollama
+        service_config:
+          backend_url: http://ollama:8080/
+          publicly_exposed_endpoints:
+            - serverb.relayminer.example.com
+        listen_url: http://0.0.0.0:8546
+    ingress:
+      # activates the definition of an ingress resource.
+      enabled: true
+      className: ""
+      annotations:
+        cert-manager.io/cluster-issuer: letsencrypt-staging
+        cert-manager.io/acme-challenge-type: "http01"
+        cert-manager.io/acme-http01-edit-in-place: "true"
+        cert-manager.io/issue-temporary-certificate: "true"
+        cert-manager.io/duration: 2160h
+        cert-manager.io/private-key-algorithm: rsa
+        cert-manager.io/private-key-encoding: PKCSI
+        cert-manager.io/private-key-size: 2048
+      tls:
+      - hosts:
+          - servera.relayminer.example.com
+        secretName: pocket-network-shannon-relayminer-servera
+      - hosts:
+          - serverb.relayminer.example.com
+        secretName: pocket-network-shannon-relayminer-serverb
+      hosts:
+      - host: servera.relayminer.example.com
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: relayminer-service
+                port:
+                  number: 8545
+      - host: serverb.relayminer.example.com
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: relayminer-service
+                port:
+                  number: 8546
+```
 
 #### Fullnode
 
@@ -908,7 +968,7 @@ string
 			<td>
 				<div style="max-width: 300px;">
 <pre lang="json">
-"4000m"
+"10000m"
 </pre>
 </div>
 			</td>
@@ -922,7 +982,7 @@ string
 			<td>
 				<div style="max-width: 300px;">
 <pre lang="json">
-"20Gi"
+"38Gi"
 </pre>
 </div>
 			</td>
@@ -936,7 +996,7 @@ string
 			<td>
 				<div style="max-width: 300px;">
 <pre lang="json">
-"2000m"
+"8000m"
 </pre>
 </div>
 			</td>
@@ -950,7 +1010,7 @@ string
 			<td>
 				<div style="max-width: 300px;">
 <pre lang="json">
-"16Gi"
+"32Gi"
 </pre>
 </div>
 			</td>
@@ -978,7 +1038,7 @@ int
 			<td>
 				<div style="max-width: 300px;">
 <pre lang="json">
-26656
+30000
 </pre>
 </div>
 			</td>
@@ -1382,7 +1442,7 @@ string
 			<td>
 				<div style="max-width: 300px;">
 <pre lang="json">
-"localhost:8081"
+":8081"
 </pre>
 </div>
 			</td>
@@ -1410,7 +1470,7 @@ string
 			<td>
 				<div style="max-width: 300px;">
 <pre lang="json">
-"tcp://node:9090"
+"tcp://pocket-network-eddyzags-shannon-fullnode-internal.pocket-network.svc.cluster.local:9090"
 </pre>
 </div>
 			</td>
@@ -1424,7 +1484,7 @@ string
 			<td>
 				<div style="max-width: 300px;">
 <pre lang="json">
-"tcp://node:26657"
+"tcp://pocket-network-eddyzags-shannon-fullnode-internal.pocket-network.svc.cluster.local:26657"
 </pre>
 </div>
 			</td>
@@ -1438,7 +1498,7 @@ string
 			<td>
 				<div style="max-width: 300px;">
 <pre lang="json">
-"tcp://node:26657"
+"tcp://pocket-network-eddyzags-shannon-fullnode-internal.pocket-network.svc.cluster.local:26657"
 </pre>
 </div>
 			</td>
@@ -1452,7 +1512,7 @@ string
 			<td>
 				<div style="max-width: 300px;">
 <pre lang="json">
-"localhost:6060"
+":6060"
 </pre>
 </div>
 			</td>
@@ -1508,7 +1568,7 @@ string
 			<td>
 				<div style="max-width: 300px;">
 <pre lang="json">
-"http://anvil:8547/"
+"http://anvil.apps.svc.cluster.local:8547/"
 </pre>
 </div>
 			</td>
@@ -1522,7 +1582,7 @@ string
 			<td>
 				<div style="max-width: 300px;">
 <pre lang="json">
-"relayminer1"
+"relayminer.pokt.nodes.eddyzags.com"
 </pre>
 </div>
 			</td>
@@ -1760,7 +1820,7 @@ string
 			<td>
 				<div style="max-width: 300px;">
 <pre lang="json">
-""
+"external"
 </pre>
 </div>
 			</td>
@@ -1774,35 +1834,105 @@ bool
 			<td>
 				<div style="max-width: 300px;">
 <pre lang="json">
-false
+true
 </pre>
 </div>
 			</td>
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--relayminer--ingress--hosts">shannon.relayminer.ingress.hosts</td>
+			<td id="shannon--relayminer--ingress--hosts[0]--host">shannon.relayminer.ingress.hosts[0].host</td>
 			<td>
-list
+string
 </td>
 			<td>
 				<div style="max-width: 300px;">
 <pre lang="json">
-[]
+"relayminer.pokt.nodes.eddyzags.com"
 </pre>
 </div>
 			</td>
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--relayminer--ingress--tls">shannon.relayminer.ingress.tls</td>
+			<td id="shannon--relayminer--ingress--hosts[0]--paths[0]--backend--service--name">shannon.relayminer.ingress.hosts[0].paths[0].backend.service.name</td>
 			<td>
-list
+string
 </td>
 			<td>
 				<div style="max-width: 300px;">
 <pre lang="json">
-[]
+"pocket-network-supplier-shannon-relayminer"
+</pre>
+</div>
+			</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td id="shannon--relayminer--ingress--hosts[0]--paths[0]--backend--service--port--number">shannon.relayminer.ingress.hosts[0].paths[0].backend.service.port.number</td>
+			<td>
+int
+</td>
+			<td>
+				<div style="max-width: 300px;">
+<pre lang="json">
+8545
+</pre>
+</div>
+			</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td id="shannon--relayminer--ingress--hosts[0]--paths[0]--path">shannon.relayminer.ingress.hosts[0].paths[0].path</td>
+			<td>
+string
+</td>
+			<td>
+				<div style="max-width: 300px;">
+<pre lang="json">
+"/"
+</pre>
+</div>
+			</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td id="shannon--relayminer--ingress--hosts[0]--paths[0]--pathType">shannon.relayminer.ingress.hosts[0].paths[0].pathType</td>
+			<td>
+string
+</td>
+			<td>
+				<div style="max-width: 300px;">
+<pre lang="json">
+"Prefix"
+</pre>
+</div>
+			</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td id="shannon--relayminer--ingress--tls[0]--hosts[0]">shannon.relayminer.ingress.tls[0].hosts[0]</td>
+			<td>
+string
+</td>
+			<td>
+				<div style="max-width: 300px;">
+<pre lang="json">
+"relayminer.pokt.nodes.eddyzags.com"
+</pre>
+</div>
+			</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td id="shannon--relayminer--ingress--tls[0]--secretName">shannon.relayminer.ingress.tls[0].secretName</td>
+			<td>
+string
+</td>
+			<td>
+				<div style="max-width: 300px;">
+<pre lang="json">
+"pocket-network-shannon-relayminer-cert-eddyzags-com"
 </pre>
 </div>
 			</td>
@@ -2068,7 +2198,7 @@ string
 			<td>
 				<div style="max-width: 300px;">
 <pre lang="json">
-"pocket-network-release-1-shannon-relayminer"
+"pocket-network-supplier-shannon-relayminer"
 </pre>
 </div>
 			</td>
