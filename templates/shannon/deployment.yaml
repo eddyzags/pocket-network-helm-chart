@@ -42,7 +42,6 @@ spec:
             - |
               mkdir -p {{ .Values.homeDirectory }}/config
               mkdir -p {{ .Values.homeDirectory }}/keyring-test
-              chmod -R 700 {{ .Values.homeDirectory }}
           volumeMounts:
             - name: relayminer-home
               mountPath: {{ .Values.homeDirectory }}
@@ -74,7 +73,7 @@ spec:
             - "--keyring-backend={{ .Values.shannon.relayminer.keyringBackend }}"
             - "--config={{ .Values.homeDirectory }}/config/config.yaml"
             - "--grpc-insecure={{ .Values.shannon.relayminer.grpcInsecure }}"
-            - "--log_level={{ .Values.shannon.relayminer.logs.level }}"
+            - "--log_level={{ .Values.shannon.relayminer.telemetry.logs.level }}"
             - "--gas-adjustment={{ .Values.shannon.relayminer.gasAdjustment }}"
             - "--gas-prices={{ .Values.shannon.relayminer.gasPrices }}"
           ports: {{- include "pocket-network.utils.listenURLToPorts" (dict "config" .Values.shannon.relayminer.config "kind" "Deployment") | nindent 12 }}
