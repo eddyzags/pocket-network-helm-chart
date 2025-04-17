@@ -25,6 +25,7 @@ Pocket Network is permissionless decentralized physical infrastructure (DePin) p
     - [Adjust permissions of persistent volume mountpoint](#adjust-permissions-of-persistent-volume-mountpoint)
   - [Prometheus metrics](#prometheus-metrics)
   - [Accessing Pocket Network services from outside the cluster](#accessing-pocket-network-services-from-outside-the-cluster)
+  - [Deploy fullnode with Cosmosvisor](#deploy-fullnode-with-cosmosvisor)
 - [Parameters](#parameters)
 
 ## Prerequisites
@@ -393,7 +394,7 @@ shannon:
 
 #### Fullnode
 
-The full node can expose one public-facing port to allow other nodes to connect, query its status, and broadcast transactions. This chart allows configuration of an external service using Kubernetes NodePort, exposing the port on each node’s IP at a static port.
+The fullnode can expose one public-facing port to allow other nodes to connect, query its status, and broadcast transactions. This chart allows configuration of an external service using Kubernetes NodePort, exposing the port on each node’s IP at a static port.
 
 ```
 shannon:
@@ -409,6 +410,29 @@ shannon:
 ```
 
 > Note: the `shannon.fullnode.service.local` field creates a Kubernetes Service resource for internal service communication inside the Kubernetes cluster.
+
+### Deploy fullnode with Cosmosvisor
+
+Cosmovisor is a daemon process for Cosmos SDK-based application binaries. It monitors the governance module for on-chain upgrade proposals and automatically manages chain upgrades. This chart provides the ability to configure Cosmovisor for a full node setup.
+
+```
+# values.yaml
+
+shannon:
+  fullnode:
+    enabled: true
+    cosmosvisor:
+      enabled: true
+      daemon:
+        name: "pocketd"
+        allowDownloadBinaries: true
+        restartAfterUpgrade: true
+        unsafeSkipBackup: false
+        pollInterval: 300ms
+        preupgradeMaxRetries: 0
+```
+
+> Note: For more informations about what the cosmosvisor daemon does, [read this documentation](https://docs.cosmos.network/v0.45/run-node/cosmovisor.html)
 
 ## Parameters
 
