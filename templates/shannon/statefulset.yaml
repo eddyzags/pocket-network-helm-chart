@@ -61,6 +61,9 @@ spec:
           volumeMounts:
             - name: home-config
               mountPath: {{ .Values.homeDirectory }}
+        {{- if .Values.shannon.fullnode.cosmosvisor.enabled }}
+        {{- include "pocket-network.shannon.initcontainers.cosmosvisor" . | nindent 8 }}
+        {{- end }}
       containers:
         - name: fullnode
           {{- with .Values.shannon.fullnode.containersSecurityContext }}
@@ -68,19 +71,25 @@ spec:
             {{- toYaml . | nindent 12 }}
           {{- end }}
           image: "{{ .Values.shannon.fullnode.image.repository }}:{{ .Values.shannon.fullnode.image.tag | default .Values.version }}"
+          {{- if .Values.shannon.fullnode.cosmosvisor.enabled }}
           command:
-            - "/bin/pocketd"
+            - "/bin/cosmovisor"
+          {{- end }}
+          args:
+            {{- if .Values.shannon.fullnode.cosmosvisor.enabled }}
+            - "run"
+            {{- end }}
             - "start"
             - "--home={{ .Values.homeDirectory }}"
             - "--log_level={{ .Values.shannon.fullnode.telemetry.logs.level }}"
             - "--log_format={{ .Values.shannon.fullnode.telemetry.logs.format }}"
-            {{ if .Values.shannon.fullnode.telemetry.logs.noColor }}
+            {{- if .Values.shannon.fullnode.telemetry.logs.noColor }}
             - "--log_no_color"
             {{- end }}
-            {{ if .Values.shannon.fullnode.telemetry.trace.enabled }}
+            {{- if .Values.shannon.fullnode.telemetry.trace.enabled }}
             - "--trace"
             {{- end }}
-            {{ if .Values.shannon.fullnode.telemetry.trace.store }}
+            {{- if .Values.shannon.fullnode.telemetry.trace.store }}
             - "--store={{ .Values.shannon.fullnode.telemetry.trace.store }}"
             {{- end }}
           ports:
@@ -158,6 +167,10 @@ spec:
             {{- with .Values.shannon.fullnode.volumeMounts }}
               {{- toYaml . | nindent 14 }}
             {{- end }}
+          {{- if .Values.shannon.fullnode.cosmosvisor.enabled }}
+          env:
+          {{- include "pocket-network.shannon.envs.cosmosvisor" . | nindent 10 }}
+          {{- end }}
       volumes:
         - name: fullnode-config
           configMap:

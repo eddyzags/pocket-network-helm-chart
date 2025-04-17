@@ -1,5 +1,5 @@
 {{/*
-This method implements request/limit object based on a given preset string
+This function implements request/limit object based on a given preset string
 (ex: small, medium, large)
 */}}
 
