@@ -13,6 +13,20 @@ Pocket Network is permissionless decentralized physical infrastructure (DePin) p
 ?> helm install release-1 . -f shannon-values.yaml
 ```
 
+# Table of Contents
+
+- [Prerequisites](#prerequisites)
+- [Installing the Chart](#installing-the-chart)
+- [Configuration and Installation Details](#configuration-and-installation-details)
+  - [Customizing relayminer and fullnode using configuration](#customizing-relayminer-and-fullnode-using-configuration)
+  - [Provisionning keys](#provisionning-keys)
+  - [Resources and limits](#resources-and-limits)
+  - [Fullnode persistence](#fullnode-persistence)
+    - [Adjust permissions of persistent volume mountpoint](#adjust-permissions-of-persistent-volume-mountpoint)
+  - [Prometheus metrics](#prometheus-metrics)
+  - [Accessing Pocket Network services from outside the cluster](#accessing-pocket-network-services-from-outside-the-cluster)
+- [Parameters](#parameters)
+
 ## Prerequisites
 * Kubernetes 1.23+
 * Helm 3.9.0+

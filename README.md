@@ -13,6 +13,20 @@ Pocket Network is permissionless decentralized physical infrastructure (DePin) p
 ?> helm install release-1 . -f shannon-values.yaml
 ```
 
+# Table of Contents
+
+- [Prerequisites](#prerequisites)
+- [Installing the Chart](#installing-the-chart)
+- [Configuration and Installation Details](#configuration-and-installation-details)
+  - [Customizing relayminer and fullnode using configuration](#customizing-relayminer-and-fullnode-using-configuration)
+  - [Provisionning keys](#provisionning-keys)
+  - [Resources and limits](#resources-and-limits)
+  - [Fullnode persistence](#fullnode-persistence)
+    - [Adjust permissions of persistent volume mountpoint](#adjust-permissions-of-persistent-volume-mountpoint)
+  - [Prometheus metrics](#prometheus-metrics)
+  - [Accessing Pocket Network services from outside the cluster](#accessing-pocket-network-services-from-outside-the-cluster)
+- [Parameters](#parameters)
+
 ## Prerequisites
 * Kubernetes 1.23+
 * Helm 3.9.0+
@@ -606,7 +620,7 @@ string
 			<td>
 				<div style="max-width: 300px;">
 <pre lang="json">
-"pocket-network-release-1-shannon"
+"pocket-network-fullnode-shannon"
 </pre>
 </div>
 			</td>
@@ -649,6 +663,104 @@ object
 				<div style="max-width: 300px;">
 <pre lang="json">
 {}
+</pre>
+</div>
+			</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td id="shannon--fullnode--cosmosvisor--daemon--allowDownloadBinaries">shannon.fullnode.cosmosvisor.daemon.allowDownloadBinaries</td>
+			<td>
+bool
+</td>
+			<td>
+				<div style="max-width: 300px;">
+<pre lang="json">
+true
+</pre>
+</div>
+			</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td id="shannon--fullnode--cosmosvisor--daemon--name">shannon.fullnode.cosmosvisor.daemon.name</td>
+			<td>
+string
+</td>
+			<td>
+				<div style="max-width: 300px;">
+<pre lang="json">
+"pocketd"
+</pre>
+</div>
+			</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td id="shannon--fullnode--cosmosvisor--daemon--pollInterval">shannon.fullnode.cosmosvisor.daemon.pollInterval</td>
+			<td>
+string
+</td>
+			<td>
+				<div style="max-width: 300px;">
+<pre lang="json">
+"300ms"
+</pre>
+</div>
+			</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td id="shannon--fullnode--cosmosvisor--daemon--preupgradeMaxRetries">shannon.fullnode.cosmosvisor.daemon.preupgradeMaxRetries</td>
+			<td>
+int
+</td>
+			<td>
+				<div style="max-width: 300px;">
+<pre lang="json">
+0
+</pre>
+</div>
+			</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td id="shannon--fullnode--cosmosvisor--daemon--restartAfterUpgrade">shannon.fullnode.cosmosvisor.daemon.restartAfterUpgrade</td>
+			<td>
+bool
+</td>
+			<td>
+				<div style="max-width: 300px;">
+<pre lang="json">
+true
+</pre>
+</div>
+			</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td id="shannon--fullnode--cosmosvisor--daemon--unsafeSkipBackup">shannon.fullnode.cosmosvisor.daemon.unsafeSkipBackup</td>
+			<td>
+bool
+</td>
+			<td>
+				<div style="max-width: 300px;">
+<pre lang="json">
+false
+</pre>
+</div>
+			</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td id="shannon--fullnode--cosmosvisor--enabled">shannon.fullnode.cosmosvisor.enabled</td>
+			<td>
+bool
+</td>
+			<td>
+				<div style="max-width: 300px;">
+<pre lang="json">
+false
 </pre>
 </div>
 			</td>
@@ -1472,7 +1584,7 @@ string
 			<td>
 				<div style="max-width: 300px;">
 <pre lang="json">
-"tcp://node-1:9090"
+"tcp://node:9090"
 </pre>
 </div>
 			</td>
@@ -1486,7 +1598,7 @@ string
 			<td>
 				<div style="max-width: 300px;">
 <pre lang="json">
-"tcp://node-1:26657"
+"tcp://node:26657"
 </pre>
 </div>
 			</td>
@@ -1500,7 +1612,7 @@ string
 			<td>
 				<div style="max-width: 300px;">
 <pre lang="json">
-"tcp://node-1:26657"
+"tcp://node:26657"
 </pre>
 </div>
 			</td>
@@ -2228,7 +2340,7 @@ string
 			<td>
 				<div style="max-width: 300px;">
 <pre lang="json">
-"0.1.1"
+"0.1.3"
 </pre>
 </div>
 			</td>
