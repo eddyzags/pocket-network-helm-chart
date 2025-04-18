@@ -413,7 +413,7 @@ shannon:
 
 ### Deploy fullnode with Cosmosvisor
 
-Cosmovisor is a daemon process for Cosmos SDK-based application binaries. It monitors the governance module for on-chain upgrade proposals and automatically manages chain upgrades. This chart provides the ability to configure Cosmovisor for a full node setup.
+Cosmovisor is a daemon process for Cosmos SDK-based application binaries. It monitors the governance module for on-chain upgrade proposals and automatically manages chain upgrades for pocketd. By activating this deployment mode, the pocketd process will executed as a sub-process of the cosmosvisor. This chart provides the ability to configure Cosmovisor for a full node setup.
 
 ```
 # values.yaml
