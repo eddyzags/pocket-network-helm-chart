@@ -301,13 +301,7 @@ shannon:
       enabled: true
       className: ""
       annotations: {}
-      tls:
-      - hosts:
-          - servera.relayminer.example.com
-        secretName: servera-realyminer-example-com
-      - hosts:
-          - serverb.relayminer.example.com
-        secretName: serverb-realyminer-example-com
+      tls: []
       hosts:
       - host: servera.relayminer.example.com
         paths:
