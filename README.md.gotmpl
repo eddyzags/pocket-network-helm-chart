@@ -355,8 +355,8 @@ shannon:
         cert-manager.io/acme-http01-edit-in-place: "true"
         cert-manager.io/issue-temporary-certificate: "true"
         cert-manager.io/duration: "2160h"
-        cert-manager.io/private-key-algorithm: rsa
-        cert-manager.io/private-key-encoding: PKCSI
+        cert-manager.io/private-key-algorithm: RSA
+        cert-manager.io/private-key-encoding: PKCS1
         cert-manager.io/private-key-size: "2048"
       tls:
       - hosts:
