@@ -352,7 +352,7 @@ shannon:
       annotations:
         cert-manager.io/cluster-issuer: letsencrypt-staging
         cert-manager.io/acme-challenge-type: "http01"
-        cert-manager.io/acme-http01-edit-in-place: "true"
+        acme.cert-manager.io/http01-edit-in-place: "true"
         cert-manager.io/issue-temporary-certificate: "true"
         cert-manager.io/duration: "2160h"
         cert-manager.io/private-key-algorithm: RSA
@@ -385,6 +385,8 @@ shannon:
                 port:
                   number: 8546
 ```
+
+> Note: This example is set up to request a certificate using the Let's Encrypt Staging Environment and a Cluster Issuer. You can customize this configuration to suit your specific requirements. For more details on configuring the cert-manager, refer to the [official documentation](https://cert-manager.io/docs/)
 
 #### Fullnode
 
