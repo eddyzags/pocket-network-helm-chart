@@ -61,7 +61,7 @@ shannon:
     # define the configuration to provide the keyring for the relayminer.
     secret:
       # defines the type of resources the chart needs to mount for the
-      # fullnode to access the network credentials.
+      # relayminer to access the network credentials.
       type: Secret
       # represents the secret metadata.
       key:
@@ -219,9 +219,9 @@ shannon:
       # preset defines the resource pre-configuration (cpu and memory) for the
       # relayminer (small, medium, large or none).
       preset:
-        # activates the preset definition for the fullnode pod template.
+        # activates the preset definition for the relayminer pod template.
         enabled: false
-        # select the preset to use for the fullnode pod template.
+        # select the preset to use for the relayminer pod template.
         name: medium
       # requests defines the minimum resources a container needs to run.
       requests:
