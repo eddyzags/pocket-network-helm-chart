@@ -97,7 +97,7 @@ shannon:
     enabled: true
     config:
       default_signing_key_names: [supplier1]
-      smt_store_path: /.pocket/smt
+      smt_store_path: /home/pocket/.pocket/smt
       pocket_node:
         query_node_rpc_url: tcp://node:26657
         query_node_grpc_url: tcp://node:9090
@@ -351,7 +351,6 @@ shannon:
       className: ""
       annotations:
         cert-manager.io/cluster-issuer: letsencrypt-staging
-        cert-manager.io/acme-challenge-type: "http01"
         acme.cert-manager.io/http01-edit-in-place: "true"
         cert-manager.io/issue-temporary-certificate: "true"
         cert-manager.io/duration: "2160h"
