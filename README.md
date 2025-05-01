@@ -354,10 +354,10 @@ shannon:
         cert-manager.io/acme-challenge-type: "http01"
         cert-manager.io/acme-http01-edit-in-place: "true"
         cert-manager.io/issue-temporary-certificate: "true"
-        cert-manager.io/duration: 2160h
+        cert-manager.io/duration: "2160h"
         cert-manager.io/private-key-algorithm: rsa
         cert-manager.io/private-key-encoding: PKCSI
-        cert-manager.io/private-key-size: 2048
+        cert-manager.io/private-key-size: "2048"
       tls:
       - hosts:
           - servera.relayminer.example.com
@@ -1672,7 +1672,7 @@ string
 			<td>
 				<div style="max-width: 300px;">
 <pre lang="json">
-"/.pocket/smt"
+"/home/pocket/.pocket/smt"
 </pre>
 </div>
 			</td>
@@ -2155,34 +2155,6 @@ int
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--relayminer--resources--limits--cpu">shannon.relayminer.resources.limits.cpu</td>
-			<td>
-string
-</td>
-			<td>
-				<div style="max-width: 300px;">
-<pre lang="json">
-"3000m"
-</pre>
-</div>
-			</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td id="shannon--relayminer--resources--limits--memory">shannon.relayminer.resources.limits.memory</td>
-			<td>
-string
-</td>
-			<td>
-				<div style="max-width: 300px;">
-<pre lang="json">
-"3Gi"
-</pre>
-</div>
-			</td>
-			<td></td>
-		</tr>
-		<tr>
 			<td id="shannon--relayminer--resources--preset--enabled">shannon.relayminer.resources.preset.enabled</td>
 			<td>
 bool
@@ -2211,7 +2183,35 @@ string
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--relayminer--resources--requests--cpu">shannon.relayminer.resources.requests.cpu</td>
+			<td id="shannon--relayminer--resources--values--limits--cpu">shannon.relayminer.resources.values.limits.cpu</td>
+			<td>
+string
+</td>
+			<td>
+				<div style="max-width: 300px;">
+<pre lang="json">
+"3000m"
+</pre>
+</div>
+			</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td id="shannon--relayminer--resources--values--limits--memory">shannon.relayminer.resources.values.limits.memory</td>
+			<td>
+string
+</td>
+			<td>
+				<div style="max-width: 300px;">
+<pre lang="json">
+"6Gi"
+</pre>
+</div>
+			</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td id="shannon--relayminer--resources--values--requests--cpu">shannon.relayminer.resources.values.requests.cpu</td>
 			<td>
 string
 </td>
@@ -2225,14 +2225,14 @@ string
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--relayminer--resources--requests--memory">shannon.relayminer.resources.requests.memory</td>
+			<td id="shannon--relayminer--resources--values--requests--memory">shannon.relayminer.resources.values.requests.memory</td>
 			<td>
 string
 </td>
 			<td>
 				<div style="max-width: 300px;">
 <pre lang="json">
-"2Gi"
+"3Gi"
 </pre>
 </div>
 			</td>

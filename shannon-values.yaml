@@ -79,7 +79,7 @@ shannon:
       # https://dev.poktroll.com/operate/configs/relayminer_config
       default_signing_key_names: [supplier1]
       # smt_store_path path to working directory for Sparse Merkle Tree.
-      smt_store_path: /.pocket/smt
+      smt_store_path: /home/pocket/.pocket/smt
       # pocket_node defines the different connectivity for the pocketd node.
       #
       # see https://dev.poktroll.com/operate/configs/relayminer_config#pocket-node-connectivity
@@ -169,7 +169,7 @@ shannon:
         # rpc interface for the specified chain.
         node = "tcp://node:26657"
         # client output format (json|text)
-        output = "text"
+        output = "json"
     # prometheus is the root value configuration for prometheus operator.
     prometheus:
       # serviceMonitor represents the configuration for a Prometheus Operator
@@ -223,18 +223,19 @@ shannon:
         enabled: false
         # select the preset to use for the relayminer pod template.
         name: medium
-      # requests defines the minimum resources a container needs to run.
-      requests:
-        # cpu defines the cpu minimum resources.
-        cpu: 2000m
-        # memory defines the memory minimum resources.
-        memory: 2Gi
-      # limits defines the maximum resources a container can use.
-      limits:
-        # cpu defines the cpu maximum resource.
-        cpu: 3000m
-        # memory defines the memory maximum resource.
-        memory: 3Gi
+      values:
+        # requests defines the minimum resources a container needs to run.
+        requests:
+          # cpu defines the cpu minimum resources.
+          cpu: 2000m
+          # memory defines the memory minimum resources.
+          memory: 3Gi
+        # limits defines the maximum resources a container can use.
+        limits:
+          # cpu defines the cpu maximum resource.
+          cpu: 3000m
+          # memory defines the memory maximum resource.
+          memory: 6Gi
     # service is the root configuration when defining a Kubernetes Service object for the relayminer.
     service:
       # type defines the type of service we want to use for the relayminer servers
