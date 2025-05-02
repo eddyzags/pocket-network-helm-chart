@@ -901,6 +901,10 @@ shannon:
 
         # Instrumentation namespace
         namespace = "cometbft"
+      # root configuration for fullnode pocket network application such as state
+      # prunning strategies, telemetry, gRPC, REST servers, state sync, mempool
+      # ect...
+      #
       # -- (tpl/string)
       # @notationType -- toml
       app: |
