@@ -1,0 +1,219 @@
+# Default values for Shannon.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# Override chart name
+nameOverride: ""
+
+# Override fullname (chart + release)
+fullnameOverride: "example-relayminer-with-krl"
+
+# protocol string refers to the decentralized framework that enables applications
+# to access reliable and censorship-resistant infrastructure (e.g., shannon or morse).
+protocol: shannon
+
+# network string refers to the different stages of the protocol testing phase
+# before it goes live to on the Mainnet. (e.g., mainnet, testnet, devnet)
+#
+# see https://dev.poktroll.com/category/networks
+network: testnet-beta
+
+# version string refers to the unique version of the pocketd computer
+# software.
+#
+# see https://dev.poktroll.com/operate/faq/full_node_faq?_highlight=version#how-do-i-check-the-node-version
+version: 0.1.10
+
+# homeDirectory refers to the pocketd working directory. This variable is
+# shared across all every protocol actor. Meaning that the working directory
+# will be instantiated in the same path for every
+homeDirectory: /home/pocket/.pocket
+
+# Create a service account and the need roles to been able to read secret and configmap from the current namespace only
+rbac:
+  # This is only needed/used for keyring-loader to access the keys without mount the file.
+  # You can just specify a serviceAccount without the need of create one.
+  # Ensure that an account has secret and configmap access on the namespace this will be deployed
+  create: true
+  # if create=false, please update serviceAccount if you will use keyring.loader.enabled=true
+  serviceAccount: "pocket"
+
+# Shannon object refers to the root level values configuration for the shannon
+# protocol to define the configuration for every protocol actor.
+# This field is required when `.Values.protocol=shannon`.
+#
+# see https://dev.poktroll.com/category/protocol-actors for more information.
+shannon:
+  # relayminer key-value pairs refer to the relayminer configuration.
+  relayminer:
+    # activates the deployment of a relayminer and its resources.
+    enabled: true
+    # grpcInsecure allows gRPC over insecure channels for querying state in the CosmosSDK.
+    #
+    # see https://dev.poktroll.com/operate/cheat_sheets/supplier_cheatsheet#secure-vs-non-secure-query_node_grpc_url
+    grpcInsecure: true
+    # gasAdjustment refers to the adjustement factor to be multiplied by the gas
+    # estmiation given by the tx simulation.
+    #
+    # see https://docs.cosmos.network/main/learn/beginner/tx-lifecycle#gas-and-fees
+    gasAdjustment: 1.5
+    # gasPrices specifies how much you are willing to pay per unit of gas.
+    # Testnet Beta: https://github.com/pokt-network/pocket-network-genesis/blob/master/shannon/testnet-beta/app.toml#L9
+    # Testnet Alpha: https://github.com/pokt-network/pocket-network-genesis/blob/master/shannon/testnet-alpha/app.toml#L9
+    # Mainnet: https://github.com/pokt-network/pocket-network-genesis/blob/master/shannon/mainnet/app.toml#L9
+    # Ref: https://docs.cosmos.network/main/learn/beginner/tx-lifecycle#gas-and-fees
+    gasPrices: 0.001upokt
+    # keyringBackend refers to the storage backend for the keyring implementation.
+    #
+    # see https://docs.cosmos.network/v0.46/run-node/keyring.html#available-backends-for-the-keyring
+    keyring:
+      # Use https://github.com/pokt-shannon/shannon-keyring-loader to hydrate keyring from a secret and update
+      #  the config.yaml file with the keys
+      loader:
+        enabled: true
+        image:
+          # repository defines which container image will be pulled from a container
+          # registry.
+          repository: ghcr.io/pokt-shannon/shannon-keyring-loader
+          # pullPolicy defines the pull policy for the keyring-loader.
+          pullPolicy: Always
+          # The tag overrides the image tag. If no tag is defined, the chart will rely
+          # on the .Values.version value.
+          tag: "0.0.1"
+        # Allow loading data from the secret without mount it
+        # kubectl create secret generic shannon-keys --from-file=keys.json
+        keysFile:
+          secretName: "shannon-keys"
+          secretKey: "keys.json"
+        # enable or disable the update of the `relayminer` config.yaml file
+        # config.yaml will be read from the configmap create by `shannon.relayminer.config`
+        # correspond to GENERATE_RELAYMINER_CONFIG env var
+        updateConfigFile: true
+        # correspond to LOG_LEVEL env var
+        logLevel: "info"
+        # correspond to LOG_COLOR env var
+        logColor: false
+    # config defines key-values pairs for the relayminer general configuration.
+    #
+    # see https://dev.poktroll.com/operate/configs/relayminer_config
+    #
+    # -- (tpl/string)
+    # @notationType -- toml
+    config:
+      # default_signing_key_names defines the list of key names from the keyring.
+      # NOTE: leave this empty if you choose to use keyring.loader
+      # https://dev.poktroll.com/operate/configs/relayminer_config
+      default_signing_key_names: []
+      # smt_store_path path to working directory for Sparse Merkle Tree.
+      smt_store_path: /home/pocket/.pocket/smt
+      # pocket_node defines the different connectivity for the pocketd node.
+      #
+      # see https://dev.poktroll.com/operate/configs/relayminer_config#pocket-node-connectivity
+      pocket_node:
+        # query_node_rpc_url sets the websocket connection to a pocket network node.
+        # see https://dev.poktroll.com/operate/configs/relayminer_config#query_node_rpc_url
+        # Public Beta: https://shannon-testnet-grove-rpc.beta.poktroll.com:443
+        # Public Alpha https://shannon-testnet-grove-rpc.beta.poktroll.com:443
+        # Custom: http[s?]://<host>:<port> (port is required even on 80 or 443)
+        # shannon.fullnode: tcp://<fullname>-shannon-fullnode-internal.<namespace>.svc.cluster.local:<fullnode.cometbft.config.rpc.laddr>
+        query_node_rpc_url: https://shannon-testnet-grove-rpc.beta.poktroll.com
+        # query_node_grpc_url sets the pocket node endpoint to read from Pocket Network.
+        # see https://dev.poktroll.com/operate/configs/relayminer_config#query_node_rpc_url
+        # Public Beta: tcp://shannon-testnet-grove-grpc.beta.poktroll.com
+        # Public Alpha: tcp://shannon-testnet-grove-grpc.alpha.poktroll.com
+        # Custom: tcp://<host>:<port> (port is required even on 80 or 443)
+        # shannon.fullnode: tcp://<fullname>-shannon-fullnode-internal.<namespace>.svc.cluster.local:<fullnode.cometbft.config.rpc.grpc_laddr>
+        query_node_grpc_url: tcp://shannon-testnet-grove-grpc.beta.poktroll.com:443
+        # tx_node_rpc_url sets the pocket node endpoint to write into Pocket Network.
+        # see https://dev.poktroll.com/operate/configs/relayminer_config#tx_node_rpc_url
+        # Public Beta https://shannon-testnet-grove-rpc.beta.poktroll.com:443
+        # Public Alpha https://shannon-testnet-grove-rpc.alpha.poktroll.com:443
+        # Custom: http[s?]://<host>:<port> (port is required even on 80 or 443)
+        # shannon.fullnode: tcp://<fullname>-shannon-fullnode-internal.<namespace>.svc.cluster.local:<fullnode.cometbft.config.rpc.laddr>
+        tx_node_rpc_url: https://shannon-testnet-grove-rpc.beta.poktroll.com
+      # suppliers define a list of key-values pairs to define the suppliers managed
+      # by this relayminer.
+      #
+      # e.g.,
+      # suppliers:
+      #   - service_id: ollama
+      #     service_config:
+      #      backend_url: http://ollama:8547/
+      #      publicly_exposed_endpoints:
+      #        - relayminers
+      #     listen_url: http://0.0.0.0:8546
+      #   - service_id: anvil
+      #     service_config:
+      #      backend_url: http://anvil:8547/
+      #      publicly_exposed_endpoints:
+      #        - relayminers
+      #     listen_url: http://0.0.0.0:8546
+      #
+      # see https://dev.poktroll.com/operate/configs/relayminer_config#suppliers
+      suppliers:
+        # IMPORTANT: this needs to be replaced with your own configuration, this is just a sample.
+        #   Without entries on this array, the relayminer will not start, and with wrong values and
+        #   relayminer.ping.enable it will also fail if this is wrong.
+        #
+        # `service_id` is a unique identifier to reference a service provided by
+        # this relayminer.
+        - service_id: anvil
+          # listen_url is the address from which the relayminer will start a
+          # server to listen for an incoming request for this service.
+          #
+          # see https://dev.poktroll.com/operate/configs/relayminer_config#listen_url
+          listen_url: http://0.0.0.0:8545
+          # service_config configures the supplier of this service.
+          #
+          # see https://dev.poktroll.com/operate/configs/relayminer_config#service_config
+          service_config:
+            # backend_url is the endpoint where the request will be forward for
+            # this service.
+            backend_url: http://anvil:8547
+      # metrics configures a Prometheus Exporter server for prometheus exporters to
+      # read relayminer metrics.
+      metrics:
+        # enabled activates a Prometheus Exporter endpoint if set to true.
+        enabled: false
+        # addr is the address at which the server must listen to.
+        addr: :9090
+      # pprof configures a pprof endpoint for visualization and analysis of
+      # profiling data.
+      pprof:
+        # enabled activates a pprof endpoint.
+        enabled: false
+        # addr is the address at which the server must listen to.
+        addr: :6060
+      # ping configures a ping health check server to test the connectivity of all backend URLs
+      # https://dev.poktroll.com/operate/configs/relayminer_config#ping
+      ping:
+        # enabled activates the ping server.
+        enabled: false
+        # addr is the address at which the server must listen.
+        addr: :8081
+    # image is the root configuration for the container image to be used for the
+    # relayminer.
+    image:
+      # repository defines which container image will be pulled from a container
+      # registry.
+      repository: ghcr.io/pokt-network/pocketd
+      # pullPolicy defines the pull policy for the relayminer.
+      pullPolicy: IfNotPresent
+      # tag overrides the image tag. If not tag is defined, the chart will rely
+      # on the .Values.version value.
+      tag: "0.1.10"
+    # resources is the root configuration for the resource isolation.
+    resources:
+      # preset defines the resource pre-configuration (cpu and memory) for the
+      # relayminer (small, medium, large, or none).
+      #
+      # Ref: https://github.com/eddyzags/pocket-network-helm-chart/blob/main/templates/shannon/_resources.tpl#L7
+      preset:
+        # activates the preset definition for the fullnode pod template.
+        enabled: true
+        # select the preset to use for the fullnode pod template.
+        name: small
+
+  fullnode:
+    # activates the deployment of a fullnode.
+    enabled: false
