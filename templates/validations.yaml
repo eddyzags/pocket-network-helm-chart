@@ -1,5 +1,5 @@
-# This file implements an input values validations for the global parameters.
-# This ensure data integrity, security, and proper application functionnality
+# This file implements an input values validation for the global parameters.
+# This ensures data integrity, security, and proper application functionality
 # of the Pocket Helm Chart release in Kubernetes.
 
 {{- if not (or (eq .Values.protocol "shannon") (eq .Values.protocol "morse")) }}
@@ -18,4 +18,9 @@
 {{- if not .Values.homeDirectory }}
 #TODO(eddyzags): add path validation.
 {{- fail "must provide home directory in values file" }}
+{{- end }}
+
+{{- if and .Values.shannon.relayminer.autoscaling.enabled }}
+#TODO(jorgecuesta): remove this once relayminer support replication without result in Claim Txs rejections.
+{{- fail "shannon.relayminer.autoscaling.enabled is not supported yet by Relayminer." }}
 {{- end }}

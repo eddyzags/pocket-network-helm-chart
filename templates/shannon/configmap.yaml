@@ -4,12 +4,10 @@ kind: ConfigMap
 metadata:
   name: {{ include "pocket-network.fullname" . }}-shannon-relayminer
   labels:
-    {{- include "pocket-network.labels" (dict "root" . "nameSuffix" "shannon-relayminer" ) | nindent 4 }}
+    {{ include "pocket-network.labels" (dict "root" . "nameSuffix" "shannon-relayminer" ) | nindent 4 }}
 data:
   config.yaml: |
     {{ toYaml .Values.shannon.relayminer.config | nindent 4 }}
-  client.toml: |
-    {{ .Values.shannon.relayminer.cometbft.clientConfig | nindent 4 }}
 {{- end }}
 ---
 {{- if and ( eq .Values.protocol "shannon" ) .Values.shannon.fullnode.enabled ( ne .Values.shannon.fullnode.cometbft.volumes.enabled true ) }}
@@ -18,7 +16,7 @@ kind: ConfigMap
 metadata:
   name: {{ include "pocket-network.fullname" . }}-shannon-fullnode
   labels:
-    {{- include "pocket-network.labels" (dict "root" . "nameSuffix" "shannon-fullnode" ) | nindent 4 }}
+    {{ include "pocket-network.labels" (dict "root" . "nameSuffix" "shannon-fullnode" ) | nindent 4 }}
 data:
   config.toml: |
     {{ .Values.shannon.fullnode.cometbft.config | nindent 4 }}
@@ -27,3 +25,4 @@ data:
   client.toml: |
     {{ .Values.shannon.fullnode.cometbft.client | nindent 4 }}
 {{- end }}
+---

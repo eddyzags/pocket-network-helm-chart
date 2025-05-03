@@ -2,12 +2,18 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
+# Override chart name
+nameOverride: ""
+
+# Override fullname (chart + release)
+fullnameOverride: ""
+
 # protocol string refers to the decentralized framework that enables applications
-# to access reliable and censorship-resistant infrastructure (e.g. shannon or morse).
+# to access reliable and censorship-resistant infrastructure (e.g., shannon or morse).
 protocol: shannon
 
 # network string refers to the different stages of the protocol testing phase
-# before it goes live to on the Mainnet. (e.g. mainnet, testnet, devnet)
+# before it goes live to on the Mainnet. (e.g., mainnet, testnet, devnet)
 #
 # see https://dev.poktroll.com/category/networks
 network: testnet-beta
@@ -16,22 +22,34 @@ network: testnet-beta
 # software.
 #
 # see https://dev.poktroll.com/operate/faq/full_node_faq?_highlight=version#how-do-i-check-the-node-version
-version: 0.1.3
+version: 0.1.9
 
 # homeDirectory refers to the pocketd working directory. This variable is
-# shared across all every procol actors. Meaning that the working directory
+# shared across all every protocol actor. Meaning that the working directory
 # will be instantiated in the same path for every 
 homeDirectory: /home/pocket/.pocket
 
-# shannon object refers to the root level values configuration for the shannon
-# protocol to define the configuration for every protocol actors. This
-# field is required when `.Values.protocol=shannon`.
+# Create a service account and the need roles to been able to read secret and configmap from the current namespace only
+rbac:
+  # This is only needed/used for keyring-loader to access the keys without mount the file.
+  # You can just specify a serviceAccount without the need to create one.
+  # Ensure that an account has secret and configmap access on the namespace this will be deployed
+  create: false
+  # if create=false, please update serviceAccount if you will use keyring.loader.enabled=true
+  serviceAccount: "pocket"
+
+# Shannon object refers to the root level values configuration for the shannon
+# protocol to define the configuration for every protocol actor.
+# This field is required when `.Values.protocol=shannon`.
 #
 # see https://dev.poktroll.com/category/protocol-actors for more information.
 shannon:
-  # relayminer key-value pairs refers to the relayminer configuration.
+  # relayminer key-value pairs refer to the relayminer configuration.
   relayminer:
-    # activates the deployment of a relayminer and its resources.
+    # Activates the deployment of a relayminer and its resources.
+    #
+    # NOTE: Set to false by default.
+    # Before enabling, ensure all supplier wallets are staked, as unstaked wallets are not supported yet.
     enabled: false
     # grpcInsecure allows gRPC over insecure channels for querying state in the CosmosSDK.
     #
@@ -43,30 +61,58 @@ shannon:
     # see https://docs.cosmos.network/main/learn/beginner/tx-lifecycle#gas-and-fees
     gasAdjustment: 1.5
     # gasPrices specifies how much you are willing to pay per unit of gas.
-    #
-    # see https://docs.cosmos.network/main/learn/beginner/tx-lifecycle#gas-and-fees
+    # Testnet Beta: https://github.com/pokt-network/pocket-network-genesis/blob/master/shannon/testnet-beta/app.toml#L9
+    # Testnet Alpha: https://github.com/pokt-network/pocket-network-genesis/blob/master/shannon/testnet-alpha/app.toml#L9
+    # Mainnet: https://github.com/pokt-network/pocket-network-genesis/blob/master/shannon/mainnet/app.toml#L9
+    # Ref: https://docs.cosmos.network/main/learn/beginner/tx-lifecycle#gas-and-fees
     gasPrices: 0.0001upokt
-    # keyringBackend refers the storage backend for the keyring implementation.
+    # keyringBackend refers to the storage backend for the keyring implementation.
     #
     # see https://docs.cosmos.network/v0.46/run-node/keyring.html#available-backends-for-the-keyring
-    keyringBackend: test
+    keyring:
+      # Use https://github.com/pokt-shannon/shannon-keyring-loader to hydrate keyring from a secret and update
+      #  the config.yaml file with the keys
+      loader:
+        enabled: true
+        image:
+          # repository defines which container image will be pulled from a container
+          # registry.
+          repository: ghcr.io/pokt-shannon/shannon-keyring-loader
+          # pullPolicy defines the pull policy for the keyring-loader.
+          pullPolicy: Always
+          # The tag overrides the image tag. If no tag is defined, the chart will rely
+          # on the .Values.version value.
+          tag: "0.0.1"
+        # Allow loading data from the secret without mount it
+        # kubectl create secret generic shannon-keys --from-file=keys.json
+        keysFile:
+          secretName: "shannon-keys"
+          secretKey: "keys.json"
+        # enable or disable the update of the `relayminer` config.yaml file
+        # config.yaml will be read from the configmap create by `shannon.relayminer.config`
+        # correspond to GENERATE_RELAYMINER_CONFIG env var
+        updateConfigFile: true
+        # correspond to LOG_LEVEL env var
+        logLevel: "info"
+        # correspond to LOG_COLOR env var
+        logColor: false
+      # If you do not enable the keyring.loader,
+      # then this is required to define the configuration to provide the keyring for the relayminer.
+      secret:
+        # defines the type of resources the chart needs to mount for the
+        # fullnode to access the network credentials.
+        type: Secret
+        # mount the entire secret under homeDirectory/keyring-test
+        name: pocket-network-supplier-shannon-relayminer
+
     # root configuration for pocketd instrumentation.
     telemetry:
-      # logs refers to the logging configuration
+      # logs refer to the logging configuration
       logs:
         # level defines the log severity.
         #
         # see https://github.com/pokt-network/poktroll/blob/6759eec9f586358a12306fa8c92d18cb03ef6530/pkg/polylog/polyzero/levels.go#L39-L54
         level: info
-    # define the configuration to provide the keyring for the relayminer.
-    secret:
-      # defines the type of resources the chart needs to mount for the
-      # relayminer to access the network credentials.
-      type: Secret
-      # represents the secret metadata.
-      key:
-        name: pocket-network-supplier-shannon-relayminer
-        keyName: supplier1.info
     # config defines key-values pairs for the relayminer general configuration.
     #
     # see https://dev.poktroll.com/operate/configs/relayminer_config
@@ -75,9 +121,9 @@ shannon:
     # @notationType -- toml
     config:
       # default_signing_key_names defines the list of key names from the keyring.
-      # 
+      # NOTE: leave this empty if you choose to use keyring.loader
       # https://dev.poktroll.com/operate/configs/relayminer_config
-      default_signing_key_names: [supplier1]
+      default_signing_key_names: []
       # smt_store_path path to working directory for Sparse Merkle Tree.
       smt_store_path: /home/pocket/.pocket/smt
       # pocket_node defines the different connectivity for the pocketd node.
@@ -85,21 +131,30 @@ shannon:
       # see https://dev.poktroll.com/operate/configs/relayminer_config#pocket-node-connectivity
       pocket_node:
         # query_node_rpc_url sets the websocket connection to a pocket network node.
-        #
         # see https://dev.poktroll.com/operate/configs/relayminer_config#query_node_rpc_url
+        # Public Beta: https://shannon-testnet-grove-rpc.beta.poktroll.com:443
+        # Public Alpha https://shannon-testnet-grove-rpc.beta.poktroll.com:443
+        # Custom: http[s?]://<host>:<port> (port is required even on 80 or 443)
+        # shannon.fullnode: tcp://<fullname>-shannon-fullnode-internal.<namespace>.svc.cluster.local:<fullnode.cometbft.config.rpc.laddr>
         query_node_rpc_url: tcp://node:26657
         # query_node_grpc_url sets the pocket node endpoint to read from Pocket Network.
-        #
         # see https://dev.poktroll.com/operate/configs/relayminer_config#query_node_rpc_url
+        # Public Beta: tcp://shannon-testnet-grove-grpc.beta.poktroll.com
+        # Public Alpha: tcp://shannon-testnet-grove-grpc.alpha.poktroll.com
+        # Custom: tcp://<host>:<port> (port is required even on 80 or 443)
+        # shannon.fullnode: tcp://<fullname>-shannon-fullnode-internal.<namespace>.svc.cluster.local:<fullnode.cometbft.config.rpc.grpc_laddr>
         query_node_grpc_url: tcp://node:9090
         # tx_node_rpc_url sets the pocket node endpoint to write into Pocket Network.
-        #
         # see https://dev.poktroll.com/operate/configs/relayminer_config#tx_node_rpc_url
+        # Public Beta https://shannon-testnet-grove-rpc.beta.poktroll.com:443
+        # Public Alpha https://shannon-testnet-grove-rpc.alpha.poktroll.com:443
+        # Custom: http[s?]://<host>:<port> (port is required even on 80 or 443)
+        # shannon.fullnode: tcp://<fullname>-shannon-fullnode-internal.<namespace>.svc.cluster.local:<fullnode.cometbft.config.rpc.laddr>
         tx_node_rpc_url: tcp://node:26657
-      # suppliers defines a list of key-values pairs to define the suppliers managed
+      # suppliers define a list of key-values pairs to define the suppliers managed
       # by this relayminer.
       #
-      # e.g.
+      # e.g.,
       # suppliers:
       #   - service_id: ollama
       #     service_config:
@@ -116,60 +171,46 @@ shannon:
       #
       # see https://dev.poktroll.com/operate/configs/relayminer_config#suppliers
       suppliers:
-        # service_id is a unique identifier to reference a service provided by
+        # IMPORTANT: this needs to be replaced with your own configuration, this is just a sample.
+        #   Without entries on this array, the relayminer will not start, and with wrong values and
+        #   relayminer.ping.enable it will also fail if this is wrong.
+        #
+        # `service_id` is a unique identifier to reference a service provided by
         # this relayminer.
-      - service_id: anvil
-        # service_config configures the supplier of this service.
-        #
-        # see https://dev.poktroll.com/operate/configs/relayminer_config#service_config
-        service_config:
-          # backend_url is the endpoint where the request will be forward for
-          # this service.
-          backend_url: http://anvil:8547/
-          # publicly_exposed_endpoints are a list of host the relayminer will
-          # accept request from.
-          publicly_exposed_endpoints:
-            - relayminer1
-        # listen_url is the address from which the relayminer will start a
-        # server to listen for incoming request for this service.
-        #
-        # see https://dev.poktroll.com/operate/configs/relayminer_config#listen_url
-        listen_url: http://0.0.0.0:8545
+        - service_id: anvil
+          # listen_url is the address from which the relayminer will start a
+          # server to listen for an incoming request for this service.
+          #
+          # see https://dev.poktroll.com/operate/configs/relayminer_config#listen_url
+          listen_url: http://0.0.0.0:8545
+          # service_config configures the supplier of this service.
+          #
+          # see https://dev.poktroll.com/operate/configs/relayminer_config#service_config
+          service_config:
+            # backend_url is the endpoint where the request will be forward for
+            # this service.
+            backend_url: http://anvil:8547
       # metrics configures a Prometheus Exporter server for prometheus exporters to
       # read relayminer metrics.
       metrics:
         # enabled activates a Prometheus Exporter endpoint if set to true.
-        enabled: true
+        enabled: false
         # addr is the address at which the server must listen to.
         addr: :9090
       # pprof configures a pprof endpoint for visualization and analysis of
       # profiling data.
       pprof:
         # enabled activates a pprof endpoint.
-        enabled: true
+        enabled: false
         # addr is the address at which the server must listen to.
         addr: :6060
-      # ping configures a ping healh check server to test the connectivity of all backend URLs
+      # ping configures a ping health check server to test the connectivity of all backend URLs
       # https://dev.poktroll.com/operate/configs/relayminer_config#ping
       ping:
         # enabled activates the ping server.
-        enabled: true
+        enabled: false
         # addr is the address at which the server must listen.
         addr: :8081
-    cometbft:
-      # -- (tpl/string)
-      # @notationType -- toml
-      clientConfig: |
-        # specifies the broadcast mode for the TxService.Broadcast RPC
-        broadcast-mode = "sync"
-        # name of the targeted chain to send transaction
-        chain-id = "pocket-beta"
-        # specifies where keys are stored
-        keyring-backend = "test"
-        # rpc interface for the specified chain.
-        node = "tcp://node:26657"
-        # client output format (json|text)
-        output = "json"
     # prometheus is the root value configuration for prometheus operator.
     prometheus:
       # serviceMonitor represents the configuration for a Prometheus Operator
@@ -177,8 +218,8 @@ shannon:
       serviceMonitor:
         # enabled activates the templating of a Prometheus Operator
         # ServiceMonitor.
-        enabled: true
-    # development are the globals settings to set up an development environment
+        enabled: false
+    # development are the globals settings to set up a development environment
     # on the relayminer pod.
     development:
       # delve configures a debugger for the Go programming language. Keep in
@@ -206,31 +247,31 @@ shannon:
       repository: ghcr.io/pokt-network/pocketd
      # pullPolicy defines the pull policy for the relayminer.
       pullPolicy: IfNotPresent
-      # tag overrides the image tag. If not tag are defined, the chart will rely
+      # tag overrides the image tag. If not tag is defined, the chart will rely
       # on the .Values.version value.
       tag: ""
-    # replicas defines the number of instances for the relayminer.
-    replicas: 1
     # imagePullSecrets defines the information to authenticate with the
     # container registry.
     imagePullSecrets: []
     # resources is the root configuration for the resource isolation.
     resources:
       # preset defines the resource pre-configuration (cpu and memory) for the
-      # relayminer (small, medium, large or none).
+      # relayminer (small, medium, large, or none).
+      #
+      # Ref: https://github.com/eddyzags/pocket-network-helm-chart/blob/main/templates/shannon/_resources.tpl#L7
       preset:
         # activates the preset definition for the relayminer pod template.
         enabled: false
         # select the preset to use for the relayminer pod template.
         name: medium
       values:
-        # requests defines the minimum resources a container needs to run.
+        # requests define the minimum resources a container needs to run.
         requests:
           # cpu defines the cpu minimum resources.
           cpu: 2000m
           # memory defines the memory minimum resources.
           memory: 3Gi
-        # limits defines the maximum resources a container can use.
+        # limits define the maximum resources a container can use.
         limits:
           # cpu defines the cpu maximum resource.
           cpu: 3000m
@@ -247,20 +288,20 @@ shannon:
     volumes: []
     # volumeMounts are the additional volume mount point for the relayminer pod.
     #
-    # e.g.
+    # e.g.,
     # - name: foo
     #   mountPath: "/etc/foo"
     #   readOnly: true
     volumeMounts: []
-    # configures a ingress resource that manages external access to services for
+    # configures an ingress resource that manages external access to services for
     # the relayminer.
     #
     # https://kubernetes.io/docs/concepts/services-networking/ingress
     ingress:
       # activates the definition of an ingress resource.
-      enabled: true
+      enabled: false
       # controls how the ingress resource is dynamically provisioned.
-      className: "external"
+      className: ""
       # defines non-selectable metadata attached to the ingress resource
       # for the relayminer.
       annotations: {}
@@ -290,11 +331,25 @@ shannon:
     # livenessProbe configures the mechanism that checks whether the relayminer
     # container is healthy.
     livenessProbe:
-      # ping configures a HTTP request as a probe against the ping server in the
-      # relayminer. Make sure to active the ping server in
-      # .shannon.relayminer.config.ping, otherwise the livesness probe won't be
+      # actives the liveness probe for the fullnode pod.
+      enabled: true
+      # initial number of seconds to wait after the container starts the
+      # liveness probe.
+      initialDelaySeconds: 10
+      # defines how often Kubernetes performs health checks in seconds.
+      periodSeconds: 15
+      # defines a duration threshold for the command to execute before it
+      # is considered as failed.
+      timeoutSeconds: 5
+      # defines how many failures before Kubernetes restart the the container.
+      failureThreshold: 5
+      # defines how many successful probes before considering it healthy.
+      successThreshold: 1
+
+      # ping configures an HTTP request as a probe against the ping server in the
+      # relayminer. Make sure to activate the ping server in
+      # .shannon.relayminer.config.ping, otherwise the liveness probe won't be
       # declared.
-      # 
       # https://dev.poktroll.com/operate/configs/relayminer_config#ping
       ping:
         # enabled activates the http client to request the ping server.
@@ -304,6 +359,7 @@ shannon:
         initialDelaySeconds: 10
         # defines how often Kubernetes performs health checks in seconds.
         periodSeconds: 15
+
     # autoscaling ist the root configuration for the HorizontalPodAutoscaler.
     autoscaling:
       # enable activates the templating of a HorizontalPodAutoscaler resource.
@@ -321,7 +377,7 @@ shannon:
       targetMemoryUtilizationPercentage: 80
     # podAnnotations are key-values pairs metadata attched to Pods.
     #
-    # e.g.
+    # e.g.,
     # podAnnotations:
     #   version: "1.2.3"
     #   commitHash: "abc123def456"
@@ -345,20 +401,22 @@ shannon:
     #   runAsGroup: 3000        # Run the Pod as group ID 3000
     #   fsGroup: 2000           # Set file system group ownership to 2000
     initContainersSecurityContext:
-      runAsUser: 1025
-      runAsGroup: 1025
+      runAsUser: 0
+      runAsGroup: 0
     # securityContext are key-values pairs to define the security settings
     # for the relayminer pod containers. This field overwrites the
     # podSecurityContext settings if any defined.
     #
-    # e.g.
+    # e.g.,
     # capabilities:
     #     drop:
     #     - ALL
     #   readOnlyRootFilesystem: true
     #   runAsNonRoot: true
     #   runAsUser: 1000
-    containersSecurityContext: {}
+    containersSecurityContext:
+      runAsUser: 1025
+      runAsGroup: 1025
     # nodeSelector are key-values pairs to schedule the relayminer pod on a
     # specific node based on labels.
     nodeSelector: {}
@@ -366,6 +424,37 @@ shannon:
     affinity: {}
     # tolerations defines policies for taints.
     tolerations: []
+    # storage is the root configuration for the fullnode persistent volume.
+    storage:
+      # Ref: https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#persistentvolumeclaim-retention
+      persistentVolumeClaimRetentionPolicy:
+        whenDeleted: Retain
+        whenScaled: Retain
+      # Turn on/off a persistent volume claim for the data directory
+      data:
+        # activates the mount of the data directory into the fullnode pod.
+        enabled: true
+        # Automatically creates a persistent volume claim with the following fields.
+        # Ref: https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#volume-claim-templates
+        volumeClaimTemplate:
+          # defines non-selectable metadata attached to the persistent volume claim template
+          # for the fullnode.
+          annotations: {}
+          # defines how the fullnode pod can access a persistent volume (PV).
+          accessModes: ["ReadWriteOnce"]
+          # controls how the persistent volume claim (PVC) is dynamically provisioned.
+          storageClassName: ""
+          # used for binding to pre-existing persistent volume (PV) with matching labels.
+          selector: {}
+          # defines how the volume will be accessed by the fullnode container.
+          volumeMode: Filesystem
+          # defines how big the volume should be for the fullnode pod.
+          resources:
+            requests:
+              storage: 10Gi
+            limits:
+              storage: 20Gi
+
   fullnode:
     # activates the deployment of a fullnode.
     enabled: true
@@ -374,7 +463,7 @@ shannon:
     # https://docs.cosmos.network/v0.45/run-node/cosmovisor.html
     cosmosvisor:
       # activates the deployment of cosmosvisor.
-      enabled: false
+      enabled: true
       # customizing the cosmosvisor daemon.
       daemon:
         # name of the binary to execute as a subprocess of cosmosvisor.
@@ -385,13 +474,16 @@ shannon:
         # arguments after an upgrade.
         restartAfterUpgrade: true
         # upgrade directly without performing backup.
-        unsafeSkipBackup: false
+        unsafeSkipBackup: true
         # interval length for polling the upgrade plan file.
         pollInterval: 300ms
-        # maximum number of time to call `pre-upgrade`.
+        # maximum amount of time to call `pre-upgrade`.
         preupgradeMaxRetries: 0
+    # cometbft config options
     cometbft:
+      # Load the configuration files from a Confimap or Secret.
       volumes:
+        # enable or disable the use of volumes for configuration files
         enabled: false
         type: ConfigMap
         config:
@@ -854,7 +946,7 @@ shannon:
 
         # Set to true to discard ABCI responses from the state store, which can save a
         # considerable amount of disk space. Set to false to ensure ABCI responses are
-        # persisted. ABCI responses are required for /block_results RPC queries, and to
+        # persisted. ABCI responses are required for /block_results RPC queries, and to*
         # reindex events in the command-line tool.
         discard_abci_responses = false
 
@@ -1179,11 +1271,13 @@ shannon:
         # defines the type of resources the chart needs to mount for the
         # fullnode to access the network credentials.
         type: Secret
-        # nodeKey is the long term private key specific to a P2P node.
+        # nodeKey is the long-term private key specific to a P2P node.
+        # kubectl create secret generic pocket-network-fullnode-shannon-keys --from-file=node_key.json --from-file=priv_validator_key.json
         key:
-          name: pocket-network-eddyzags-shannon
+          name: pocket-network-fullnode-shannon-keys
+          # update this to generate a new one.
           nodeKeyName: node_key.json
-          # privValidatorKeyName is the long term private key specific to a node
+          # privValidatorKeyName is the long-term private key specific to a node
           # in the consensus.
           privValidatorKeyName: priv_validator_key.json
     # image is the root configuration for the container image to be used for the
@@ -1230,7 +1324,7 @@ shannon:
         # p2p represents the service configuration for allowing nodes to connect.
         p2p:
           nodePort: 30000
-    # configures a ingress resource that manages external access to services for
+    # configures an ingress resource that manages external access to services for
     # the fullnode.
     #
     # https://kubernetes.io/docs/concepts/services-networking/ingress
@@ -1267,36 +1361,91 @@ shannon:
       hosts: []
     # storage is the root configuration for the fullnode persistent volume.
     storage:
+      # Ref: https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#persistentvolumeclaim-retention
+      persistentVolumeClaimRetentionPolicy:
+        whenDeleted: Retain
+        whenScaled: Retain
+      # Turn on/off a persistent volume claim for the data directory
       data:
-        # activates the mount of data directory into the fullnode pod.
-        enabled: false
+        # activates the mount of the data directory into the fullnode pod.
+        enabled: true
         # automatically creates a persistent volume claim with the following fields.
+        # Ref: https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#volume-claim-templates
         volumeClaimTemplate:
           # defines non-selectable metadata attached to the persistent volume claim template
           # for the fullnode.
           annotations: {}
-          # defines how a persistent volume (PV) can be accessed by the fullnode pod.
+          # defines how the fullnode pod can access a persistent volume (PV).
           accessModes: ["ReadWriteOnce"]
           # controls how the persistent volume claim (PVC) is dynamically provisioned.
           storageClassName: ""
           # used for binding to pre-existing persistent volume (PV) with matching labels.
-          selector:
-            matchLabels:
-              app.pocket.network: pocket-network-test-shannon
+          selector: {}
           # defines how the volume will be accessed by the fullnode container.
           volumeMode: Filesystem
           # defines how big the volume should be for the fullnode pod.
           resources:
             requests:
-              storage: 1000Gi
+              storage: 200Gi
             limits:
-              storage: 1500Gi
+              storage: 1000Gi
+    # Manage the usage of snapshots to speed up the sync process of the full node.
+    snapshot:
+      # Activate usage of snapshots to speedup bootstrap (only archival for now until pocket network fix pruned snapshot)
+      enabled: true
+      # Base URL for downloading Pocket Network snapshot files.
+      url: "https://snapshots.us-nj.poktroll.com"
+      # Set to "true" to use an archival snapshot (entire chain state), otherwise will use a pruned one.
+      archival: true
+      # Set to "true" to apply the snapshot even if the latest marker exists.
+      resnapshot: false
+      # Set to "true" to force download of the snapshot even if the file exists.
+      forceDownload: false
+      # Set to "true" to avoid deleting the base snapshot directory after extraction.
+      preserveDownloads: true
+      # Set to "true" to check for available disk space before downloading or uncompressing the snapshot.
+      # This may make the process slower; omit if you know there is enough space.
+      verifyFreeSpace: false
+      # image is of the container that will run the snapshot script
+      image:
+        # repository of the image
+        repository: poktscan/aria2c
+        # tag of it
+        tag: latest
+      # script url, it will be downloaded and executed on the image.
+      # NOTE(@jorgecuesta) I will try this to be part of the pocketd image, but that depends on pocket-network team.
+      scriptUrl: "https://gist.githubusercontent.com/jorgecuesta/0ef15d2196f24c015b90e5f9c412600a/raw/a1956148777df4d0218d9d2a7533f64372ef9391/get-snapshot.sh"
+      # Custom command to run. Usefully if your image already has the scripts to manage the snapshot.
+      # This could be whatever `command` key allows
+      # This will receive the following envs:
+      # - NETWORK
+      # - SNAPSHOT_BASE_URL
+      # - ARCHIVAL
+      customCommand:
+        enabled: false
+        command: [ ]
+      # A custom script in a config map to be used as a command to download and extract the snapshot
+      # note: it should be responsible to avoid re-run next time the node starts if not needed.
+      # This will receive the following envs:
+      # - NETWORK
+      # - SNAPSHOT_BASE_URL
+      # - ARCHIVAL
+      customScript:
+        enabled: false
+        # load the script from a configMap
+        configMap:
+          name: ""
+          key: ""
+        # or from a secret
+        secret:
+          name: ""
+          key: ""
     # volumes are the additional volume for the fullnode pod template.
     volumes: []
     # volumeMounts are the additional volume mount point for the fullnode pod
     # template.
     #
-    # e.g.
+    # e.g.,
     # - name: foo
     #   mountPath: "/etc/foo"
     #   readOnly: true
@@ -1322,7 +1471,8 @@ shannon:
     # limitations.
     resources:
       # preset defines the resource pre-configuration (cpu and memory) for the
-      # fullnode (small, medium, large or none).
+      # fullnode (small, medium, large, or none).
+      # Ref: https://github.com/eddyzags/pocket-network-helm-chart/blob/main/templates/shannon/_resources.tpl#L7
       preset:
         # activates the preset definition for the fullnode pod template.
         enabled: false
@@ -1345,7 +1495,7 @@ shannon:
           memory: 38Gi
     # podAnnotations are key-values pairs metadata attched to the fullnode Pods.
     #
-    # e.g.
+    # e.g.,
     # podAnnotations:
     #   version: "1.2.3"
     #   commitHash: "abc123def456"
@@ -1353,36 +1503,38 @@ shannon:
     # podSecurityContext are key-values pairs to define the security settings
     # for all containers within a pod.
     #
-    # e.g
+    # e.g.,
     # podSecurityContext
     #   runAsUser: 1000         # Run the Pod as user ID 1000
     #   runAsGroup: 3000        # Run the Pod as group ID 3000
     #   fsGroup: 2000           # Set file system group ownership to 2000
     podSecurityContext: {}
     # initContainersSecurityContext are key-values pairs to define the
-    # security settings for all init containers. This field overwrites
-    # the podSecurityContext settings if any defined.
+    # security settings for all init containers.
+    # This field overwrites the podSecurityContext settings if any are defined.
     #
-    # e.g
+    # e.g.,
     # initContainers:
     #   runAsUser: 1000         # Run the Pod as user ID 1000
     #   runAsGroup: 3000        # Run the Pod as group ID 3000
     #   fsGroup: 2000           # Set file system group ownership to 2000
     initContainersSecurityContext:
-      runAsUser: 1025
-      runAsGroup: 1025
+      runAsGroup: 0
+      runAsUser: 0
     # securityContext are key-values pairs to define the security settings
-    # for the fullnode pod containers. This field overwrites the
-    # podSecurityContext settings if any defined.
+    # for the fullnode pod containers.
+    # This field overwrites the podSecurityContext settings if any are defined.
     #
-    # e.g.
+    # E.g.,
     # capabilities:
     #     drop:
     #     - ALL
     #   readOnlyRootFilesystem: true
     #   runAsNonRoot: true
     #   runAsUser: 1000
-    containersSecurityContext: {}
+    containersSecurityContext:
+      runAsUser: 1025
+      runAsGroup: 1025
     # nodeSelector are key-values pairs to schedule the fullnode pod on a
     # specific node based on labels.
     nodeSelector: {}

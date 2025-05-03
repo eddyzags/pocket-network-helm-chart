@@ -1,14 +1,15 @@
 {{- if and .Values.protocol "shannon" .Values.shannon.relayminer.enabled }}
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: {{ include "pocket-network.fullname" . }}-shannon-relayminer
   labels:
     {{- include "pocket-network.labels" (dict "root" . "nameSuffix" "shannon-relayminer" ) | nindent 4 }}
 spec:
-  {{- if not .Values.shannon.relayminer.autoscaling.enabled }}
-  replicas: {{ .Values.shannon.relayminer.replicas }}
-  {{- end }}
+  # relayminer does not allow replicas, if this is replicated once it pushes the claim tx
+  # they will get rejected due to duplicate attempts
+  replicas: 1
+  serviceName: {{ include "pocket-network.fullname" . }}-shannon-relayminer
   selector:
     matchLabels:
       {{- include "pocket-network.selectorLabels" (dict "root" . "nameSuffix" "shannon-relayminer") | nindent 6 }}
@@ -29,6 +30,7 @@ spec:
       securityContext:
         {{- toYaml .Values.shannon.relayminer.podSecurityContext | nindent 8 }}
       {{- end }}
+      serviceAccountName: {{ .Values.rbac.serviceAccount }}
       initContainers:
         - name: init-home
           image: busybox
@@ -40,11 +42,54 @@ spec:
             - sh
             - -c
             - |
+              #!/bin/sh
               mkdir -p {{ .Values.homeDirectory }}/config
               mkdir -p {{ .Values.homeDirectory }}/keyring-test
+              cd {{ .Values.homeDirectory }}
+              chown -R {{ .Values.shannon.relayminer.containersSecurityContext.runAsUser }}:{{ .Values.shannon.relayminer.containersSecurityContext.runAsGroup }} {{ .Values.homeDirectory}}
+              chmod -R 700 {{ .Values.homeDirectory }}
           volumeMounts:
-            - name: relayminer-home
+            - name: data
               mountPath: {{ .Values.homeDirectory }}
+        {{- if .Values.shannon.relayminer.keyring.loader.enabled }}
+        - name: keyring-loader
+          image: {{ .Values.shannon.relayminer.keyring.loader.image.repository }}:{{ .Values.shannon.relayminer.keyring.loader.image.tag | default .Values.version }}
+          imagePullPolicy: {{ .Values.shannon.relayminer.keyring.loader.image.pullPolicy }}
+          {{- with .Values.shannon.relayminer.containersSecurityContext }}
+          securityContext:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          volumeMounts:
+            - name: data
+              mountPath: {{ .Values.homeDirectory }}
+          env:
+            - name: ADDRESS_PREFIX
+              value: "pokt"
+            - name: KEYRING_BACKEND
+              value: "test"
+            - name: KEYRING_APP_NAME
+              value: "pocket"
+            - name: KEYRING_DIR
+              value: {{ .Values.homeDirectory }}
+            - name: CONFIG_SOURCE
+              value: "kubernetes"
+            - name: KEYS_NAMESPACE
+              value: {{ .Release.Namespace }}
+            - name: KEYS_SECRET_NAME
+              value: {{ .Values.shannon.relayminer.keyring.loader.keysFile.secretName }}
+            - name: KEYS_SECRET_KEY
+              value: {{ .Values.shannon.relayminer.keyring.loader.keysFile.secretKey }}
+            - name: GENERATE_RELAYMINER_CONFIG
+              value: {{ .Values.shannon.relayminer.keyring.loader.updateConfigFile | quote }}
+            - name: RELAYMINER_CONFIG_NAMESPACE
+              value: {{ .Release.Namespace }}
+            - name: RELAYMINER_CONFIG_NAME
+              value: {{ include "pocket-network.fullname" . }}-shannon-relayminer
+            - name: RELAYMINER_CONFIG_KEY
+              value: "config.yaml"
+            - name: RELAYMINER_CONFIG_FILE_OUTPUT_PATH
+              value: {{ .Values.homeDirectory }}/config/config.yaml
+        {{- end }}
       containers:
         - name: relayminer
           {{- with .Values.shannon.relayminer.containersSecurityContext }}
@@ -70,7 +115,8 @@ spec:
           {{- end }}
             - "relayminer"
             - "--home={{ .Values.homeDirectory }}"
-            - "--keyring-backend={{ .Values.shannon.relayminer.keyringBackend }}"
+            - "--keyring-backend=test"
+            # this will be the mounted file by volume
             - "--config={{ .Values.homeDirectory }}/config/config.yaml"
             - "--grpc-insecure={{ .Values.shannon.relayminer.grpcInsecure }}"
             - "--log_level={{ .Values.shannon.relayminer.telemetry.logs.level }}"
@@ -84,7 +130,7 @@ spec:
             {{- end }}
             {{- if .Values.shannon.relayminer.config.ping.enabled }}
             - name: ping
-              containerPort: {{- include "pocket-network.utils.extractPort" .Values.shannon.relayminer.config.metrics.addr }}
+              containerPort: {{- include "pocket-network.utils.extractPort" .Values.shannon.relayminer.config.ping.addr }}
               protocol: TCP
             {{- end }}
             {{- if .Values.shannon.relayminer.config.pprof.enabled }}
@@ -97,8 +143,8 @@ spec:
             httpGet:
               path: /
               port: {{- include "pocket-network.utils.extractPort" .Values.shannon.relayminer.config.ping.addr }}
-              initialDelaySeconds: {{ .Values.shannon.relayminer.livenessProbe.initialDelaySeconds }}
-              periodSeconds: {{ .Values.shannon.relayminer.livenessProbe.periodSeconds }}
+            initialDelaySeconds: {{ .Values.shannon.relayminer.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.shannon.relayminer.livenessProbe.periodSeconds }}
           {{- end }}
           {{- if .Values.shannon.relayminer.resources.preset.enabled }}
           resources: {{- include "pocket-network.shannon.preset" (dict "type" .Values.shannon.relayminer.resources.preset.name) | nindent 12 }}
@@ -106,34 +152,45 @@ spec:
           resources: {{- toYaml .Values.shannon.relayminer.resources.values | nindent 12 }}
           {{- end }}
           volumeMounts:
-            {{- if eq .Values.shannon.relayminer.secret.type "Secret" }}
-            - name: relayminer-keys
-              mountPath: {{ .Values.homeDirectory }}/keyring-test/{{ .Values.shannon.relayminer.secret.key.keyName }}
-              subPath: {{ .Values.shannon.relayminer.secret.key.keyName }}
-              readOnly: true
-            {{- end }}
+            {{- if not .Values.shannon.relayminer.keyring.loader.enabled }}
             - name: relayminer-config
               mountPath: "{{ .Values.homeDirectory }}/config/config.yaml"
               subPath: "config.yaml"
-            - name: relayminer-config
-              mountPath: "{{ .Values.homeDirectory }}/config/client.toml"
-              subPath: "client.toml"
-            - name: relayminer-home
+            - name: keyring-keys
+              mountPath: "{{ .Values.homeDirectory }}/keyring-test"
+              readOnly: false
+            {{- end }}
+            - name: data
               mountPath: {{ .Values.homeDirectory }}
           {{- with .Values.shannon.relayminer.volumeMounts }}
             {{- toYaml . | nindent 12 }}
           {{- end }}
       volumes:
-        {{- if eq .Values.shannon.relayminer.secret.type "Secret" }}
-        - name: relayminer-keys
-          secret:
-            secretName: {{ .Values.shannon.relayminer.secret.key.name }}
+        {{- if not .Values.shannon.relayminer.storage.data.enabled }}
+        - name: data
+          emptyDir: {}
         {{- end }}
+        # keyring-loader will fill the keyring at the proper path at data pv
+        # also will generate the config.yaml
+        {{- if not .Values.shannon.relayminer.keyring.loader.enabled }}
         - name: relayminer-config
           configMap:
             name: {{ include "pocket-network.fullname" . }}-shannon-relayminer
-        - name: relayminer-home
-          emptyDir: {}
+        {{- else }}
+        # if loaded, we will just need to mount the client.toml
+        - name: relayminer-config
+          configMap:
+            name: {{ include "pocket-network.fullname" . }}-shannon-relayminer
+            items:
+              - key: "client.toml"
+                path: "client.toml"
+        {{- end }}
+        # if the keyring-loader is not used, we will mount the entire secret under the keyring-test folder.
+        {{- if not .Values.shannon.relayminer.keyring.loader.enabled }}
+        - name: keyring-keys
+          secret:
+            secretName: {{ .Values.shannon.relayminer.keyring.secret.name }}
+        {{- end}}
       {{- with .Values.shannon.relayminer.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -146,4 +203,31 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+  persistentVolumeClaimRetentionPolicy:
+    {{- with .Values.shannon.relayminer.storage.persistentVolumeClaimRetentionPolicy }}
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
+  {{- if .Values.shannon.relayminer.storage.data.enabled }}
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+        labels:
+          {{- include "pocket-network.labels" (dict "root" . "nameSuffix" "shannon-relayminer" ) | nindent 12 }}
+        annotations:
+        {{- with .Values.shannon.relayminer.storage.data.volumeClaimTemplate.annotations }}
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
+      spec:
+        accessModes: {{ .Values.shannon.relayminer.storage.data.volumeClaimTemplate.accessModes }}
+        storageClassName: {{ .Values.shannon.relayminer.storage.data.volumeClaimTemplate.storageClassName }}
+        volumeMode: {{ .Values.shannon.relayminer.storage.data.volumeClaimTemplate.volumeMode }}
+        selector:
+        {{- with .Values.shannon.relayminer.storage.data.volumeClaimTemplate.selector }}
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
+        resources:
+        {{- with .Values.shannon.relayminer.storage.data.volumeClaimTemplate.resources }}
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
+  {{- end }}
 {{- end }}

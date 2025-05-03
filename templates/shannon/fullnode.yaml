@@ -17,7 +17,7 @@ spec:
     metadata:
       labels:
         {{- include "pocket-network.labels" (dict "root" . "nameSuffix" "shannon-fullnode" ) | nindent 8 }}
-      {{- with .Values.shannon.podAnnotations }}
+      {{- with .Values.shannon.fullnode.podAnnotations }}
       annotations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
@@ -26,44 +26,20 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- if .Values.shannon.fullnode.podSecurityContext }}
+      {{- with .Values.shannon.fullnode.podSecurityContext }}
       securityContext:
-        {{- toYaml | nindent 8 }}
+        {{- toYaml . | nindent 8 }}
       {{- end }}
       initContainers:
-        - name: cosmossdk
-          image: "{{ .Values.shannon.fullnode.image.repository }}:{{ .Values.shannon.fullnode.image.tag | default .Values.version }}"
-          {{- if .Values.shannon.fullnode.initContainersSecurityContext }}
-          securityContext:
-            {{- toYaml .Values.shannon.fullnode.initContainersSecurityContext | nindent 12 }}
-          {{- end }}
-          command:
-            - "/bin/sh"
-            - "-c"
-            - |
-              pocketd init --home {{.Values.homeDirectory }} {{ .Values.network }} > /dev/null 2>&1 && \
-              echo genesis file initialized || \
-              echo genesis file already exists. Continuing...
-          volumeMounts:
-            - name: home-config
-              mountPath: {{ .Values.homeDirectory }}
-        - name: get-genesis
-          image: busybox
-          {{- if .Values.shannon.fullnode.initContainersSecurityContext }}
-          securityContext:
-            {{- toYaml .Values.shannon.fullnode.initContainersSecurityContext | nindent 12 }}
-          {{- end }}
-          command:
-            - "/bin/sh"
-            - "-c"
-            - |
-              wget -O {{ .Values.homeDirectory }}/config/genesis.json https://raw.githubusercontent.com/pokt-network/pocket-network-genesis/refs/heads/master/shannon/{{ .Values.network}}/genesis.json
-          volumeMounts:
-            - name: home-config
-              mountPath: {{ .Values.homeDirectory }}
+        {{- include "pocket-network.shannon.initcontainers.cosmossdk" . | nindent 8 }}
+        {{- include "pocket-network.shannon.initcontainers.get-genesis" . | nindent 8 }}
         {{- if .Values.shannon.fullnode.cosmosvisor.enabled }}
         {{- include "pocket-network.shannon.initcontainers.cosmosvisor" . | nindent 8 }}
         {{- end }}
+        {{- if .Values.shannon.fullnode.snapshot.enabled }}
+        {{- include "pocket-network.shannon.initcontainers.snapshots" . | nindent 8 }}
+        {{- end }}
+        {{- include "pocket-network.shannon.initcontainers.permissions" . | nindent 8 }}
       containers:
         - name: fullnode
           {{- with .Values.shannon.fullnode.containersSecurityContext }}
@@ -132,7 +108,7 @@ spec:
               path: /status
               port: {{- include "pocket-network.utils.extractPort" $config.rpc.laddr }}
             initialDelaySeconds: {{ .Values.shannon.fullnode.livenessProbe.initialDelaySeconds }}
-            periodSeconds: {{ .Values.shannon.fullnode.livenessProbe.periodSecond }}
+            periodSeconds: {{ .Values.shannon.fullnode.livenessProbe.periodSeconds }}
             timeoutSeconds: {{ .Values.shannon.fullnode.livenessProbe.timeoutSeconds }}
             failureThreshold: {{ .Values.shannon.fullnode.livenessProbe.failureThreshold }}
             successThreshold: {{ .Values.shannon.fullnode.livenessProbe.successThreshold }}
@@ -143,7 +119,7 @@ spec:
           resources: {{- toYaml .Values.shannon.fullnode.resources.values | nindent 12 }}
           {{- end }}
           volumeMounts:
-            - name: home-config
+            - name: data
               mountPath: "{{ .Values.homeDirectory }}"
             - name: fullnode-config
               mountPath: "{{ .Values.homeDirectory }}/config/config.toml"
@@ -172,6 +148,10 @@ spec:
           {{- include "pocket-network.shannon.envs.cosmosvisor" . | nindent 10 }}
           {{- end }}
       volumes:
+        {{- if not .Values.shannon.fullnode.storage.data.enabled }}
+        - name: data
+          emptyDir: {}
+        {{- end }}
         - name: fullnode-config
           configMap:
             {{- if .Values.shannon.fullnode.cometbft.volumes.enabled }}
@@ -184,9 +164,26 @@ spec:
           secret:
             secretName: {{ .Values.shannon.fullnode.cometbft.secret.key.name }}
         {{- end }}
-        {{- if ne .Values.shannon.fullnode.storage.data.enabled true }}
-        - name: home-config
-          emptyDir: {}
+        {{- if .Values.shannon.fullnode.snapshot.enabled }}
+        {{- if .Values.shannon.fullnode.snapshot.customScript.enabled }}
+        - name: snapshot-script
+          {{- if and .Values.shannon.fullnode.snapshot.customScript.secret.name .Values.shannon.fullnode.snapshot.customScript.secret.key }}
+          secret:
+            secretName: {{ .Values.shannon.fullnode.snapshot.customScript.secret.name }}
+            defaultMode: 0755
+            items:
+              - key: {{ .Values.shannon.fullnode.snapshot.customScript.secret.key }}
+                path: "custom-script.sh"
+          {{- end }}
+          {{- if and .Values.shannon.fullnode.snapshot.customScript.configMap.name .Values.shannon.fullnode.snapshot.customScript.configMap.key }}
+          configMap:
+            name: {{ .Values.shannon.fullnode.snapshot.customScript.configMap.name }}
+            defaultMode: 0755
+            items:
+              - key: {{ .Values.shannon.fullnode.snapshot.customScript.configMap.key }}
+                path: "custom-script.sh"
+          {{- end }}
+        {{- end }}
         {{- end }}
         {{- with .Values.shannon.fullnode.volumes }}
           {{- toYaml . | nindent 6 }}
@@ -203,27 +200,34 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+  persistentVolumeClaimRetentionPolicy:
+  {{- with .Values.shannon.fullnode.storage.persistentVolumeClaimRetentionPolicy }}
+    {{- toYaml . | nindent 6 }}
+  {{- end }}
   {{- if .Values.shannon.fullnode.storage.data.enabled }}
   volumeClaimTemplates:
     - metadata:
-        name: home-config
+        name: data
         labels:
           {{- include "pocket-network.labels" (dict "root" . "nameSuffix" "shannon-fullnode" ) | nindent 12 }}
         annotations:
-        {{- with .Values.shannon.fullnode.storage.data.annotations }}
+        {{- with .Values.shannon.fullnode.storage.data.volumeClaimTemplate.annotations }}
           {{- toYaml . | nindent 10 }}
         {{- end }}
       spec:
         accessModes: {{ .Values.shannon.fullnode.storage.data.volumeClaimTemplate.accessModes }}
         storageClassName: {{ .Values.shannon.fullnode.storage.data.volumeClaimTemplate.storageClassName }}
         volumeMode: {{ .Values.shannon.fullnode.storage.data.volumeClaimTemplate.volumeMode }}
-        selector:
+        {{- if .Values.shannon.fullnode.storage.data.volumeClaimTemplate.selector }}
         {{- with .Values.shannon.fullnode.storage.data.volumeClaimTemplate.selector }}
+        selector:
           {{- toYaml . | nindent 10 }}
+        {{- end }}
         {{- end }}
         resources:
         {{- with .Values.shannon.fullnode.storage.data.volumeClaimTemplate.resources }}
           {{- toYaml . | nindent 10 }}
         {{- end }}
+
   {{- end }}
 {{- end }}
