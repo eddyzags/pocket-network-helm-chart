@@ -1,6 +1,6 @@
 {{- if and .Values.protocol "shannon" .Values.shannon.fullnode.enabled }}
-{{- $config := .Values.shannon.fullnode.cometbft.config | fromToml }}
-{{- $app := .Values.shannon.fullnode.cometbft.app | fromToml }}
+{{- $config := .Values.shannon.fullnode.cosmossdk.config | fromToml }}
+{{- $app := .Values.shannon.fullnode.cosmossdk.app | fromToml }}
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -147,21 +147,21 @@ spec:
               mountPath: "{{ .Values.homeDirectory }}"
             - name: fullnode-config
               mountPath: "{{ .Values.homeDirectory }}/config/config.toml"
-              subPath: "{{ .Values.shannon.fullnode.cometbft.volumes.config.key.configKeyName }}"
+              subPath: "{{ .Values.shannon.fullnode.cosmossdk.volumes.config.key.configKeyName }}"
             - name: fullnode-config
               mountPath: "{{ .Values.homeDirectory }}/config/app.toml"
-              subPath: "{{ .Values.shannon.fullnode.cometbft.volumes.config.key.appKeyName }}"
+              subPath: "{{ .Values.shannon.fullnode.cosmossdk.volumes.config.key.appKeyName }}"
             - name: fullnode-config
               mountPath: "{{ .Values.homeDirectory }}/config/client.toml"
-              subPath: "{{ .Values.shannon.fullnode.cometbft.volumes.config.key.clientKeyName }}"
-            {{- if eq .Values.shannon.fullnode.cometbft.secret.type "Secret" }}
+              subPath: "{{ .Values.shannon.fullnode.cosmossdk.volumes.config.key.clientKeyName }}"
+            {{- if eq .Values.shannon.fullnode.cosmossdk.secret.type "Secret" }}
             - name: keys
               mountPath: "{{ .Values.homeDirectory }}/config/node_key.json"
-              subPath: "{{ .Values.shannon.fullnode.cometbft.secret.key.nodeKeyName }}"
+              subPath: "{{ .Values.shannon.fullnode.cosmossdk.secret.key.nodeKeyName }}"
               readOnly: true
             - name: keys
               mountPath: "{{ .Values.homeDirectory }}/config/priv_validator_key.json"
-              subPath: "{{ .Values.shannon.fullnode.cometbft.secret.key.privValidatorKeyName }}"
+              subPath: "{{ .Values.shannon.fullnode.cosmossdk.secret.key.privValidatorKeyName }}"
               readOnly: true
             {{- end }}
             {{- if .Values.shannon.fullnode.tls.enabled }}
@@ -184,15 +184,15 @@ spec:
       volumes:
         - name: fullnode-config
           configMap:
-            {{- if .Values.shannon.fullnode.cometbft.volumes.enabled }}
-            name: {{ .Values.shannon.fullnode.cometbft.volumes.config.key.name }}
+            {{- if .Values.shannon.fullnode.cosmossdk.volumes.enabled }}
+            name: {{ .Values.shannon.fullnode.cosmossdk.volumes.config.key.name }}
             {{- else }}
             name: {{ include "pocket-network.fullname" . }}-shannon-fullnode
             {{- end }}
-        {{- if eq .Values.shannon.fullnode.cometbft.secret.type "Secret" }}
+        {{- if eq .Values.shannon.fullnode.cosmossdk.secret.type "Secret" }}
         - name: keys
           secret:
-            secretName: {{ .Values.shannon.fullnode.cometbft.secret.key.name }}
+            secretName: {{ .Values.shannon.fullnode.cosmossdk.secret.key.name }}
         {{- end }}
         {{- if ne .Values.shannon.fullnode.storage.data.enabled true }}
         - name: home-config

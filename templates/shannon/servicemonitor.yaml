@@ -14,7 +14,7 @@ spec:
       interval: 30s
       path: /metrics
 {{ end }}
-{{- $config := .Values.shannon.fullnode.cometbft.config | fromToml }}
+{{- $config := .Values.shannon.fullnode.cosmossdk.config | fromToml }}
 {{- if and (eq .Values.protocol "shannon") .Values.shannon.fullnode.enabled $config.instrumentation.prometheus }}
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
