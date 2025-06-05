@@ -1,20 +1,22 @@
 # Demonstrate how to deploy a fullnode with Transport Layer Security (TLS) activated for the RPC server
 
-There is some use cases where you might need to interact with the RPC clients over a trusted network to ensures data integrity and confidentiality. This is also true if you are going to operate a fullnode to developers, apps, regulated environments, or other services via the public internet.
-
-This chart offers the capability to define a TLS certificate for your fullnode.
+There are certain use cases where you may need to interact with RPC clients over a trusted network to ensure data integrity and confidentiality. This also applies when operating a full node intended for developers, applications, regulated environments, or other services accessible via the public internet. This Helm chart supports mounting volumes for the TLS certificates from a Kubernetes Secret. Combined with the certificate issuance via cert-manager, you can specify the appropriate Kubernetes Secret to be mounted automatically, and use it for the fullnode RPC server.
 
 ## Pre-requisite
-* cert-manager
-* TLS certificate available in Kubernetes Secret.
+* cert-manager installed on Kubernetes.
+* TLS certificate available in Kubernetes Secret resource.
 
 ### Certificate (certificates.cert-manager.io)
 
+This resource represents a certificate request. The cert-manager uses this input to generate private key and a CertificateRequest resource in order to obtain a signed certificate for the fullnode.
+
 ```
+$> cat <<EOF>> certificate.yaml
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
   name: fullnode-tls-example-com
+  namespace: pocket-network
   labels:
     app.pocket.network: tls-example
 spec:
@@ -48,13 +50,26 @@ spec:
     name: letsencrypt-staging
     kind: ClusterIssuer
     group: cert-manager.io
+EOF
+
+?> kubectl apply -f certificate.yaml
+```
+
+Once the `Certificate` custom resources created, we have to make sure the certificate is issued by the cert-manager. You can use this command to monitor the issuance.
+```
+?> kubectl get certificate -n pocket-network fullnode-tls-example-com
+NAME                       READY   SECRET                         AGE
+fullnode-tls-example-com   True    fullnode-tls-example-com-tls   5m
 ```
 
 ### Values
 
+Once the pre-requisiste are met, you can now define a Helm chart values file that creates a fullnode with `.Values.fullnode.tls.enabled=true`. We must also provide the path to the `.Values.fullnode.config.rpc.tls_cert_file` and `.Values.fullnode.config.rpc.tls_key_file` in which you want to mount the Kubernetes Secret keys.
+
 ```
   fullnode:
     enabled: true
+    cometbft:
       config: |
         version = "0.38.10"
         proxy_app = "tcp://127.0.0.1:26658"
@@ -180,11 +195,9 @@ spec:
       enabled: true
       secret:
         key:
-          name: pocket-network-eddyzags-shannon-fullnode-rpc-tls
+          name: pocket-network-shannon-fullnode-rpc-tls
           certKeyName: tls.crt
           keyKeyName: tls.key
 
 ```
-
-It avoids eavesdropping and tempering 
-
+> Note: Make sure to specify a path for `.Values.fullnode.cometbft.config.tls_cert_file` and `.Values.fullnode.cometbft.config.tls_key_file`. These can be any valid file paths. The Helm chart will automatically mount the contents of the corresponding Kubernetes Secret to these locations.
