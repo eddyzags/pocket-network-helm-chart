@@ -1250,41 +1250,18 @@ shannon:
         # p2p represents the service configuration for allowing nodes to connect.
         p2p:
           nodePort: 30000
-    # configures a ingress resource that manages external access to services for
-    # the fullnode.
-    #
-    # https://kubernetes.io/docs/concepts/services-networking/ingress
-    ingress:
-      # activates the definition of an ingress resource.
+    # tls configures the fullnode to use a transport layer security (tls) for the RPC server.
+    tls:
+      # activates the templating to mount a secret into the fullnode pod for the key and cert file.
       enabled: false
-      # controls how the ingress resource is dynamically provisioned.
-      className: ""
-      # defines non-selectable metadata attached to the ingress resource
-      # for the relayminer.
-      annotations: {}
-      # secures an ingress host by specifying a Secret that contains a TLS
-      # private key and certificates.
-      #
-      # https://kubernetes.io/docs/concepts/services-networking/ingress/#tls
-      #
-      # e.g
-      # - hosts:
-      #     - fullnode.pocket.network
-      #   secretName: fullnode-tls
-      tls: []
-      # defines the hostnames this ingress rule applies to.
-      #
-      # e.g
-      # - host: fullnode.pocket.network
-      #   paths:
-      #     - path: /
-      #       pathType: Prefix
-      #       backend:
-      #         service:
-      #           name: fullnode-service
-      #           port:
-      #             number: 8080
-      hosts: []
+      secret:
+        # nodeKey is the long term private key specific to a P2P node.
+        key:
+          name: pocket-network-shannon-fullnode-rpc-tls
+          # defines the secret key to use for the tls cert file.
+          certKeyName: tls.crt
+          # defines the secret key to use for the tls key file.
+          keyKeyName: tls.key
     # storage is the root configuration for the fullnode persistent volume.
     storage:
       data:

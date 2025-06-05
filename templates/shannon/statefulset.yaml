@@ -164,6 +164,16 @@ spec:
               subPath: "{{ .Values.shannon.fullnode.cometbft.secret.key.privValidatorKeyName }}"
               readOnly: true
             {{- end }}
+            {{- if .Values.shannon.fullnode.tls.enabled }}
+            - name: fullnode-tls
+              mountPath: '{{ .Values.homeDirectory }}/{{ $config.rpc.tls_cert_file | default "tls.crt" }}'
+              subPath: "{{ .Values.shannon.fullnode.tls.secret.key.certKeyName }}"
+              readOnly: true
+            - name: fullnode-tls
+              mountPath: '{{ .Values.homeDirectory }}/{{ $config.rpc.tls_key_file | default "tls.key" }}'
+              subPath: "{{ .Values.shannon.fullnode.tls.secret.key.keyKeyName }}"
+              readOnly: true
+            {{- end }}
             {{- with .Values.shannon.fullnode.volumeMounts }}
               {{- toYaml . | nindent 14 }}
             {{- end }}
@@ -187,6 +197,11 @@ spec:
         {{- if ne .Values.shannon.fullnode.storage.data.enabled true }}
         - name: home-config
           emptyDir: {}
+        {{- end }}
+        {{- if .Values.shannon.fullnode.tls.enabled }}
+        - name: fullnode-tls
+          secret:
+            secretName: {{ .Values.shannon.fullnode.tls.secret.key.name }}
         {{- end }}
         {{- with .Values.shannon.fullnode.volumes }}
           {{- toYaml . | nindent 6 }}

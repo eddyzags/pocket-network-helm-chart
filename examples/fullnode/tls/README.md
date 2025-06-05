@@ -1,10 +1,10 @@
 # Demonstrate how to deploy a fullnode with Transport Layer Security (TLS) activated for the RPC server
 
-There are certain use cases where you may need to interact with RPC clients over a trusted network to ensure data integrity and confidentiality. This also applies when operating a full node intended for developers, applications, regulated environments, or other services accessible via the public internet. This Helm chart supports mounting volumes for the TLS certificates from a Kubernetes Secret. Combined with the certificate issuance via cert-manager, you can specify the appropriate Kubernetes Secret to be mounted automatically, and use it for the fullnode RPC server.
+There are certain use cases where you may need to interact with RPC clients over a trusted network to ensure data integrity and confidentiality. This also applies when operating a fullnode intended for developers, applications, regulated environments, or other services accessible via the public internet. This Helm chart supports mounting volumes for the TLS certificates from a Kubernetes Secret. Combined with the certificate issuance via cert-manager, you can specify the appropriate Kubernetes Secret to be mounted automatically, and use it for the fullnode RPC server.
 
 ## Pre-requisite
 * cert-manager installed on Kubernetes.
-* TLS certificate available in Kubernetes Secret resource.
+* TLS certificate available in a Kubernetes Secret resource.
 
 ### Certificate (certificates.cert-manager.io)
 
