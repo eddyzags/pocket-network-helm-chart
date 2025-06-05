@@ -16,7 +16,7 @@ network: testnet-beta
 # software.
 #
 # see https://dev.poktroll.com/operate/faq/full_node_faq?_highlight=version#how-do-i-check-the-node-version
-version: 0.1.3
+version: 0.1.16
 
 # homeDirectory refers to the pocketd working directory. This variable is
 # shared across all every procol actors. Meaning that the working directory
@@ -206,8 +206,8 @@ shannon:
       repository: ghcr.io/pokt-network/pocketd
      # pullPolicy defines the pull policy for the relayminer.
       pullPolicy: IfNotPresent
-      # tag overrides the image tag. If not tag are defined, the chart will rely
-      # on the .Values.version value.
+      # tag overrides the image tag. If not tag are defined, the chart will use
+      # the .Values.version value as default.
       tag: ""
     # replicas defines the number of instances for the relayminer.
     replicas: 1
@@ -371,10 +371,22 @@ shannon:
     enabled: true
     # configures a small wrapper process manager for CosmosSDK application binaries.
     #
-    # https://docs.cosmos.network/v0.45/run-node/cosmovisor.html
+    # https://docs.cosmos.network/main/build/tooling/cosmovisor
     cosmosvisor:
       # activates the deployment of cosmosvisor.
-      enabled: false
+      enabled: true
+      # refers to the cosmosvisor working directory (default '.Values.homeDirectory').
+      workingDirectory: ""
+      # disables cosmosvisor logs.
+      disableLogs: false
+      # colorise cosmosvisor logs.
+      colorLogs: true
+      # defines log format.
+      timeformatLogs: kitchen
+      # executes a custom script prior to upgrade.
+      customPreupgrade: ""
+      # matches the upgrade plan name without any case changes.
+      disableRecase: false
       # customizing the cosmosvisor daemon.
       daemon:
         # name of the binary to execute as a subprocess of cosmosvisor.
@@ -385,11 +397,19 @@ shannon:
         # arguments after an upgrade.
         restartAfterUpgrade: true
         # upgrade directly without performing backup.
-        unsafeSkipBackup: false
+        unsafeSkipBackup: true
         # interval length for polling the upgrade plan file.
         pollInterval: 300ms
         # maximum number of time to call `pre-upgrade`.
         preupgradeMaxRetries: 0
+        # requires that checksum is provided.
+        downloadMustHaveChecksum: false
+        # restarts subprocess with same command-line arguments after successful upgrade.
+        restartAfterUpgrade: true
+        # delay between node halt (for upgrade) and backup by the specified time.
+        restartDelay: ""
+        # defines custom backup directory.
+        dataBackupDir: ""
     cometbft:
       volumes:
         enabled: false
@@ -1192,8 +1212,8 @@ shannon:
       # repository defines which container image will be pulled from a container
       # registry.
       repository: ghcr.io/pokt-network/pocketd
-      # tag overrides the image tag. If not tag are defined, the chart will rely
-      # on the .Values.version value.
+      # tag overrides the image tag. If not tag are defined, the chart will use
+      # the .Values.version value as default.
       tag: ""
     # imagePullSecrets defines the information to authenticate with the
     # container registry.
