@@ -25,8 +25,8 @@ spec:
 {{- end }}
 ---
 {{- if and (eq .Values.protocol "shannon") .Values.shannon.fullnode.enabled }}
-{{- $config := .Values.shannon.fullnode.cometbft.config | fromToml }}
-{{- $app := .Values.shannon.fullnode.cometbft.app | fromToml }}
+{{- $config := .Values.shannon.fullnode.cosmossdk.config | fromToml }}
+{{- $app := .Values.shannon.fullnode.cosmossdk.app | fromToml }}
 apiVersion: v1
 kind: Service
 metadata:

@@ -12,7 +12,7 @@ data:
     {{ .Values.shannon.relayminer.cometbft.clientConfig | nindent 4 }}
 {{- end }}
 ---
-{{- if and ( eq .Values.protocol "shannon" ) .Values.shannon.fullnode.enabled ( ne .Values.shannon.fullnode.cometbft.volumes.enabled true ) }}
+{{- if and ( eq .Values.protocol "shannon" ) .Values.shannon.fullnode.enabled ( ne .Values.shannon.fullnode.cosmossdk.volumes.enabled true ) }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -21,9 +21,9 @@ metadata:
     {{- include "pocket-network.labels" (dict "root" . "nameSuffix" "shannon-fullnode" ) | nindent 4 }}
 data:
   config.toml: |
-    {{ .Values.shannon.fullnode.cometbft.config | nindent 4 }}
+    {{ .Values.shannon.fullnode.cosmossdk.config | nindent 4 }}
   app.toml: |
-    {{ .Values.shannon.fullnode.cometbft.app | nindent 4 }}
+    {{ .Values.shannon.fullnode.cosmossdk.app | nindent 4 }}
   client.toml: |
-    {{ .Values.shannon.fullnode.cometbft.client | nindent 4 }}
+    {{ .Values.shannon.fullnode.cosmossdk.client | nindent 4 }}
 {{- end }}

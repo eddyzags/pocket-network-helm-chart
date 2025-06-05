@@ -56,7 +56,7 @@ A fullnode requires a more in-depth setup to configure Tendermint (consensus eng
 * Option A) Define the configuration file as input values while installing the chart. This can be useful if you already have these configuration files in your local machine.
 
 ```
-?> helm install release-1 . -f shannon-values.yaml --set-file 'shannon.fullnode.cometbft.config=config.toml' --set-file 'shannon.fullnode.cometbft.app=app.toml' --set-file 'shannon.fullnode.cometbft.client=client.toml'
+?> helm install release-1 . -f shannon-values.yaml --set-file 'shannon.fullnode.cosmossdk.config=config.toml' --set-file 'shannon.fullnode.cosmossdk.app=app.toml' --set-file 'shannon.fullnode.cosmossdk.client=client.toml'
 ```
 
 * Option B) Use Kubernetes `ConfigMap` to mount configuration files. This can be useful if you want to use a single configuration for all your fullnode for example.
@@ -67,7 +67,7 @@ A fullnode requires a more in-depth setup to configure Tendermint (consensus eng
 shannon:
   fullnode:
     enabled: true
-    cometbft:
+    cosmossdk:
       volumes:
         enabled: true
         type: ConfigMap
@@ -264,7 +264,7 @@ shannon:
 
 #### Fullnode
 
-For the fullnode, the CosmosSDK `shannon.fullnode.cometbft.config` configuration file gives us the ability to activate a prometheus collector connections at a specific endpoint. Every metrics in this [CosmosBFT - Metrics](https://docs.cometbft.com/main/explanation/core/metrics) documentation will be available to you.
+For the fullnode, the CosmosSDK `shannon.fullnode.cosmossdk.config` configuration file gives us the ability to activate a prometheus collector connections at a specific endpoint. Every metrics in this [CosmosBFT - Metrics](https://docs.cometbft.com/main/explanation/core/metrics) documentation will be available to you.
 When the `prometheus` option is enabled in `config.toml` and an address and port are specified using `prometheus_listen_addr`, this chart automatically adds the port to a Kubernetes Service and creates a corresponding `ServiceMonitor` pointing to it.
 
 An example is available in the default values - [see here](https://github.com/eddyzags/pocket-network-helm-chart/blob/6aca94ba72ee7a792bf71110a399c50596119ce0/shannon-values.yaml#L861-L881)
@@ -498,182 +498,6 @@ object
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--fullnode--cometbft--app">shannon.fullnode.cometbft.app</td>
-			<td>
-tpl/string
-</td>
-			<td>
-				<div style="max-width: 300px;">
-<a href="./shannon-values.yaml">see example in shannon-values.yaml</a>
-</div>
-			</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td id="shannon--fullnode--cometbft--client">shannon.fullnode.cometbft.client</td>
-			<td>
-tpl/string
-</td>
-			<td>
-				<div style="max-width: 300px;">
-<a href="./shannon-values.yaml">see example in shannon-values.yaml</a>
-</div>
-			</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td id="shannon--fullnode--cometbft--config">shannon.fullnode.cometbft.config</td>
-			<td>
-tpl/string
-</td>
-			<td>
-				<div style="max-width: 300px;">
-<a href="./shannon-values.yaml">see example in shannon-values.yaml</a>
-</div>
-			</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td id="shannon--fullnode--cometbft--secret--key--name">shannon.fullnode.cometbft.secret.key.name</td>
-			<td>
-string
-</td>
-			<td>
-				<div style="max-width: 300px;">
-<pre lang="json">
-"pocket-network-eddyzags-shannon"
-</pre>
-</div>
-			</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td id="shannon--fullnode--cometbft--secret--key--nodeKeyName">shannon.fullnode.cometbft.secret.key.nodeKeyName</td>
-			<td>
-string
-</td>
-			<td>
-				<div style="max-width: 300px;">
-<pre lang="json">
-"node_key.json"
-</pre>
-</div>
-			</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td id="shannon--fullnode--cometbft--secret--key--privValidatorKeyName">shannon.fullnode.cometbft.secret.key.privValidatorKeyName</td>
-			<td>
-string
-</td>
-			<td>
-				<div style="max-width: 300px;">
-<pre lang="json">
-"priv_validator_key.json"
-</pre>
-</div>
-			</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td id="shannon--fullnode--cometbft--secret--type">shannon.fullnode.cometbft.secret.type</td>
-			<td>
-string
-</td>
-			<td>
-				<div style="max-width: 300px;">
-<pre lang="json">
-"Secret"
-</pre>
-</div>
-			</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td id="shannon--fullnode--cometbft--volumes--config--key--appKeyName">shannon.fullnode.cometbft.volumes.config.key.appKeyName</td>
-			<td>
-string
-</td>
-			<td>
-				<div style="max-width: 300px;">
-<pre lang="json">
-"app.toml"
-</pre>
-</div>
-			</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td id="shannon--fullnode--cometbft--volumes--config--key--clientKeyName">shannon.fullnode.cometbft.volumes.config.key.clientKeyName</td>
-			<td>
-string
-</td>
-			<td>
-				<div style="max-width: 300px;">
-<pre lang="json">
-"client.toml"
-</pre>
-</div>
-			</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td id="shannon--fullnode--cometbft--volumes--config--key--configKeyName">shannon.fullnode.cometbft.volumes.config.key.configKeyName</td>
-			<td>
-string
-</td>
-			<td>
-				<div style="max-width: 300px;">
-<pre lang="json">
-"config.toml"
-</pre>
-</div>
-			</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td id="shannon--fullnode--cometbft--volumes--config--key--name">shannon.fullnode.cometbft.volumes.config.key.name</td>
-			<td>
-string
-</td>
-			<td>
-				<div style="max-width: 300px;">
-<pre lang="json">
-"pocket-network-fullnode-shannon"
-</pre>
-</div>
-			</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td id="shannon--fullnode--cometbft--volumes--enabled">shannon.fullnode.cometbft.volumes.enabled</td>
-			<td>
-bool
-</td>
-			<td>
-				<div style="max-width: 300px;">
-<pre lang="json">
-false
-</pre>
-</div>
-			</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td id="shannon--fullnode--cometbft--volumes--type">shannon.fullnode.cometbft.volumes.type</td>
-			<td>
-string
-</td>
-			<td>
-				<div style="max-width: 300px;">
-<pre lang="json">
-"ConfigMap"
-</pre>
-</div>
-			</td>
-			<td></td>
-		</tr>
-		<tr>
 			<td id="shannon--fullnode--containersSecurityContext">shannon.fullnode.containersSecurityContext</td>
 			<td>
 object
@@ -688,6 +512,210 @@ object
 			<td></td>
 		</tr>
 		<tr>
+			<td id="shannon--fullnode--cosmossdk--app">shannon.fullnode.cosmossdk.app</td>
+			<td>
+tpl/string
+</td>
+			<td>
+				<div style="max-width: 300px;">
+<a href="./shannon-values.yaml">see example in shannon-values.yaml</a>
+</div>
+			</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td id="shannon--fullnode--cosmossdk--client">shannon.fullnode.cosmossdk.client</td>
+			<td>
+tpl/string
+</td>
+			<td>
+				<div style="max-width: 300px;">
+<a href="./shannon-values.yaml">see example in shannon-values.yaml</a>
+</div>
+			</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td id="shannon--fullnode--cosmossdk--config">shannon.fullnode.cosmossdk.config</td>
+			<td>
+tpl/string
+</td>
+			<td>
+				<div style="max-width: 300px;">
+<a href="./shannon-values.yaml">see example in shannon-values.yaml</a>
+</div>
+			</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td id="shannon--fullnode--cosmossdk--secret--key--name">shannon.fullnode.cosmossdk.secret.key.name</td>
+			<td>
+string
+</td>
+			<td>
+				<div style="max-width: 300px;">
+<pre lang="json">
+"pocket-network-eddyzags-shannon"
+</pre>
+</div>
+			</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td id="shannon--fullnode--cosmossdk--secret--key--nodeKeyName">shannon.fullnode.cosmossdk.secret.key.nodeKeyName</td>
+			<td>
+string
+</td>
+			<td>
+				<div style="max-width: 300px;">
+<pre lang="json">
+"node_key.json"
+</pre>
+</div>
+			</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td id="shannon--fullnode--cosmossdk--secret--key--privValidatorKeyName">shannon.fullnode.cosmossdk.secret.key.privValidatorKeyName</td>
+			<td>
+string
+</td>
+			<td>
+				<div style="max-width: 300px;">
+<pre lang="json">
+"priv_validator_key.json"
+</pre>
+</div>
+			</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td id="shannon--fullnode--cosmossdk--secret--type">shannon.fullnode.cosmossdk.secret.type</td>
+			<td>
+string
+</td>
+			<td>
+				<div style="max-width: 300px;">
+<pre lang="json">
+"Secret"
+</pre>
+</div>
+			</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td id="shannon--fullnode--cosmossdk--volumes--config--key--appKeyName">shannon.fullnode.cosmossdk.volumes.config.key.appKeyName</td>
+			<td>
+string
+</td>
+			<td>
+				<div style="max-width: 300px;">
+<pre lang="json">
+"app.toml"
+</pre>
+</div>
+			</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td id="shannon--fullnode--cosmossdk--volumes--config--key--clientKeyName">shannon.fullnode.cosmossdk.volumes.config.key.clientKeyName</td>
+			<td>
+string
+</td>
+			<td>
+				<div style="max-width: 300px;">
+<pre lang="json">
+"client.toml"
+</pre>
+</div>
+			</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td id="shannon--fullnode--cosmossdk--volumes--config--key--configKeyName">shannon.fullnode.cosmossdk.volumes.config.key.configKeyName</td>
+			<td>
+string
+</td>
+			<td>
+				<div style="max-width: 300px;">
+<pre lang="json">
+"config.toml"
+</pre>
+</div>
+			</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td id="shannon--fullnode--cosmossdk--volumes--config--key--name">shannon.fullnode.cosmossdk.volumes.config.key.name</td>
+			<td>
+string
+</td>
+			<td>
+				<div style="max-width: 300px;">
+<pre lang="json">
+"pocket-network-fullnode-shannon"
+</pre>
+</div>
+			</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td id="shannon--fullnode--cosmossdk--volumes--enabled">shannon.fullnode.cosmossdk.volumes.enabled</td>
+			<td>
+bool
+</td>
+			<td>
+				<div style="max-width: 300px;">
+<pre lang="json">
+false
+</pre>
+</div>
+			</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td id="shannon--fullnode--cosmossdk--volumes--type">shannon.fullnode.cosmossdk.volumes.type</td>
+			<td>
+string
+</td>
+			<td>
+				<div style="max-width: 300px;">
+<pre lang="json">
+"ConfigMap"
+</pre>
+</div>
+			</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td id="shannon--fullnode--cosmosvisor--colorLogs">shannon.fullnode.cosmosvisor.colorLogs</td>
+			<td>
+bool
+</td>
+			<td>
+				<div style="max-width: 300px;">
+<pre lang="json">
+true
+</pre>
+</div>
+			</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td id="shannon--fullnode--cosmosvisor--customPreupgrade">shannon.fullnode.cosmosvisor.customPreupgrade</td>
+			<td>
+string
+</td>
+			<td>
+				<div style="max-width: 300px;">
+<pre lang="json">
+""
+</pre>
+</div>
+			</td>
+			<td></td>
+		</tr>
+		<tr>
 			<td id="shannon--fullnode--cosmosvisor--daemon--allowDownloadBinaries">shannon.fullnode.cosmosvisor.daemon.allowDownloadBinaries</td>
 			<td>
 bool
@@ -696,6 +724,34 @@ bool
 				<div style="max-width: 300px;">
 <pre lang="json">
 true
+</pre>
+</div>
+			</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td id="shannon--fullnode--cosmosvisor--daemon--dataBackupDir">shannon.fullnode.cosmosvisor.daemon.dataBackupDir</td>
+			<td>
+string
+</td>
+			<td>
+				<div style="max-width: 300px;">
+<pre lang="json">
+""
+</pre>
+</div>
+			</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td id="shannon--fullnode--cosmosvisor--daemon--downloadMustHaveChecksum">shannon.fullnode.cosmosvisor.daemon.downloadMustHaveChecksum</td>
+			<td>
+bool
+</td>
+			<td>
+				<div style="max-width: 300px;">
+<pre lang="json">
+false
 </pre>
 </div>
 			</td>
@@ -758,7 +814,63 @@ true
 			<td></td>
 		</tr>
 		<tr>
+			<td id="shannon--fullnode--cosmosvisor--daemon--restartAfterUpgrade">shannon.fullnode.cosmosvisor.daemon.restartAfterUpgrade</td>
+			<td>
+bool
+</td>
+			<td>
+				<div style="max-width: 300px;">
+<pre lang="json">
+true
+</pre>
+</div>
+			</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td id="shannon--fullnode--cosmosvisor--daemon--restartDelay">shannon.fullnode.cosmosvisor.daemon.restartDelay</td>
+			<td>
+string
+</td>
+			<td>
+				<div style="max-width: 300px;">
+<pre lang="json">
+""
+</pre>
+</div>
+			</td>
+			<td></td>
+		</tr>
+		<tr>
 			<td id="shannon--fullnode--cosmosvisor--daemon--unsafeSkipBackup">shannon.fullnode.cosmosvisor.daemon.unsafeSkipBackup</td>
+			<td>
+bool
+</td>
+			<td>
+				<div style="max-width: 300px;">
+<pre lang="json">
+true
+</pre>
+</div>
+			</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td id="shannon--fullnode--cosmosvisor--disableLogs">shannon.fullnode.cosmosvisor.disableLogs</td>
+			<td>
+bool
+</td>
+			<td>
+				<div style="max-width: 300px;">
+<pre lang="json">
+false
+</pre>
+</div>
+			</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td id="shannon--fullnode--cosmosvisor--disableRecase">shannon.fullnode.cosmosvisor.disableRecase</td>
 			<td>
 bool
 </td>
@@ -779,7 +891,35 @@ bool
 			<td>
 				<div style="max-width: 300px;">
 <pre lang="json">
-false
+true
+</pre>
+</div>
+			</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td id="shannon--fullnode--cosmosvisor--timeformatLogs">shannon.fullnode.cosmosvisor.timeformatLogs</td>
+			<td>
+string
+</td>
+			<td>
+				<div style="max-width: 300px;">
+<pre lang="json">
+"kitchen"
+</pre>
+</div>
+			</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td id="shannon--fullnode--cosmosvisor--workingDirectory">shannon.fullnode.cosmosvisor.workingDirectory</td>
+			<td>
+string
+</td>
+			<td>
+				<div style="max-width: 300px;">
+<pre lang="json">
+""
 </pre>
 </div>
 			</td>
@@ -829,76 +969,6 @@ string
 		</tr>
 		<tr>
 			<td id="shannon--fullnode--imagePullSecrets">shannon.fullnode.imagePullSecrets</td>
-			<td>
-list
-</td>
-			<td>
-				<div style="max-width: 300px;">
-<pre lang="json">
-[]
-</pre>
-</div>
-			</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td id="shannon--fullnode--ingress--annotations">shannon.fullnode.ingress.annotations</td>
-			<td>
-object
-</td>
-			<td>
-				<div style="max-width: 300px;">
-<pre lang="json">
-{}
-</pre>
-</div>
-			</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td id="shannon--fullnode--ingress--className">shannon.fullnode.ingress.className</td>
-			<td>
-string
-</td>
-			<td>
-				<div style="max-width: 300px;">
-<pre lang="json">
-""
-</pre>
-</div>
-			</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td id="shannon--fullnode--ingress--enabled">shannon.fullnode.ingress.enabled</td>
-			<td>
-bool
-</td>
-			<td>
-				<div style="max-width: 300px;">
-<pre lang="json">
-false
-</pre>
-</div>
-			</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td id="shannon--fullnode--ingress--hosts">shannon.fullnode.ingress.hosts</td>
-			<td>
-list
-</td>
-			<td>
-				<div style="max-width: 300px;">
-<pre lang="json">
-[]
-</pre>
-</div>
-			</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td id="shannon--fullnode--ingress--tls">shannon.fullnode.ingress.tls</td>
 			<td>
 list
 </td>
@@ -1382,6 +1452,62 @@ string
 				<div style="max-width: 300px;">
 <pre lang="json">
 ""
+</pre>
+</div>
+			</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td id="shannon--fullnode--tls--enabled">shannon.fullnode.tls.enabled</td>
+			<td>
+bool
+</td>
+			<td>
+				<div style="max-width: 300px;">
+<pre lang="json">
+false
+</pre>
+</div>
+			</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td id="shannon--fullnode--tls--secret--key--certKeyName">shannon.fullnode.tls.secret.key.certKeyName</td>
+			<td>
+string
+</td>
+			<td>
+				<div style="max-width: 300px;">
+<pre lang="json">
+"tls.crt"
+</pre>
+</div>
+			</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td id="shannon--fullnode--tls--secret--key--keyKeyName">shannon.fullnode.tls.secret.key.keyKeyName</td>
+			<td>
+string
+</td>
+			<td>
+				<div style="max-width: 300px;">
+<pre lang="json">
+"tls.key"
+</pre>
+</div>
+			</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td id="shannon--fullnode--tls--secret--key--name">shannon.fullnode.tls.secret.key.name</td>
+			<td>
+string
+</td>
+			<td>
+				<div style="max-width: 300px;">
+<pre lang="json">
+"pocket-network-shannon-fullnode-rpc-tls"
 </pre>
 </div>
 			</td>
@@ -2359,7 +2485,7 @@ string
 			<td>
 				<div style="max-width: 300px;">
 <pre lang="json">
-"0.1.3"
+"0.1.16"
 </pre>
 </div>
 			</td>

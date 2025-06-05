@@ -69,7 +69,7 @@ Once the pre-requisiste are met, you can now define a Helm chart values file tha
 ```
   fullnode:
     enabled: true
-    cometbft:
+    cosmossdk:
       config: |
         version = "0.38.10"
         proxy_app = "tcp://127.0.0.1:26658"
@@ -200,4 +200,4 @@ Once the pre-requisiste are met, you can now define a Helm chart values file tha
           keyKeyName: tls.key
 
 ```
-> Note: Make sure to specify a path for `.Values.fullnode.cometbft.config.tls_cert_file` and `.Values.fullnode.cometbft.config.tls_key_file`. These can be any valid file paths. The Helm chart will automatically mount the contents of the corresponding Kubernetes Secret to these locations.
+> Note: Make sure to specify a path for `.Values.fullnode.cosmossdk.config.tls_cert_file` and `.Values.fullnode.cosmossdk.config.tls_key_file`. These can be any valid file paths. The Helm chart will automatically mount the contents of the corresponding Kubernetes Secret to these locations.
