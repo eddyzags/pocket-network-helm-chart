@@ -1276,6 +1276,76 @@ string
 			<td></td>
 		</tr>
 		<tr>
+			<td id="shannon--fullnode--snapshot--config--chownAsGroup">shannon.fullnode.snapshot.config.chownAsGroup</td>
+			<td>
+string
+</td>
+			<td>
+				<div style="max-width: 300px;">
+<pre lang="json">
+""
+</pre>
+</div>
+			</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td id="shannon--fullnode--snapshot--config--chownAsUser">shannon.fullnode.snapshot.config.chownAsUser</td>
+			<td>
+string
+</td>
+			<td>
+				<div style="max-width: 300px;">
+<pre lang="json">
+""
+</pre>
+</div>
+			</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td id="shannon--fullnode--snapshot--config--url">shannon.fullnode.snapshot.config.url</td>
+			<td>
+string
+</td>
+			<td>
+				<div style="max-width: 300px;">
+<pre lang="json">
+"https://snapshots.us-nj.poktroll.com/testnet-beta-39120-archival.torrent"
+</pre>
+</div>
+			</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td id="shannon--fullnode--snapshot--enabled">shannon.fullnode.snapshot.enabled</td>
+			<td>
+bool
+</td>
+			<td>
+				<div style="max-width: 300px;">
+<pre lang="json">
+false
+</pre>
+</div>
+			</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td id="shannon--fullnode--snapshot--type">shannon.fullnode.snapshot.type</td>
+			<td>
+string
+</td>
+			<td>
+				<div style="max-width: 300px;">
+<pre lang="json">
+"ariac"
+</pre>
+</div>
+			</td>
+			<td></td>
+		</tr>
+		<tr>
 			<td id="shannon--fullnode--storage--data--enabled">shannon.fullnode.storage.data.enabled</td>
 			<td>
 bool
