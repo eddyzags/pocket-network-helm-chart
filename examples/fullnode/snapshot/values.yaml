@@ -1,0 +1,14 @@
+# For more informations regarding each field responsability, please refer to
+# the default value file.
+# https://github.com/eddyzags/pocket-network-helm-chart/blob/feat/fullnode-snapshot/shannon-values.yaml
+
+shannon:
+  fullnode:
+    enabled: true
+    snapshot:
+      enabled: true
+      type: ariac
+      config:
+        url: https://snapshots.us-nj.poktroll.com/testnet-beta-39120-archival.torrent
+        chownAsUser: 1025
+        chownAsGroup: 1025

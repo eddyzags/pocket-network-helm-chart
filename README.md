@@ -814,20 +814,6 @@ true
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--fullnode--cosmosvisor--daemon--restartAfterUpgrade">shannon.fullnode.cosmosvisor.daemon.restartAfterUpgrade</td>
-			<td>
-bool
-</td>
-			<td>
-				<div style="max-width: 300px;">
-<pre lang="json">
-true
-</pre>
-</div>
-			</td>
-			<td></td>
-		</tr>
-		<tr>
 			<td id="shannon--fullnode--cosmosvisor--daemon--restartDelay">shannon.fullnode.cosmosvisor.daemon.restartDelay</td>
 			<td>
 string
@@ -891,7 +877,7 @@ bool
 			<td>
 				<div style="max-width: 300px;">
 <pre lang="json">
-true
+false
 </pre>
 </div>
 			</td>
@@ -1270,6 +1256,76 @@ string
 				<div style="max-width: 300px;">
 <pre lang="json">
 "ClusterIP"
+</pre>
+</div>
+			</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td id="shannon--fullnode--snapshot--config--chownAsGroup">shannon.fullnode.snapshot.config.chownAsGroup</td>
+			<td>
+int
+</td>
+			<td>
+				<div style="max-width: 300px;">
+<pre lang="json">
+1025
+</pre>
+</div>
+			</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td id="shannon--fullnode--snapshot--config--chownAsUser">shannon.fullnode.snapshot.config.chownAsUser</td>
+			<td>
+int
+</td>
+			<td>
+				<div style="max-width: 300px;">
+<pre lang="json">
+1025
+</pre>
+</div>
+			</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td id="shannon--fullnode--snapshot--config--url">shannon.fullnode.snapshot.config.url</td>
+			<td>
+string
+</td>
+			<td>
+				<div style="max-width: 300px;">
+<pre lang="json">
+"https://snapshots.us-nj.poktroll.com/testnet-beta-39120-archival.torrent"
+</pre>
+</div>
+			</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td id="shannon--fullnode--snapshot--enabled">shannon.fullnode.snapshot.enabled</td>
+			<td>
+bool
+</td>
+			<td>
+				<div style="max-width: 300px;">
+<pre lang="json">
+false
+</pre>
+</div>
+			</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td id="shannon--fullnode--snapshot--type">shannon.fullnode.snapshot.type</td>
+			<td>
+string
+</td>
+			<td>
+				<div style="max-width: 300px;">
+<pre lang="json">
+"ariac"
 </pre>
 </div>
 			</td>

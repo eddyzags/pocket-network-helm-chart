@@ -20,3 +20,45 @@ This file implements several helpers function to define init containers.
   env:
   {{- include "pocket-network.shannon.envs.cosmosvisor" . | nindent 2 }}
 {{- end }}
+
+{{- define "pocket-network.shannon.initcontainers.get-snapshot" -}}
+{{- if eq .Values.shannon.fullnode.snapshot.type "ariac" }}
+- name: get-snapshot
+  image: debian:bullseye-slim
+  securityContext: # Requires root privileged to execute package manager (apt).
+    runAsUser: 0
+    runAsGroup: 0
+  command:
+    - "/bin/sh"
+    - "-c"
+    - |
+      apt update && apt install -y aria2 \
+          zstd \
+          tar
+
+      MARKER="{{ .Values.homeDirectory }}/snapshot/.{{ replace "/" "_" .Values.shannon.fullnode.snapshot.config.url }}"
+
+      mkdir -p {{ .Values.homeDirectory }}/snapshot
+
+      if [ -f "$MARKER" ]; then
+        echo "Snapshot already downloaded. ({{ .Values.shannon.fullnode.snapshot.config.url }})"
+      else
+        echo "Removing existing snapshot..."
+        rm -r {{ .Values.homeDirectory }}/snapshot/* > /dev/null 2>&1
+
+        echo "Downloading snapshot..."
+        aria2c --seed-time=0 --file-allocation=none --dir {{ .Values.homeDirectory }}/snapshot "{{ .Values.shannon.fullnode.snapshot.config.url }}"
+
+        tar --no-same-owner -vxf {{ .Values.homeDirectory }}/snapshot/*.tar.zst --directory {{ .Values.homeDirectory }}/data
+        {{ if and .Values.shannon.fullnode.snapshot.config.chownAsUser .Values.shannon.fullnode.snapshot.config.chownAsGroup }}
+        chown -R {{ .Values.shannon.fullnode.snapshot.config.chownAsUser }}:{{ .Values.shannon.fullnode.snapshot.config.chownAsGroup}} {{ .Values.homeDirectory }}/data
+        {{- end }}
+
+        touch "$MARKER"
+      fi
+  volumeMounts:
+    - name: home-config
+      mountPath: {{ .Values.homeDirectory }}
+{{- else if eq .Values.shannon.fullnode.snapshot.type "custom" }}
+{{- end }}
+{{- end }}

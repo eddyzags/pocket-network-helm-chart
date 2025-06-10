@@ -64,6 +64,9 @@ spec:
         {{- if .Values.shannon.fullnode.cosmosvisor.enabled }}
         {{- include "pocket-network.shannon.initcontainers.cosmosvisor" . | nindent 8 }}
         {{- end }}
+        {{- if .Values.shannon.fullnode.snapshot.enabled }}
+        {{- include "pocket-network.shannon.initcontainers.get-snapshot" . | nindent 8 }}
+        {{- end }}
       containers:
         - name: fullnode
           {{- with .Values.shannon.fullnode.containersSecurityContext }}

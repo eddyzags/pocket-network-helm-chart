@@ -374,7 +374,7 @@ shannon:
     # https://docs.cosmos.network/main/build/tooling/cosmovisor
     cosmosvisor:
       # activates the deployment of cosmosvisor.
-      enabled: true
+      enabled: false
       # refers to the cosmosvisor working directory (default '.Values.homeDirectory').
       workingDirectory: ""
       # disables cosmosvisor logs.
@@ -404,8 +404,6 @@ shannon:
         preupgradeMaxRetries: 0
         # requires that checksum is provided.
         downloadMustHaveChecksum: false
-        # restarts subprocess with same command-line arguments after successful upgrade.
-        restartAfterUpgrade: true
         # delay between node halt (for upgrade) and backup by the specified time.
         restartDelay: ""
         # defines custom backup directory.
@@ -1288,6 +1286,57 @@ shannon:
               storage: 1000Gi
             limits:
               storage: 1500Gi
+    # snapshot configures an init container to download the latest blockchain snapshot
+    # before executing the fullnode. This can speed up the synchronization of your
+    # fullnode.
+    snapshot:
+      # activates the retrieval of a snapshot before executing the fullnode.
+      enabled: false
+      # defines the type of tools you want to use to download and extract
+      # the blockchain snapshot:
+      # - ariac: deploys a one-time init container that uses a lightweight multi-protocol
+      #          CLI download utility to fetch the blockchain snapshot. The compressed file is
+      #          downloaded to a temporary location and extracted into the fullnode data
+      #          directory. Ownership of the data directory can be updated after extraction.
+      #          To avoid repeated downloads on each deployment, a unique hidden marker file
+      #          named using the '.Values.shannon.fullnode.snapshot.config.url' value is
+      #          created after a successful download based on the URL name and used to skip
+      #          future ones with the same '.Values.shannon.fullnode.snapshot.config.url'
+      #          value. A URL value mismatch will remove the previous snapshot, then trigger
+      #          a new snapshot process.
+      #
+      #          Supported compression algorithm:
+      #          - .zst
+      #          - .gz
+      #
+      #          The tarball must match this tree structure:
+      #          ├── application.db
+      #          │   └── ...
+      #          ├── blockstore.db
+      #          │   └── ...
+      #          ├── evidence.db
+      #          │   └── ...
+      #          ├── snapshots
+      #          │   └── ...
+      #          ├── state.db
+      #          │   └── ...
+      #          └── tx_index.db
+      #              └── ...
+      #
+      #          e.g.
+      #          type: ariac
+      #          config:
+      #            url: https://snapshots.us-nj.poktroll.com/testnet-beta-39120-archival.torrent
+      #            chownAsUser: 1025
+      #            chownAsGroup: 1025
+      type: ariac
+      config:
+        # defines the url to download.
+        url: https://snapshots.us-nj.poktroll.com/testnet-beta-39120-archival.torrent
+        # change pocket data folder owner.
+        chownAsUser: 1025
+        # change pocket data folder group.
+        chownAsGroup: 1025
     # volumes are the additional volume for the fullnode pod template.
     volumes: []
     # volumeMounts are the additional volume mount point for the fullnode pod
