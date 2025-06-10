@@ -22,8 +22,8 @@ This file implements several helpers function to define init containers.
 {{- end }}
 
 {{- define "pocket-network.shannon.initcontainers.get-snapshot" -}}
-{{- if eq .Values.shannon.fullnode.snapshot.type "ariac" }}
 - name: get-snapshot
+{{- if eq .Values.shannon.fullnode.snapshot.type "ariac" }}
   image: debian:bullseye-slim
   securityContext: # Requires root privileged to execute package manager (apt).
     runAsUser: 0
@@ -60,5 +60,22 @@ This file implements several helpers function to define init containers.
     - name: home-config
       mountPath: {{ .Values.homeDirectory }}
 {{- else if eq .Values.shannon.fullnode.snapshot.type "custom" }}
+  image: "{{ .Values.shannon.fullnode.snapshot.image.repository }}:{{ .Values.shannon.fullnode.image.tag | default "latest" }}"
+  {{- if .Values.shannon.fullnode.snapshot.securityContext }}
+  securityContext:
+    {{- toYaml .Values.shannon.fullnode.snapshot.securityContext | nindent 4 }}
+  {{- end }}
+  {{- if .Values.shannon.fullnode.snapshot.resources }}
+  resources:
+    {{- toYaml .Values.shannon.fullnode.snapshot.resources | nindent 4 }}
+  {{- end }}
+  env:
+    - name: POCKETD_WORKING_DIRECTORY
+      value: {{ .Values.homeDirectory }}
+  command:
+    {{- toYaml .Values.shannon.fullnode.snapshot.command | nindent 4 }}
+  volumeMounts:
+    - name: home-config
+      mountPath: {{ .Values.homeDirectory }}
 {{- end }}
 {{- end }}

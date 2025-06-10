@@ -1329,6 +1329,35 @@ shannon:
       #            url: https://snapshots.us-nj.poktroll.com/testnet-beta-39120-archival.torrent
       #            chownAsUser: 1025
       #            chownAsGroup: 1025
+      #
+      # - custom: use a custom init container to fetch and extract a blockchain
+      #           snapshot. In some environment, you might want to download a snapshot from a
+      #           your own data store or even a object storage service (such as AWS S3).
+      #           You can provide your own init container with the required commands to execute.
+      #           When using this `custom` type, it is the responsability of this init container
+      #           to:
+      #           * Extract the downloaded snapshot to the appropriate directory. This chart will
+      #             automatically define a default environment variable (POCKETD_WORKING_DIRECTORY_PATH).
+      #             (e.g.: tar -vxf snapshot.tar.gz --directory $POCKETD_WORKING_DIRECTORY_PATH/data)
+      #
+      #          e.g.:
+      #          type: custom
+      #          image:
+      #          repository: amazon/aws-cli
+      #          tag: latest
+      #          resources:
+      #            requests:
+      #              cpu:
+      #              memory:
+      #            limits:
+      #              cpu:
+      #              memory:
+      #          command:
+      #            - "/bin/sh"
+      #            - "-c"
+      #            - |
+      #              aws s3 cp s3://your-bucket-name/path/to/snapshot.tar.gz .
+      #              tar --no-same-owner -vxf {{ .Values.homeDirectory }}/snapshot/*.tar.zst --directory $POCKETD_WORKING_DIRECTORY/data
       type: ariac
       config:
         # defines the url to download.
