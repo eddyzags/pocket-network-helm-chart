@@ -1,3 +1,7 @@
+# For more informations regarding each field responsability, please refer to
+# the default value file.
+# https://github.com/eddyzags/pocket-network-helm-chart/blob/feat/fullnode-snapshot/shannon-values.yaml
+
 shannon:
   fullnode:
     enabled: true
