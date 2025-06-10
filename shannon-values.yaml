@@ -374,7 +374,7 @@ shannon:
     # https://docs.cosmos.network/main/build/tooling/cosmovisor
     cosmosvisor:
       # activates the deployment of cosmosvisor.
-      enabled: true
+      enabled: false
       # refers to the cosmosvisor working directory (default '.Values.homeDirectory').
       workingDirectory: ""
       # disables cosmosvisor logs.
@@ -404,8 +404,6 @@ shannon:
         preupgradeMaxRetries: 0
         # requires that checksum is provided.
         downloadMustHaveChecksum: false
-        # restarts subprocess with same command-line arguments after successful upgrade.
-        restartAfterUpgrade: true
         # delay between node halt (for upgrade) and backup by the specified time.
         restartDelay: ""
         # defines custom backup directory.

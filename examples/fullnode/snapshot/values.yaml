@@ -1,0 +1,10 @@
+shannon:
+  fullnode:
+    enabled: true
+    snapshot:
+      enabled: true
+      type: ariac
+      config:
+        url: https://snapshots.us-nj.poktroll.com/testnet-beta-39120-archival.torrent
+        chownAsUser: 1025
+        chownAsGroup: 1025
