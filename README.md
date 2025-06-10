@@ -814,20 +814,6 @@ true
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--fullnode--cosmosvisor--daemon--restartAfterUpgrade">shannon.fullnode.cosmosvisor.daemon.restartAfterUpgrade</td>
-			<td>
-bool
-</td>
-			<td>
-				<div style="max-width: 300px;">
-<pre lang="json">
-true
-</pre>
-</div>
-			</td>
-			<td></td>
-		</tr>
-		<tr>
 			<td id="shannon--fullnode--cosmosvisor--daemon--restartDelay">shannon.fullnode.cosmosvisor.daemon.restartDelay</td>
 			<td>
 string
@@ -891,7 +877,7 @@ bool
 			<td>
 				<div style="max-width: 300px;">
 <pre lang="json">
-true
+false
 </pre>
 </div>
 			</td>
@@ -1278,12 +1264,12 @@ string
 		<tr>
 			<td id="shannon--fullnode--snapshot--config--chownAsGroup">shannon.fullnode.snapshot.config.chownAsGroup</td>
 			<td>
-string
+int
 </td>
 			<td>
 				<div style="max-width: 300px;">
 <pre lang="json">
-""
+1025
 </pre>
 </div>
 			</td>
@@ -1292,12 +1278,12 @@ string
 		<tr>
 			<td id="shannon--fullnode--snapshot--config--chownAsUser">shannon.fullnode.snapshot.config.chownAsUser</td>
 			<td>
-string
+int
 </td>
 			<td>
 				<div style="max-width: 300px;">
 <pre lang="json">
-""
+1025
 </pre>
 </div>
 			</td>

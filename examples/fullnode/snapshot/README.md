@@ -1,4 +1,4 @@
-# Demonstrate how to deploy a fullnode with a snapshot
+# Deploy a fullnode with a snapshot
 
 This charts allows you to download a pocket network recorded blockchain state at a specific block height. It is
 useful if you want to speed up the fullnode syncing process, and also as a fast failsafe, you may roll your
