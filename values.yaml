@@ -16,7 +16,7 @@ network: testnet-beta
 # software.
 #
 # see https://dev.poktroll.com/operate/faq/full_node_faq?_highlight=version#how-do-i-check-the-node-version
-version: 0.1.16
+version: 0.1.19
 
 # homeDirectory refers to the pocketd working directory. This variable is
 # shared across all every procol actors. Meaning that the working directory

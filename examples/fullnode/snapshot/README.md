@@ -5,8 +5,8 @@ useful if you want to speed up the fullnode syncing process, and also as a fast 
 fullnode back to an ealier point if an error occured.
 You can define in the value files which type of mechanism you want to use to download the snapshot before
 executing the fullnode:
-* `ariac`: uses a lightweight multi-protocol CLI download utility to fetch the blockchain snapshot. [More information here](https://github.com/eddyzags/pocket-network-helm-chart/blob/main/shannon-values.yaml#L1299-L1333)
-* `custom`: use your own init container to download and extract a snapshot into the fullnode Kubernetes Pod. [More information here](https://github.com/eddyzags/pocket-network-helm-chart/blob/main/shannon-values.yaml#L1299-L1333)
+* `ariac`: uses a lightweight multi-protocol CLI download utility to fetch the blockchain snapshot. [More information here](https://github.com/eddyzags/pocket-network-helm-chart/blob/main/values.yaml#L1299-L1333)
+* `custom`: use your own init container to download and extract a snapshot into the fullnode Kubernetes Pod. [More information here](https://github.com/eddyzags/pocket-network-helm-chart/blob/main/values.yaml#L1299-L1333)
 
 In this `values.yaml` example, we are going to deploy a fullnode with these specififties:
 * Use local file system as a persistent storage for `pocketd` working directory.
