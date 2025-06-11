@@ -10,7 +10,7 @@ Pocket Network is permissionless decentralized physical infrastructure (DePin) p
 ```shell
 ?> git clone git@github.com:eddyzags/pocket-network-helm-chart.git && cd pocket-helm-chart
 
-?> helm install release-1 . -f shannon-values.yaml
+?> helm install release-1 . -f values.yaml
 ```
 
 # Table of Contents
@@ -39,7 +39,7 @@ To install the chart with name `my-release`
 ```
 ?> git clone git@github.com:eddyzags/pocket-network-helm-chart.git && cd pocket-helm-chart
 
-?> helm install fullnode .  -f shannon-values.yaml
+?> helm install fullnode .  -f values.yaml
 ```
 > Note: You must specify the value in yaml file. This is an example with the values related to Shannon protocol.
 
@@ -56,7 +56,7 @@ A fullnode requires a more in-depth setup to configure Tendermint (consensus eng
 * Option A) Define the configuration file as input values while installing the chart. This can be useful if you already have these configuration files in your local machine.
 
 ```
-?> helm install release-1 . -f shannon-values.yaml --set-file 'shannon.fullnode.cosmossdk.config=config.toml' --set-file 'shannon.fullnode.cosmossdk.app=app.toml' --set-file 'shannon.fullnode.cosmossdk.client=client.toml'
+?> helm install release-1 . -f values.yaml --set-file 'shannon.fullnode.cosmossdk.config=config.toml' --set-file 'shannon.fullnode.cosmossdk.app=app.toml' --set-file 'shannon.fullnode.cosmossdk.client=client.toml'
 ```
 
 * Option B) Use Kubernetes `ConfigMap` to mount configuration files. This can be useful if you want to use a single configuration for all your fullnode for example.
@@ -79,10 +79,10 @@ shannon:
             appKeyName: app.toml
 ```
 
-* Option C) Use default value define in the `shannon-values.yaml`. It can be useful for testing purposes.
+* Option C) Use default value define in the `values.yaml`. It can be useful for testing purposes.
 
 ```
-?> helm install my-release . --f shannon-values.yaml
+?> helm install my-release . --f values.yaml
 ```
 
 #### Relayminer
@@ -267,7 +267,7 @@ shannon:
 For the fullnode, the CosmosSDK `shannon.fullnode.cosmossdk.config` configuration file gives us the ability to activate a prometheus collector connections at a specific endpoint. Every metrics in this [CosmosBFT - Metrics](https://docs.cometbft.com/main/explanation/core/metrics) documentation will be available to you.
 When the `prometheus` option is enabled in `config.toml` and an address and port are specified using `prometheus_listen_addr`, this chart automatically adds the port to a Kubernetes Service and creates a corresponding `ServiceMonitor` pointing to it.
 
-An example is available in the default values - [see here](https://github.com/eddyzags/pocket-network-helm-chart/blob/6aca94ba72ee7a792bf71110a399c50596119ce0/shannon-values.yaml#L861-L881)
+An example is available in the default values - [see here](https://github.com/eddyzags/pocket-network-helm-chart/blob/6aca94ba72ee7a792bf71110a399c50596119ce0/values.yaml#L861-L881)
 
 ### Accessing Pocket Network Services from outside the cluster
 
@@ -518,7 +518,7 @@ tpl/string
 </td>
 			<td>
 				<div style="max-width: 300px;">
-<a href="./shannon-values.yaml">see example in shannon-values.yaml</a>
+<a href="./values.yaml">see example in values.yaml</a>
 </div>
 			</td>
 			<td></td>
@@ -530,7 +530,7 @@ tpl/string
 </td>
 			<td>
 				<div style="max-width: 300px;">
-<a href="./shannon-values.yaml">see example in shannon-values.yaml</a>
+<a href="./values.yaml">see example in values.yaml</a>
 </div>
 			</td>
 			<td></td>
@@ -542,7 +542,7 @@ tpl/string
 </td>
 			<td>
 				<div style="max-width: 300px;">
-<a href="./shannon-values.yaml">see example in shannon-values.yaml</a>
+<a href="./values.yaml">see example in values.yaml</a>
 </div>
 			</td>
 			<td></td>
@@ -1702,7 +1702,7 @@ tpl/string
 </td>
 			<td>
 				<div style="max-width: 300px;">
-<a href="./shannon-values.yaml">see example in shannon-values.yaml</a>
+<a href="./values.yaml">see example in values.yaml</a>
 </div>
 			</td>
 			<td></td>
@@ -2541,7 +2541,7 @@ string
 			<td>
 				<div style="max-width: 300px;">
 <pre lang="json">
-"0.1.16"
+"0.1.19"
 </pre>
 </div>
 			</td>
