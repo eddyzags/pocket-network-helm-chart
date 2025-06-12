@@ -1401,7 +1401,7 @@ shannon:
       enabled: true
       # initial number of seconds to wait after the container starts the 
       # liveness probe.
-      initialDelaySeconds: 10
+      initialDelaySeconds: 60
       # defines how often Kubernetes performs health checks in seconds.
       periodSeconds: 15
       # defines a duration threshold for the command to execute before it
