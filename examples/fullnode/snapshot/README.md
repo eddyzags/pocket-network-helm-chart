@@ -8,7 +8,7 @@ executing the fullnode:
 * `ariac`: uses a lightweight multi-protocol CLI download utility to fetch the blockchain snapshot. [More information here](https://github.com/eddyzags/pocket-network-helm-chart/blob/main/values.yaml#L1299-L1333)
 * `custom`: use your own init container to download and extract a snapshot into the fullnode Kubernetes Pod. [More information here](https://github.com/eddyzags/pocket-network-helm-chart/blob/main/values.yaml#L1299-L1333)
 
-In this `values.yaml` example, we are going to deploy a fullnode with these specififties:
+In this `values.yaml` example, we are going to deploy a fullnode with these specificities:
 * Use local file system as a persistent storage for `pocketd` working directory.
 * Enable the snapshot feature using `ariac` type.
 * Enable a Kubernetes Liveness probe.

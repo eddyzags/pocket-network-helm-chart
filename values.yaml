@@ -1366,6 +1366,24 @@ shannon:
         chownAsUser: 1025
         # change pocket data folder group.
         chownAsGroup: 1025
+    # configure the keyring for the fullnode. The keyring holds the private/public keypairs used to
+    # interact with a node. If you want to deploy a validator, you need to provide the key before
+    # running the node.
+    # This chart is only supporting the test backend, and the keyNames must be unique across
+    # Kubernetes Secrets to prevent potential side effects, such as one key overwriting another.
+    # For more information, please visit https://docs.cosmos.network/main/user/run-node/keyring
+    #
+    # e.g.:
+    # keyring:
+    #   secrets:
+    #     - name: pocket-network-shannon-validator-keys-1
+    #       keyNames:
+    #         - 6e4d19771c68484393f8c270b76b0c15.info
+    #         - 4d59176f4e1a43a5babf49ac393bdf26.info
+    #     - name: pocket-network-shannon-validator-keys-2
+    #       keyNames:
+    #         - dbc9414ed61b4ac28648947923d0ef6b.info
+    keyring: {}
     # volumes are the additional volume for the fullnode pod template.
     volumes: []
     # volumeMounts are the additional volume mount point for the fullnode pod
@@ -1383,7 +1401,7 @@ shannon:
       enabled: true
       # initial number of seconds to wait after the container starts the 
       # liveness probe.
-      initialDelaySeconds: 10
+      initialDelaySeconds: 60
       # defines how often Kubernetes performs health checks in seconds.
       periodSeconds: 15
       # defines a duration threshold for the command to execute before it

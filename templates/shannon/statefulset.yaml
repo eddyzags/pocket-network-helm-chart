@@ -1,4 +1,5 @@
 {{- if and .Values.protocol "shannon" .Values.shannon.fullnode.enabled }}
+{{- $global := .Values }}
 {{- $config := .Values.shannon.fullnode.cosmossdk.config | fromToml }}
 {{- $app := .Values.shannon.fullnode.cosmossdk.app | fromToml }}
 apiVersion: apps/v1
@@ -167,6 +168,17 @@ spec:
               subPath: "{{ .Values.shannon.fullnode.cosmossdk.secret.key.privValidatorKeyName }}"
               readOnly: true
             {{- end }}
+            {{- if .Values.shannon.fullnode.keyring.secrets }}
+            {{- range .Values.shannon.fullnode.keyring.secrets }}
+            {{- $name := .name }}
+            {{- range .keyNames }}
+            - name: keyring-{{ $name }}
+              mountPath: "{{ $global.homeDirectory }}/keyring-test/{{ . }}"
+              subPath: "{{ . }}"
+              readOnly: true
+            {{- end }}
+            {{- end }}
+            {{- end }}
             {{- if .Values.shannon.fullnode.tls.enabled }}
             - name: fullnode-tls
               mountPath: '{{ .Values.homeDirectory }}/{{ $config.rpc.tls_cert_file | default "tls.crt" }}'
@@ -205,6 +217,13 @@ spec:
         - name: fullnode-tls
           secret:
             secretName: {{ .Values.shannon.fullnode.tls.secret.key.name }}
+        {{- end }}
+        {{- if .Values.shannon.fullnode.keyring.secrets }}
+        {{- range .Values.shannon.fullnode.keyring.secrets }}
+        - name: keyring-{{ .name }}
+          secret:
+            secretName: {{ .name }}
+        {{- end }}
         {{- end }}
         {{- with .Values.shannon.fullnode.volumes }}
           {{- toYaml . | nindent 6 }}

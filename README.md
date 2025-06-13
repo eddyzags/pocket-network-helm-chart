@@ -996,6 +996,20 @@ int
 			<td></td>
 		</tr>
 		<tr>
+			<td id="shannon--fullnode--keyring">shannon.fullnode.keyring</td>
+			<td>
+object
+</td>
+			<td>
+				<div style="max-width: 300px;">
+<pre lang="json">
+{}
+</pre>
+</div>
+			</td>
+			<td></td>
+		</tr>
+		<tr>
 			<td id="shannon--fullnode--livenessProbe--enabled">shannon.fullnode.livenessProbe.enabled</td>
 			<td>
 bool
@@ -1031,7 +1045,7 @@ int
 			<td>
 				<div style="max-width: 300px;">
 <pre lang="json">
-10
+60
 </pre>
 </div>
 			</td>

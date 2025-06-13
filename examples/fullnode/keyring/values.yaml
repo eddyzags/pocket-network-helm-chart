@@ -1,0 +1,18 @@
+# For more informations regarding each field responsability, please refer to
+# the default value file.
+# https://github.com/eddyzags/pocket-network-helm-chart/blob/main/values.yaml
+
+shannon:
+  fullnode:
+    enabled: true
+    keyring:
+      secrets:
+        - name: pocket-network-shannon-validator-d0db0675
+          keyNames:
+            - 6a925a3ce5c7.info
+            - 28394b676e6d.info
+            - 8ab5048f5de0.info
+        - name: pocket-network-shannon-validator-30c3f1131040
+          keyNames:
+            - 485869d395dc.info
+            - 4b93f49394c0.info
