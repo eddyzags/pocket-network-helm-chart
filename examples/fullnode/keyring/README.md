@@ -7,7 +7,7 @@ In this `values.yaml` example, you are going to deploy a fullnode with these spe
 * Enable the mounting of Kubernetes Secret into 
 
 ```shell
-?> hell install <release-name> . -f examples/fullnode/secret/values.yaml
+?> helm install <release-name> . -f examples/fullnode/keyring/values.yaml
 ```
 
 > Note: This `values.yaml` won't work out-of-the-box because you need to provide the Kubernetes Secret key first.
