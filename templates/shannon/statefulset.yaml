@@ -46,7 +46,7 @@ spec:
               echo genesis file initialized || \
               echo genesis file already exists. Continuing...
           volumeMounts:
-            - name: home-config
+            - name: working-directory
               mountPath: {{ .Values.homeDirectory }}
         - name: get-genesis
           image: busybox
@@ -60,7 +60,7 @@ spec:
             - |
               wget -O {{ .Values.homeDirectory }}/config/genesis.json https://raw.githubusercontent.com/pokt-network/pocket-network-genesis/refs/heads/master/shannon/{{ .Values.network}}/genesis.json
           volumeMounts:
-            - name: home-config
+            - name: working-directory
               mountPath: {{ .Values.homeDirectory }}
         {{- if .Values.shannon.fullnode.cosmosvisor.enabled }}
         {{- include "pocket-network.shannon.initcontainers.cosmosvisor" . | nindent 8 }}
@@ -147,23 +147,23 @@ spec:
           resources: {{- toYaml .Values.shannon.fullnode.resources.values | nindent 12 }}
           {{- end }}
           volumeMounts:
-            - name: home-config
+            - name: working-directory
               mountPath: "{{ .Values.homeDirectory }}"
-            - name: fullnode-config
+            - name: cosmossdk-config
               mountPath: "{{ .Values.homeDirectory }}/config/config.toml"
               subPath: "{{ .Values.shannon.fullnode.cosmossdk.volumes.config.key.configKeyName }}"
-            - name: fullnode-config
+            - name: cosmossdk-config
               mountPath: "{{ .Values.homeDirectory }}/config/app.toml"
               subPath: "{{ .Values.shannon.fullnode.cosmossdk.volumes.config.key.appKeyName }}"
-            - name: fullnode-config
+            - name: cosmossdk-config
               mountPath: "{{ .Values.homeDirectory }}/config/client.toml"
               subPath: "{{ .Values.shannon.fullnode.cosmossdk.volumes.config.key.clientKeyName }}"
             {{- if eq .Values.shannon.fullnode.cosmossdk.secret.type "Secret" }}
-            - name: keys
+            - name: cometbft-keys
               mountPath: "{{ .Values.homeDirectory }}/config/node_key.json"
               subPath: "{{ .Values.shannon.fullnode.cosmossdk.secret.key.nodeKeyName }}"
               readOnly: true
-            - name: keys
+            - name: cometbft-keys
               mountPath: "{{ .Values.homeDirectory }}/config/priv_validator_key.json"
               subPath: "{{ .Values.shannon.fullnode.cosmossdk.secret.key.privValidatorKeyName }}"
               readOnly: true
@@ -197,7 +197,7 @@ spec:
           {{- include "pocket-network.shannon.envs.cosmosvisor" . | nindent 10 }}
           {{- end }}
       volumes:
-        - name: fullnode-config
+        - name: cosmossdk-config
           configMap:
             {{- if .Values.shannon.fullnode.cosmossdk.volumes.enabled }}
             name: {{ .Values.shannon.fullnode.cosmossdk.volumes.config.key.name }}
@@ -205,12 +205,12 @@ spec:
             name: {{ include "pocket-network.fullname" . }}-shannon-fullnode
             {{- end }}
         {{- if eq .Values.shannon.fullnode.cosmossdk.secret.type "Secret" }}
-        - name: keys
+        - name: cometbft-keys
           secret:
             secretName: {{ .Values.shannon.fullnode.cosmossdk.secret.key.name }}
         {{- end }}
         {{- if ne .Values.shannon.fullnode.storage.data.enabled true }}
-        - name: home-config
+        - name: working-directory
           emptyDir: {}
         {{- end }}
         {{- if .Values.shannon.fullnode.tls.enabled }}
@@ -243,7 +243,7 @@ spec:
   {{- if .Values.shannon.fullnode.storage.data.enabled }}
   volumeClaimTemplates:
     - metadata:
-        name: home-config
+        name: working-directory
         labels:
           {{- include "pocket-network.labels" (dict "root" . "nameSuffix" "shannon-fullnode" ) | nindent 12 }}
         annotations:
