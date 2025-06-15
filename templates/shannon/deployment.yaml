@@ -43,7 +43,7 @@ spec:
               mkdir -p {{ .Values.homeDirectory }}/config
               mkdir -p {{ .Values.homeDirectory }}/keyring-test
           volumeMounts:
-            - name: relayminer-home
+            - name: working-directory
               mountPath: {{ .Values.homeDirectory }}
       containers:
         - name: relayminer
@@ -118,13 +118,13 @@ spec:
             {{- end }}
             {{- end }}
             {{- end }}
-            - name: relayminer-config
+            - name: config
               mountPath: "{{ .Values.homeDirectory }}/config/config.yaml"
               subPath: "config.yaml"
-            - name: relayminer-config
+            - name: config
               mountPath: "{{ .Values.homeDirectory }}/config/client.toml"
               subPath: "client.toml"
-            - name: relayminer-home
+            - name: working-directory
               mountPath: {{ .Values.homeDirectory }}
           {{- with .Values.shannon.relayminer.volumeMounts }}
             {{- toYaml . | nindent 12 }}
@@ -137,10 +137,10 @@ spec:
             secretName: {{ .name }}
         {{- end }}
         {{- end }}
-        - name: relayminer-config
+        - name: config
           configMap:
             name: {{ include "pocket-network.fullname" . }}-shannon-relayminer
-        - name: relayminer-home
+        - name: working-directory
           emptyDir: {}
       {{- with .Values.shannon.relayminer.nodeSelector }}
       nodeSelector:
