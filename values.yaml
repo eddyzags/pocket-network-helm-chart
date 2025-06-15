@@ -16,7 +16,7 @@ network: testnet-beta
 # software.
 #
 # see https://dev.poktroll.com/operate/faq/full_node_faq?_highlight=version#how-do-i-check-the-node-version
-version: 0.1.19
+version: 0.1.20
 
 # homeDirectory refers to the pocketd working directory. This variable is
 # shared across all every procol actors. Meaning that the working directory
@@ -46,10 +46,6 @@ shannon:
     #
     # see https://docs.cosmos.network/main/learn/beginner/tx-lifecycle#gas-and-fees
     gasPrices: 0.0001upokt
-    # keyringBackend refers the storage backend for the keyring implementation.
-    #
-    # see https://docs.cosmos.network/v0.46/run-node/keyring.html#available-backends-for-the-keyring
-    keyringBackend: test
     # root configuration for pocketd instrumentation.
     telemetry:
       # logs refers to the logging configuration
@@ -58,15 +54,33 @@ shannon:
         #
         # see https://github.com/pokt-network/poktroll/blob/6759eec9f586358a12306fa8c92d18cb03ef6530/pkg/polylog/polyzero/levels.go#L39-L54
         level: info
-    # define the configuration to provide the keyring for the relayminer.
-    secret:
-      # defines the type of resources the chart needs to mount for the
-      # relayminer to access the network credentials.
-      type: Secret
-      # represents the secret metadata.
-      key:
-        name: pocket-network-supplier-shannon-relayminer
-        keyName: supplier1.info
+    # configures the storage backend for the keyring implementation for
+    # the relayminer.
+    #
+    # e.g.:
+    # keyring:
+    #   backend: test
+    #   secrets:
+    #     - name: pocket-network-shannon-relayminer-keys-6d75d3784282
+    #       keyNames:
+    #         - 712748083b46.info
+    #         - d05e660a522a.info
+    #     - name: pocket-network-shannon-relayminer-keys-a1773588ce07
+    #       keyNames:
+    #         - 679f41b29fd7.info
+    #         - 8598780fc3df.info
+    keyring:
+      # select the storage backend to use for the keyring. This charts only support the
+      # 'test' keyring backend for now. Then, every keys will be mounted to the relayminer
+      # Kubernetes Pod.
+      #
+      # see https://docs.cosmos.network/v0.46/run-node/keyring.html#available-backends-for-the-keyring
+      backend: test
+      # defines the Kubernetes Secret keys to mount into the relayminer Kubernetes Pod.
+      secrets:
+        - name: pocket-network-shannon-relayminer-key
+          keyNames:
+            supplier1.info
     # config defines key-values pairs for the relayminer general configuration.
     #
     # see https://dev.poktroll.com/operate/configs/relayminer_config

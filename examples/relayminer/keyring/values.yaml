@@ -1,0 +1,13 @@
+# For more informations regarding each field responsability, please refer to
+# the default value file.
+# https://github.com/eddyzags/pocket-network-helm-chart/blob/main/values.yaml
+
+shannon:
+  relayminer:
+    enabled: true
+    keyring:
+      backend: test
+      secrets:
+        - name: pocket-network-shannon-relayminer-key
+          keyNames:
+            supplier1.info
