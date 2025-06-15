@@ -13,3 +13,5 @@ In this `values.yaml` example, you are going to deploy a fullnode with these spe
 > Note: This `values.yaml` won't work out-of-the-box because you need to provide the Kubernetes Secret key first.
 
 > Note: Be careful when deploying a validator, there is change of slashing. We suggest you read about [Sentry Node Architecture](https://hub.cosmos.network/main/validators/validator-faq#how-can-validators-protect-themselves-from-denial-of-service-attacks) first.
+
+> Note: For more information on how to stake a validator, please refer to the official documentation https://dev.poktroll.com/operate/cheat_sheets/validator_cheatsheet#configure-validator
