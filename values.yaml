@@ -80,7 +80,7 @@ shannon:
       secrets:
         - name: pocket-network-shannon-relayminer-key
           keyNames:
-            supplier1.info
+            - supplier1.info
     # config defines key-values pairs for the relayminer general configuration.
     #
     # see https://dev.poktroll.com/operate/configs/relayminer_config

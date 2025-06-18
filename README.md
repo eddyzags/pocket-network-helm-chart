@@ -8,7 +8,7 @@ Pocket Network is permissionless decentralized physical infrastructure (DePin) p
 
 ## TL;DR
 ```shell
-?> git clone git@github.com:eddyzags/pocket-network-helm-chart.git && cd pocket-helm-chart
+?> git clone git@github.com:eddyzags/pocket-network-helm-chart.git && cd pocket-network-helm-chart
 
 ?> helm install release-1 . -f values.yaml
 ```
@@ -37,13 +37,11 @@ Pocket Network is permissionless decentralized physical infrastructure (DePin) p
 
 To install the chart with name `my-release`
 ```
-?> git clone git@github.com:eddyzags/pocket-network-helm-chart.git && cd pocket-helm-chart
+?> git clone git@github.com:eddyzags/pocket-network-helm-chart.git && cd pocket-network-helm-chart
 
 ?> helm install fullnode .  -f values.yaml
 ```
-> Note: You must specify the value in yaml file. This is an example with the values related to Shannon protocol.
-
-This command deploy a fullnode with default values.
+> Note: This command launches a fullnode configured to use the local file system for persistent storage and initiates synchronization from the genesis block.
 
 ## Configuration and installation details
 
@@ -51,13 +49,15 @@ This command deploy a fullnode with default values.
 
 ### Fullnode
 
-A fullnode requires a more in-depth setup to configure Tendermint (consensus engine), the P2P network, the RPC servers, and the consensus parameters. Additionally, it requires the application-specific settings related to staking, gas, API, block prunning. This chart provides multiple solutions to provision these configuration files.
+A fullnode requires a more in-depth setup to configure [CometBFT](https://github.com/cometbft/cometbft) (consensus engine), the P2P network, the RPC servers, and the consensus parameters. Additionally, it requires the application-specific settings related to staking, gas, API, block prunning. This chart provides multiple solutions to provision these configuration files.
 
 * Option A) Define the configuration file as input values while installing the chart. This can be useful if you already have these configuration files in your local machine.
 
 ```
 ?> helm install release-1 . -f values.yaml --set-file 'shannon.fullnode.cosmossdk.config=config.toml' --set-file 'shannon.fullnode.cosmossdk.app=app.toml' --set-file 'shannon.fullnode.cosmossdk.client=client.toml'
 ```
+
+> Note: This command creates a single Kubernetes ConfigMap resource for you with all the specified configuration files.
 
 * Option B) Use Kubernetes `ConfigMap` to mount configuration files. This can be useful if you want to use a single configuration for all your fullnode for example.
 
@@ -79,15 +79,19 @@ shannon:
             appKeyName: app.toml
 ```
 
+> Note: This `values.yaml` file assign an existing Kubernetes ConfigMap to be referenced in the fullnode Kubernetes Pod configuration.
+
 * Option C) Use default value define in the `values.yaml`. It can be useful for testing purposes.
 
 ```
 ?> helm install my-release . --f values.yaml
 ```
 
+> Note: This command creates a Kubernetes ConfigMap with default values ([see default values](https://github.com/eddyzags/pocket-network-helm-chart/blob/main/values.yaml)) to be referenced in the fullnode Kubernetes Pod configuration.
+
 #### Relayminer
 
-A relayminer configuration typically involves service endpoint you want to send relays to, a pocket rpc node (you can use the fullnode of this chart for example) to sign each processed relays. This configuration can be tailored to your need by providing a `shannon.relayminer.config` in the Helm values. This a personalized configuration for the relayminer:
+A relayminer configuration typically involves service endpoint you want to send relays to, a pocket rpc node (you can use the fullnode you deployed with this chart for example) to sign each processed relays. This configuration can be tailored to your need by providing a `shannon.relayminer.config` in the Helm values. This a personalized configuration for the relayminer:
 
 ```
 # values.yaml
@@ -106,8 +110,6 @@ shannon:
       - service_id: anvil
         service_config:
           backend_url: http://anvil:8547/
-          publicly_exposed_endpoints:
-            - relayminer1
         listen_url: http://0.0.0.0:8545
       metrics:
         enabled: true
@@ -126,8 +128,8 @@ This section refers to the key management capabilities this chart offers to conf
 
 #### Relayminer
 
-In Pocket Network, all relayminers needs one or multiple signing key to sign each relays he serves with a private key. Therefore, each key name listed in `shannon.relayminer.config.default_signing_key_names` must be present in the keyring backend used to start the Relayminer instances.
-This example demonstrates how to provision a key through Kubernetes secret while using a `keyring-backend=test`:
+In Pocket Network, a Relayminer needs one or multiple signing key to sign each relays he serves with a private key. Therefore, each key name listed in `shannon.relayminer.config.default_signing_key_names` must be present in the keyring backend used to start the Relayminer instance.
+This example demonstrates how to provision a key through Kubernetes Secret while using a `keyring-backend=test`:
 
 ```
 # values.yaml
@@ -135,18 +137,26 @@ This example demonstrates how to provision a key through Kubernetes secret while
 shannon:
   relayminer:
     enabled: true
-    secret:
-      type: Secret
-      key:
-        name: pocket-network-release-1-shannon-relayminer
-        keyName: supplier1.info
+    keyring:
+      backend: test
+      secrets:
+        - name: pocket-network-shannon-relayminer-vault-1
+          keyNames:
+            - supplier1.info
+            - supplier2.info
+        - name: pocket-network-shannon-relayminer-vault-2
+          keyNames:
+            - supplier3.info
+            - supplier4.info
 ```
 
-> Note: Every signing key names (`shannon.relayminer.config.default_signing_key_names`) must have a corresponding secret key. Therefore, if I have `shannon.relayminer.config.default_signing_key_names=["relayminer"]`, we must provide a secret with `shannon.relayminer.secret.key.keyName="relayminer.info"` (name must be the same without file extension .info)
+> Note: Every signing key names (`shannon.relayminer.config.default_signing_key_names`) must have a corresponding secret key name. Therefore, if I have `shannon.relayminer.config.default_signing_key_names=["relayminer"]`, we must provide a secret with `shannon.relayminer.keyring.secrets[0].keyName="relayminer.info"` (name must be the same without file extension .info)
+
+> Note: Be careful, the `keyNames` string values must be unique across every Kubernetes Secret resource.
 
 #### Fullnode
 
-A Shannon Fullnode requires two important key files. The node key as a unique identifier for your node on the P2P network used solely for identifying and authenticating with others, and the validator private key used for signing consensus messages (e.g. block proposals, votes). This example demonstrates how to provision a node and validator private key for a fullnode:
+A Shannon Fullnode requires two important key files for authentication at the consensus layer. The node key as a unique identifier for your node on the P2P network used solely for identifying and authenticating with others, and the validator private key used for signing consensus messages (e.g. block proposals, votes). This example demonstrates how to provision a node and validator private key for a fullnode:
 
 ```
 # values.yaml
@@ -154,7 +164,7 @@ A Shannon Fullnode requires two important key files. The node key as a unique id
 shannon:
   fullnode:
     enabled: true
-    combetbft:
+    cosmossdk:
       secret:
         type: Secret
         key:
@@ -162,6 +172,26 @@ shannon:
           nodeKeyName: node_key.json
           privValidatorKeyName: priv_validator_key.json
 ```
+
+In Pocket Network, a node acts not just as a Tendermint validator (consensus-layer), but also as a validator in the (pocket-network layer). The Pocket Network validator key is used for signing relays, responsding to challenges, staking and participating in the protocol. In that setup, this chart allows you to provide one or multiple keys into the fullnode keyring backend. This example demonstrates how to provision one or multiple keys through Kubernetes Secret while using `keyring-backend=test`.
+
+```
+# values.yaml
+
+shannon:
+  fullnode:
+    keyring:
+      secrets:
+        - name: pocket-network-shannon-validator-vault-1
+          keyNames:
+            - 228ecde4be50.info
+            - c20ad557b72e.info
+        - name: pocket-network-shannon-validator-vault-2
+          keyNames:
+            - ae5c3e0c36be.info
+```
+
+> Note: Be careful, the `keyNames` string values must be unique across every Kubernetes Secret resource.
 
 ### Resources and limits
 
@@ -190,7 +220,7 @@ shannon:
 
 ### Fullnode Persistence
 
-The fullnode software stores the various runtime data such as state information, configuration files, and other crucial data required for the operation of a node inside the volume mount of the container. This chart provides multiple options to manage this volume for the fullnode
+The fullnode application stores the various runtime data such as state information, configuration files, and other crucial data required for the operation of a node inside the volume mount of the container. This chart provides multiple options to manage this volume for the fullnode
 
 * Option A) Use an empty data directory to start the fullnode on a clean slate. This can be useful for test purposes.
 
@@ -202,12 +232,12 @@ shannon:
     enabled: true
     storage:
       data:
-      enabled: false
+        enabled: false
 ```
 
-> Note: This options doesn't persistent the data across deployments. In other words, if the Kubernetes Pod restarts, you will loose all your data.
+> Note: This options doesn't persistent the data across deployments. In other words, if you redeploy the Kubernetes Pod, you will loose all your data.
 
-* Option B) Use a Persistent Volume Claim (PVC) to start the fullnode on a clean slate, or an existing slate. Persistent Volume Claims are used to keep data across deployments. This integration is known to work in Google Cloud Platform (GCP), Amazon Web services (AWS), on-premise, and minikube.
+* Option B) Use a Persistent Volume (PV) and a Persistent Volume Claim (PVC) to start the fullnode on a clean slate, or an existing slate. PVs and PVCs are used to keep data across deployments. This integration is known to work in Google Cloud Platform (GCP), Amazon Web services (AWS), on-premise, and minikube.
 
 ```
 # values.yaml
@@ -217,25 +247,25 @@ shannon:
     enabled: true
     storage:
       data:
-      enabled: true
-      volumeClaimTemplate:
-        annotations: {}
-        accessModes: ["ReadWriteOnce"]
-        storageClassName: ""
-        selector:
-          matchLabels:
-            app.pocket.network: pocket-network-pv-shannon
-        volumeMode: Filesystem
-        resources:
-          requests:
-            storage: 1000Gi
-          limits:
-            storage: 1500Gi
+        enabled: true
+        volumeClaimTemplate:
+          annotations: {}
+          accessModes: ["ReadWriteOnce"]
+          storageClassName: ""
+          selector:
+            matchLabels:
+              app.pocket.network: pocket-network-pv-shannon
+          volumeMode: Filesystem
+          resources:
+            requests:
+              storage: 1000Gi
+            limits:
+              storage: 1500Gi
 ```
 
 #### Adjust permissions of persistent volume mountpoint
 
-As the image run as non-root by default, it is necessary to adjust the ownership of the persistent volume so that the container process can write data into it. Follow this link to know which UID and GID is configured by default for [ghcr.io/pokt-network/pocketd](https://github.com/pokt-network/poktroll/blob/3ba0390f66636f16441bbf53950ae4c8990479ca/Dockerfile.release#L11-L12)
+As the image run as non-root by default, it is necessary to adjust the ownership of the persistent volume so that the container process can write data into it. Follow this link to know which UID and GID is configured by default for [ghcr.io/pokt-network/pocketd](https://github.com/pokt-network/poktroll/blob/8924edc1279a7cd324009d5fbc99210dd808b5cc/Dockerfile.release#L11-L13)
 
 ### Prometheus metrics
 
@@ -265,9 +295,9 @@ shannon:
 #### Fullnode
 
 For the fullnode, the CosmosSDK `shannon.fullnode.cosmossdk.config` configuration file gives us the ability to activate a prometheus collector connections at a specific endpoint. Every metrics in this [CosmosBFT - Metrics](https://docs.cometbft.com/main/explanation/core/metrics) documentation will be available to you.
-When the `prometheus` option is enabled in `config.toml` and an address and port are specified using `prometheus_listen_addr`, this chart automatically adds the port to a Kubernetes Service and creates a corresponding `ServiceMonitor` pointing to it.
+When the `shannon.fullnode.cosmossdk.config.instrumentation.prometheus` option is enabled in `config.toml` and an address and port are specified using `prometheus_listen_addr`, this chart automatically adds the port to a Kubernetes Service and creates a corresponding `ServiceMonitor` pointing to it.
 
-An example is available in the default values - [see here](https://github.com/eddyzags/pocket-network-helm-chart/blob/6aca94ba72ee7a792bf71110a399c50596119ce0/values.yaml#L861-L881)
+An example is available in the default values - [see here](https://github.com/eddyzags/pocket-network-helm-chart/blob/2411058a50df9f7069dbf0671885456609fc77d8/values.yaml#L915-L935)
 
 ### Accessing Pocket Network Services from outside the cluster
 
@@ -275,7 +305,7 @@ This section outlines how to configure external access, allowing users to intera
 
 #### Relayminer
 
-The Relayminer exposes servers, each hosting one or more services that a supplier has staked on-chain to the Pocket Network. This chart provides the ability to expose those servers using a Kubernetes Ingress custom resource. The following example demonstrates how to define external access to two servers for the Relayminer:
+The Relayminer application exposes servers, each hosting one or more services that a supplier has staked on-chain to the Pocket Network. This chart provides the ability to expose those servers using a Kubernetes Ingress custom resource. The following example demonstrates how to define external access to two servers for the Relayminer:
 
 ```
 # values.yaml
@@ -325,7 +355,7 @@ shannon:
 
 > Note: For Kubernetes to route traffic properly, the value of `shannon.relayminer.ingress.hosts[].paths[].backend.service.port.number` must match the port specified in `shannon.relayminer.config.suppliers[].listen_url`.
 
-This example demonstrates how to define an external access with a certificate request using cert-manager.
+This example demonstrates how to define an external access with a certificate request using cert-manager and [Let's Encrypt](https://letsencrypt.org/) as a cluster issuer.
 
 ```
 shannon:
@@ -389,7 +419,7 @@ shannon:
 
 #### Fullnode
 
-The fullnode can expose one public-facing port to allow other nodes to connect, query its status, and broadcast transactions. This chart allows configuration of an external service using Kubernetes NodePort, exposing the port on each node’s IP at a static port.
+The fullnode can expose one public-facing port to allow other nodes to connect, query its status, and broadcast transactions. This chart allows the configuration of an local and external. The local service will expose the fullnode application using a cluster-scoped virtual IP address, and the external service will expose the fullnode application on each Node's IP at a static port (type [NodePort](https://kubernetes.io/docs/concepts/services-networking/service/#type-nodeport))
 
 ```
 shannon:
@@ -404,11 +434,9 @@ shannon:
           nodePort: 26656
 ```
 
-> Note: the `shannon.fullnode.service.local` field creates a Kubernetes Service resource for internal service communication inside the Kubernetes cluster.
-
 ### Deploy fullnode with Cosmosvisor
 
-Cosmovisor is a daemon process for Cosmos SDK-based application binaries. It monitors the governance module for on-chain upgrade proposals and automatically manages chain upgrades for pocketd. By activating this deployment mode, the pocketd process will executed as a sub-process of the cosmosvisor. This chart provides the ability to configure Cosmovisor for a full node setup.
+Cosmovisor is a daemon process for Cosmos SDK-based application binaries. It monitors the governance module for on-chain upgrade proposals and automatically manages chain upgrades for `pocketd` application. By activating this deployment mode, the `pocketd` process will executed as a sub-process of the `cosmosvisor` parent process. This chart provides the ability to configure Cosmovisor for a full node setup.
 
 ```
 # values.yaml
@@ -418,16 +446,25 @@ shannon:
     enabled: true
     cosmosvisor:
       enabled: true
+      workingDirectory: ""
+      disableLogs: false
+      colorLogs: true
+      timeformatLogs: kitchen
+      customPreupgrade: ""
+      disableRecase: false
       daemon:
         name: "pocketd"
         allowDownloadBinaries: true
         restartAfterUpgrade: true
-        unsafeSkipBackup: false
+        unsafeSkipBackup: true
         pollInterval: 300ms
         preupgradeMaxRetries: 0
+        downloadMustHaveChecksum: false
+        restartDelay: ""
+        dataBackupDir: ""
 ```
 
-> Note: For more informations about what the cosmosvisor daemon does, [read this documentation](https://docs.cosmos.network/v0.45/run-node/cosmovisor.html)
+> Note: For more informations about what the cosmosvisor daemon does and how to configure it, [read this documentation](https://docs.cosmos.network/v0.45/run-node/cosmovisor.html)
 
 ## Parameters
 
@@ -2226,7 +2263,7 @@ int
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--relayminer--keyringBackend">shannon.relayminer.keyringBackend</td>
+			<td id="shannon--relayminer--keyring--backend">shannon.relayminer.keyring.backend</td>
 			<td>
 string
 </td>
@@ -2234,6 +2271,34 @@ string
 				<div style="max-width: 300px;">
 <pre lang="json">
 "test"
+</pre>
+</div>
+			</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td id="shannon--relayminer--keyring--secrets[0]--keyNames[0]">shannon.relayminer.keyring.secrets[0].keyNames[0]</td>
+			<td>
+string
+</td>
+			<td>
+				<div style="max-width: 300px;">
+<pre lang="json">
+"supplier1.info"
+</pre>
+</div>
+			</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td id="shannon--relayminer--keyring--secrets[0]--name">shannon.relayminer.keyring.secrets[0].name</td>
+			<td>
+string
+</td>
+			<td>
+				<div style="max-width: 300px;">
+<pre lang="json">
+"pocket-network-shannon-relayminer-key"
 </pre>
 </div>
 			</td>
@@ -2436,48 +2501,6 @@ string
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--relayminer--secret--key--keyName">shannon.relayminer.secret.key.keyName</td>
-			<td>
-string
-</td>
-			<td>
-				<div style="max-width: 300px;">
-<pre lang="json">
-"supplier1.info"
-</pre>
-</div>
-			</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td id="shannon--relayminer--secret--key--name">shannon.relayminer.secret.key.name</td>
-			<td>
-string
-</td>
-			<td>
-				<div style="max-width: 300px;">
-<pre lang="json">
-"pocket-network-supplier-shannon-relayminer"
-</pre>
-</div>
-			</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td id="shannon--relayminer--secret--type">shannon.relayminer.secret.type</td>
-			<td>
-string
-</td>
-			<td>
-				<div style="max-width: 300px;">
-<pre lang="json">
-"Secret"
-</pre>
-</div>
-			</td>
-			<td></td>
-		</tr>
-		<tr>
 			<td id="shannon--relayminer--service--type">shannon.relayminer.service.type</td>
 			<td>
 string
@@ -2555,7 +2578,7 @@ string
 			<td>
 				<div style="max-width: 300px;">
 <pre lang="json">
-"0.1.19"
+"0.1.20"
 </pre>
 </div>
 			</td>
