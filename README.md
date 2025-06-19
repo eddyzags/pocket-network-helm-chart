@@ -571,6 +571,20 @@ tpl/string
 			<td></td>
 		</tr>
 		<tr>
+			<td id="shannon--fullnode--cosmossdk--secret--enabled">shannon.fullnode.cosmossdk.secret.enabled</td>
+			<td>
+bool
+</td>
+			<td>
+				<div style="max-width: 300px;">
+<pre lang="json">
+false
+</pre>
+</div>
+			</td>
+			<td></td>
+		</tr>
+		<tr>
 			<td id="shannon--fullnode--cosmossdk--secret--key--name">shannon.fullnode.cosmossdk.secret.key.name</td>
 			<td>
 string
@@ -578,7 +592,7 @@ string
 			<td>
 				<div style="max-width: 300px;">
 <pre lang="json">
-"pocket-network-eddyzags-shannon"
+"pocket-network-cometbft-keys"
 </pre>
 </div>
 			</td>
