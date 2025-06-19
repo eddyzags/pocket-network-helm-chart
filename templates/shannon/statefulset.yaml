@@ -42,12 +42,12 @@ spec:
             - "/bin/sh"
             - "-c"
             - |
-              pocketd init --home {{.Values.homeDirectory }} {{ .Values.network }} > /dev/null 2>&1 && \
+              pocketd init --home {{.Values.workingDirectory }} {{ .Values.network }} > /dev/null 2>&1 && \
               echo genesis file initialized || \
               echo genesis file already exists. Continuing...
           volumeMounts:
             - name: working-directory
-              mountPath: {{ .Values.homeDirectory }}
+              mountPath: {{ .Values.workingDirectory }}
         - name: get-genesis
           image: busybox
           {{- if .Values.shannon.fullnode.initContainersSecurityContext }}
@@ -58,10 +58,10 @@ spec:
             - "/bin/sh"
             - "-c"
             - |
-              wget -O {{ .Values.homeDirectory }}/config/genesis.json https://raw.githubusercontent.com/pokt-network/pocket-network-genesis/refs/heads/master/shannon/{{ .Values.network}}/genesis.json
+              wget -O {{ .Values.workingDirectory }}/config/genesis.json https://raw.githubusercontent.com/pokt-network/pocket-network-genesis/refs/heads/master/shannon/{{ .Values.network}}/genesis.json
           volumeMounts:
             - name: working-directory
-              mountPath: {{ .Values.homeDirectory }}
+              mountPath: {{ .Values.workingDirectory }}
         {{- if .Values.shannon.fullnode.cosmosvisor.enabled }}
         {{- include "pocket-network.shannon.initcontainers.cosmosvisor" . | nindent 8 }}
         {{- end }}
@@ -84,7 +84,7 @@ spec:
             - "run"
             {{- end }}
             - "start"
-            - "--home={{ .Values.homeDirectory }}"
+            - "--home={{ .Values.workingDirectory }}"
             - "--log_level={{ .Values.shannon.fullnode.telemetry.logs.level }}"
             - "--log_format={{ .Values.shannon.fullnode.telemetry.logs.format }}"
             {{- if .Values.shannon.fullnode.telemetry.logs.noColor }}
@@ -148,23 +148,23 @@ spec:
           {{- end }}
           volumeMounts:
             - name: working-directory
-              mountPath: "{{ .Values.homeDirectory }}"
+              mountPath: "{{ .Values.workingDirectory }}"
             - name: cosmossdk-config
-              mountPath: "{{ .Values.homeDirectory }}/config/config.toml"
+              mountPath: "{{ .Values.workingDirectory }}/config/config.toml"
               subPath: "{{ .Values.shannon.fullnode.cosmossdk.volumes.config.key.configKeyName }}"
             - name: cosmossdk-config
-              mountPath: "{{ .Values.homeDirectory }}/config/app.toml"
+              mountPath: "{{ .Values.workingDirectory }}/config/app.toml"
               subPath: "{{ .Values.shannon.fullnode.cosmossdk.volumes.config.key.appKeyName }}"
             - name: cosmossdk-config
-              mountPath: "{{ .Values.homeDirectory }}/config/client.toml"
+              mountPath: "{{ .Values.workingDirectory }}/config/client.toml"
               subPath: "{{ .Values.shannon.fullnode.cosmossdk.volumes.config.key.clientKeyName }}"
             {{- if eq .Values.shannon.fullnode.cosmossdk.secret.type "Secret" }}
             - name: cometbft-keys
-              mountPath: "{{ .Values.homeDirectory }}/config/node_key.json"
+              mountPath: "{{ .Values.workingDirectory }}/config/node_key.json"
               subPath: "{{ .Values.shannon.fullnode.cosmossdk.secret.key.nodeKeyName }}"
               readOnly: true
             - name: cometbft-keys
-              mountPath: "{{ .Values.homeDirectory }}/config/priv_validator_key.json"
+              mountPath: "{{ .Values.workingDirectory }}/config/priv_validator_key.json"
               subPath: "{{ .Values.shannon.fullnode.cosmossdk.secret.key.privValidatorKeyName }}"
               readOnly: true
             {{- end }}
@@ -173,7 +173,7 @@ spec:
             {{- $name := .name }}
             {{- range .keyNames }}
             - name: keyring-{{ $name }}
-              mountPath: "{{ $global.homeDirectory }}/keyring-test/{{ . }}"
+              mountPath: "{{ $global.workingDirectory }}/keyring-test/{{ . }}"
               subPath: "{{ . }}"
               readOnly: true
             {{- end }}
@@ -181,11 +181,11 @@ spec:
             {{- end }}
             {{- if .Values.shannon.fullnode.tls.enabled }}
             - name: fullnode-tls
-              mountPath: '{{ .Values.homeDirectory }}/{{ $config.rpc.tls_cert_file | default "tls.crt" }}'
+              mountPath: '{{ .Values.workingDirectory }}/{{ $config.rpc.tls_cert_file | default "tls.crt" }}'
               subPath: "{{ .Values.shannon.fullnode.tls.secret.key.certKeyName }}"
               readOnly: true
             - name: fullnode-tls
-              mountPath: '{{ .Values.homeDirectory }}/{{ $config.rpc.tls_key_file | default "tls.key" }}'
+              mountPath: '{{ .Values.workingDirectory }}/{{ $config.rpc.tls_key_file | default "tls.key" }}'
               subPath: "{{ .Values.shannon.fullnode.tls.secret.key.keyKeyName }}"
               readOnly: true
             {{- end }}

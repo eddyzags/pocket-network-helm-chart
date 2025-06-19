@@ -6,7 +6,7 @@ This file implements several helpers function to define init containers.
 - name: DAEMON_NAME
   value: {{ .Values.shannon.fullnode.cosmosvisor.daemon.name }}
 - name: DAEMON_HOME
-  value: {{ .Values.shannon.fullnode.cosmosvisor.workingDirectory | default .Values.homeDirectory }}
+  value: {{ .Values.shannon.fullnode.cosmosvisor.workingDirectory | default .Values.workingDirectory }}
 - name: DAEMON_ALLOW_DOWNLOAD_BINARIES
   value: "{{ .Values.shannon.fullnode.cosmosvisor.daemon.allowDownloadBinaries }}"
 - name: UNSAFE_SKIP_BACKUP
