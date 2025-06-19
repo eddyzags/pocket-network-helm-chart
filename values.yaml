@@ -1255,6 +1255,8 @@ shannon:
       # define the configuration to provide the keys for the fullnode to
       # authenticated at the consensus layer.
       secret:
+        # mounts the Kubernetes Secret for the fullnode authentication keys.
+        enabled: false
         # defines the type of resources the chart needs to mount for the
         # fullnode Kubernetes Pod to access the keys.
         type: Secret
@@ -1262,7 +1264,7 @@ shannon:
         # for the fullnode Kubernetes Pod.
         key:
           # defines the name of the Kubernetes Secret resource.
-          name: pocket-network-eddyzags-shannon
+          name: pocket-network-cometbft-keys
           # nodeKeyName is the long term private key for the fullnode.
           # (node-id@host:port).
           nodeKeyName: node_key.json

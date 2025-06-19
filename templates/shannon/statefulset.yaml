@@ -130,7 +130,7 @@ spec:
             - name: cosmossdk-config
               mountPath: "{{ .Values.workingDirectory }}/config/client.toml"
               subPath: "{{ .Values.shannon.fullnode.cosmossdk.volumes.config.key.clientKeyName }}"
-            {{- if eq .Values.shannon.fullnode.cosmossdk.secret.type "Secret" }}
+            {{- if and .Values.shannon.fullnode.cosmossdk.secret.enabled (eq .Values.shannon.fullnode.cosmossdk.secret.type "Secret") }}
             - name: cometbft-keys
               mountPath: "{{ .Values.workingDirectory }}/config/node_key.json"
               subPath: "{{ .Values.shannon.fullnode.cosmossdk.secret.key.nodeKeyName }}"
