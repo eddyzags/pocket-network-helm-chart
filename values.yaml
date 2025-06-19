@@ -134,10 +134,22 @@ shannon:
       #   - service_id: ollama
       #     service_config:
       #      backend_url: http://ollama:8547/
+      #      authentication:
+      #        username: user1
+      #        password: pass1
+      #      headers:
+      #        header1: value1
+      #      forward_pocket_headers: true
       #     listen_url: http://0.0.0.0:8546
       #   - service_id: anvil
       #     service_config:
       #      backend_url: http://anvil:8547/
+      #      authentication:
+      #        username: user2
+      #        password: pass2
+      #      headers:
+      #        header2: value2
+      #      forward_pocket_headers: true
       #     listen_url: http://0.0.0.0:8546
       #
       # For more information about the configuration, please see
