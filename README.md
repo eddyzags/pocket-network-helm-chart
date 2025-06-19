@@ -1927,20 +1927,6 @@ string
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--relayminer--config--suppliers[0]--service_config--publicly_exposed_endpoints[0]">shannon.relayminer.config.suppliers[0].service_config.publicly_exposed_endpoints[0]</td>
-			<td>
-string
-</td>
-			<td>
-				<div style="max-width: 300px;">
-<pre lang="json">
-"relayminer1"
-</pre>
-</div>
-			</td>
-			<td></td>
-		</tr>
-		<tr>
 			<td id="shannon--relayminer--config--suppliers[0]--service_id">shannon.relayminer.config.suppliers[0].service_id</td>
 			<td>
 string

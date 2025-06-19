@@ -134,14 +134,10 @@ shannon:
       #   - service_id: ollama
       #     service_config:
       #      backend_url: http://ollama:8547/
-      #      publicly_exposed_endpoints:
-      #        - relayminers
       #     listen_url: http://0.0.0.0:8546
       #   - service_id: anvil
       #     service_config:
       #      backend_url: http://anvil:8547/
-      #      publicly_exposed_endpoints:
-      #        - relayminers
       #     listen_url: http://0.0.0.0:8546
       #
       # For more information about the configuration, please see
@@ -157,10 +153,6 @@ shannon:
           # backend_url is the endpoint to which the relays will be forwarded to for
           # this service.
           backend_url: http://anvil:8547/
-          # publicly_exposed_endpoints are a list of host the relayminer will
-          # accept request from.
-          publicly_exposed_endpoints:
-            - relayminer1
         # listen_url is the address from which the relayminer application will
         # start a server to listen for incoming relays for this service.
         #
