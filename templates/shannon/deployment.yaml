@@ -87,7 +87,7 @@ spec:
               periodSeconds: {{ .Values.shannon.relayminer.livenessProbe.periodSeconds }}
           {{- end }}
           {{- if .Values.shannon.relayminer.resources.preset.enabled }}
-          resources: {{- include "pocket-network.shannon.preset" (dict "type" .Values.shannon.relayminer.resources.preset.name) | nindent 12 }}
+          resources: {{- include "pocket-network.shannon.relayminer.preset" (dict "type" .Values.shannon.relayminer.resources.preset.name) | nindent 12 }}
           {{- else }}
           resources: {{- toYaml .Values.shannon.relayminer.resources.values | nindent 12 }}
           {{- end }}

@@ -114,7 +114,7 @@ spec:
             successThreshold: {{ .Values.shannon.fullnode.livenessProbe.successThreshold }}
           {{- end }}
           {{- if .Values.shannon.fullnode.resources.preset.enabled }}
-          resources: {{- include "pocket-network.shannon.preset" (dict "type" .Values.shannon.fullnode.resources.preset.name) | nindent 12 }}
+          resources: {{- include "pocket-network.shannon.fullnode.preset" (dict "type" .Values.shannon.fullnode.resources.preset.name) | nindent 12 }}
           {{- else }}
           resources: {{- toYaml .Values.shannon.fullnode.resources.values | nindent 12 }}
           {{- end }}
