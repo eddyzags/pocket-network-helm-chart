@@ -32,41 +32,13 @@ spec:
         {{- toYaml | nindent 8 }}
       {{- end }}
       initContainers:
-        - name: cosmossdk
-          image: "{{ .Values.shannon.fullnode.image.repository }}:{{ .Values.shannon.fullnode.image.tag | default .Values.version }}"
-          {{- if .Values.shannon.fullnode.initContainersSecurityContext }}
-          securityContext:
-            {{- toYaml .Values.shannon.fullnode.initContainersSecurityContext | nindent 12 }}
-          {{- end }}
-          command:
-            - "/bin/sh"
-            - "-c"
-            - |
-              pocketd init --home {{.Values.workingDirectory }} {{ .Values.network }} > /dev/null 2>&1 && \
-              echo genesis file initialized || \
-              echo genesis file already exists. Continuing...
-          volumeMounts:
-            - name: working-directory
-              mountPath: {{ .Values.workingDirectory }}
-        - name: get-genesis
-          image: busybox
-          {{- if .Values.shannon.fullnode.initContainersSecurityContext }}
-          securityContext:
-            {{- toYaml .Values.shannon.fullnode.initContainersSecurityContext | nindent 12 }}
-          {{- end }}
-          command:
-            - "/bin/sh"
-            - "-c"
-            - |
-              wget -O {{ .Values.workingDirectory }}/config/genesis.json https://raw.githubusercontent.com/pokt-network/pocket-network-genesis/refs/heads/master/shannon/{{ .Values.network}}/genesis.json
-          volumeMounts:
-            - name: working-directory
-              mountPath: {{ .Values.workingDirectory }}
+        {{- include "pocket-network.shannon.initcontainers.fullnode.cosmossdk" . | nindent 8 }}
+        {{- include "pocket-network.shannon.initcontainers.fullnode.get-genesis" . | nindent 8 }}
         {{- if .Values.shannon.fullnode.cosmosvisor.enabled }}
-        {{- include "pocket-network.shannon.initcontainers.cosmosvisor" . | nindent 8 }}
+        {{- include "pocket-network.shannon.initcontainers.fullnode.cosmosvisor" . | nindent 8 }}
         {{- end }}
         {{- if .Values.shannon.fullnode.snapshot.enabled }}
-        {{- include "pocket-network.shannon.initcontainers.get-snapshot" . | nindent 8 }}
+        {{- include "pocket-network.shannon.initcontainers.fullnode.get-snapshot" . | nindent 8 }}
         {{- end }}
       containers:
         - name: fullnode

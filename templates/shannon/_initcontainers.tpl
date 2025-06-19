@@ -1,8 +1,27 @@
 {{/*
-This file implements several helpers function to define init containers.
+This file implements several helpers function to define init containers for the
+Pocket Network Helm Chart.
 */}}
 
-{{- define "pocket-network.shannon.initcontainers.cosmosvisor" -}}
+{{- define "pocket-network.shannon.initcontainers.relayminer.working-directory" -}}
+- name: working-directory
+  image: busybox
+  {{- with .Values.shannon.relayminer.initContainersSecurityContext }}
+  securityContext:
+    {{- toYaml . | nindent 12 }}
+  {{- end }}
+  command:
+    - sh
+    - -c
+    - |
+      mkdir -p {{ .Values.workingDirectory }}/config
+      mkdir -p {{ .Values.workingDirectory }}/keyring-test
+  volumeMounts:
+    - name: working-directory
+      mountPath: {{ .Values.workingDirectory }}
+{{- end }}
+
+{{- define "pocket-network.shannon.initcontainers.fullnode.cosmosvisor" -}}
 - name: cosmosvisor
   image: "{{ .Values.shannon.fullnode.image.repository }}:{{ .Values.shannon.fullnode.image.tag | default .Values.version }}"
   {{- if .Values.shannon.fullnode.initContainersSecurityContext }}
@@ -19,9 +38,9 @@ This file implements several helpers function to define init containers.
       mountPath: {{ .Values.workingDirectory }}
   env:
   {{- include "pocket-network.shannon.envs.cosmosvisor" . | nindent 2 }}
-{{- end }}
+{{- end -}}
 
-{{- define "pocket-network.shannon.initcontainers.get-snapshot" -}}
+{{- define "pocket-network.shannon.initcontainers.fullnode.get-snapshot" -}}
 - name: get-snapshot
 {{- if eq .Values.shannon.fullnode.snapshot.type "ariac" }}
   image: debian:bullseye-slim
@@ -78,4 +97,40 @@ This file implements several helpers function to define init containers.
     - name: home-config
       mountPath: {{ .Values.workingDirectory }}
 {{- end }}
-{{- end }}
+{{- end -}}
+
+{{- define "pocket-network.shannon.initcontainers.fullnode.cosmossdk" -}}
+- name: cosmossdk
+  image: "{{ .Values.shannon.fullnode.image.repository }}:{{ .Values.shannon.fullnode.image.tag | default .Values.version }}"
+  {{- if .Values.shannon.fullnode.initContainersSecurityContext }}
+  securityContext:
+    {{- toYaml .Values.shannon.fullnode.initContainersSecurityContext | nindent 12 }}
+  {{- end }}
+  command:
+    - "/bin/sh"
+    - "-c"
+    - |
+      pocketd init --home {{.Values.workingDirectory }} {{ .Values.network }} > /dev/null 2>&1 && \
+      echo genesis file initialized || \
+      echo genesis file already exists. Continuing...
+  volumeMounts:
+    - name: working-directory
+      mountPath: {{ .Values.workingDirectory }}
+{{- end -}}
+
+{{- define "pocket-network.shannon.initcontainers.fullnode.get-genesis" -}}
+- name: get-genesis
+  image: busybox
+  {{- if .Values.shannon.fullnode.initContainersSecurityContext }}
+  securityContext:
+    {{- toYaml .Values.shannon.fullnode.initContainersSecurityContext | nindent 12 }}
+  {{- end }}
+  command:
+    - "/bin/sh"
+    - "-c"
+    - |
+      wget -O {{ .Values.workingDirectory }}/config/genesis.json https://raw.githubusercontent.com/pokt-network/pocket-network-genesis/refs/heads/master/shannon/{{ .Values.network}}/genesis.json
+  volumeMounts:
+    - name: working-directory
+      mountPath: {{ .Values.workingDirectory }}
+{{- end -}}

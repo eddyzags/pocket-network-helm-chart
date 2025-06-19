@@ -20,6 +20,6 @@
 {{- fail "must provide home directory in values file" }}
 {{- end }}
 
-{{- if not (eq .Values.shannon.relayminer.keyring.backend "test")
-{{- fail "this chart only supports the 'test' storage backend for the keyring implementation"
-{{- end }
+{{- if not (eq .Values.shannon.relayminer.keyring.backend "test") }}
+{{- fail "this chart only supports the 'test' storage backend for the keyring implementation" }}
+{{- end }}
