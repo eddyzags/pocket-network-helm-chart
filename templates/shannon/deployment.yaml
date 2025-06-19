@@ -30,21 +30,7 @@ spec:
         {{- toYaml .Values.shannon.relayminer.podSecurityContext | nindent 8 }}
       {{- end }}
       initContainers:
-        - name: init-home
-          image: busybox
-          {{- with .Values.shannon.relayminer.initContainersSecurityContext }}
-          securityContext:
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
-          command:
-            - sh
-            - -c
-            - |
-              mkdir -p {{ .Values.workingDirectory }}/config
-              mkdir -p {{ .Values.workingDirectory }}/keyring-test
-          volumeMounts:
-            - name: working-directory
-              mountPath: {{ .Values.workingDirectory }}
+        {{- include "pocket-network.shannon.initcontainers.relayminer.working-directory" . | nindent 8 }}
       containers:
         - name: relayminer
           {{- with .Values.shannon.relayminer.containersSecurityContext }}
