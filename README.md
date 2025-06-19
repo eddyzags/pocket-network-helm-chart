@@ -479,20 +479,6 @@ shannon:
 	</thead>
 	<tbody>
 		<tr>
-			<td id="homeDirectory">homeDirectory</td>
-			<td>
-string
-</td>
-			<td>
-				<div style="max-width: 300px;">
-<pre lang="json">
-"/home/pocket/.pocket"
-</pre>
-</div>
-			</td>
-			<td></td>
-		</tr>
-		<tr>
 			<td id="network">network</td>
 			<td>
 string
@@ -1278,7 +1264,7 @@ int
 			<td>
 				<div style="max-width: 300px;">
 <pre lang="json">
-30000
+26656
 </pre>
 </div>
 			</td>
@@ -2186,7 +2172,7 @@ string
 			<td>
 				<div style="max-width: 300px;">
 <pre lang="json">
-"external"
+""
 </pre>
 </div>
 			</td>
@@ -2579,6 +2565,20 @@ string
 				<div style="max-width: 300px;">
 <pre lang="json">
 "0.1.20"
+</pre>
+</div>
+			</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td id="workingDirectory">workingDirectory</td>
+			<td>
+string
+</td>
+			<td>
+				<div style="max-width: 300px;">
+<pre lang="json">
+"/home/pocket/.pocket"
 </pre>
 </div>
 			</td>

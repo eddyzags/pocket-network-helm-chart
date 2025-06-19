@@ -40,11 +40,11 @@ spec:
             - sh
             - -c
             - |
-              mkdir -p {{ .Values.homeDirectory }}/config
-              mkdir -p {{ .Values.homeDirectory }}/keyring-test
+              mkdir -p {{ .Values.workingDirectory }}/config
+              mkdir -p {{ .Values.workingDirectory }}/keyring-test
           volumeMounts:
             - name: working-directory
-              mountPath: {{ .Values.homeDirectory }}
+              mountPath: {{ .Values.workingDirectory }}
       containers:
         - name: relayminer
           {{- with .Values.shannon.relayminer.containersSecurityContext }}
@@ -69,9 +69,9 @@ spec:
           args:
           {{- end }}
             - "relayminer"
-            - "--home={{ .Values.homeDirectory }}"
+            - "--home={{ .Values.workingDirectory }}"
             - "--keyring-backend={{ .Values.shannon.relayminer.keyring.backend }}"
-            - "--config={{ .Values.homeDirectory }}/config/config.yaml"
+            - "--config={{ .Values.workingDirectory }}/config/config.yaml"
             - "--grpc-insecure={{ .Values.shannon.relayminer.grpcInsecure }}"
             - "--log_level={{ .Values.shannon.relayminer.telemetry.logs.level }}"
             - "--gas-adjustment={{ .Values.shannon.relayminer.gasAdjustment }}"
@@ -112,20 +112,20 @@ spec:
             {{- $name := .name }}
             {{- range .keyNames }}
             - name: keys-{{ $name }}
-              mountPath: "{{ $global.homeDirectory }}/keyring-test/{{ . }}"
+              mountPath: "{{ $global.workingDirectory }}/keyring-test/{{ . }}"
               subPath: "{{ . }}"
               readOnly: true
             {{- end }}
             {{- end }}
             {{- end }}
             - name: config
-              mountPath: "{{ .Values.homeDirectory }}/config/config.yaml"
+              mountPath: "{{ .Values.workingDirectory }}/config/config.yaml"
               subPath: "config.yaml"
             - name: config
-              mountPath: "{{ .Values.homeDirectory }}/config/client.toml"
+              mountPath: "{{ .Values.workingDirectory }}/config/client.toml"
               subPath: "client.toml"
             - name: working-directory
-              mountPath: {{ .Values.homeDirectory }}
+              mountPath: {{ .Values.workingDirectory }}
           {{- with .Values.shannon.relayminer.volumeMounts }}
             {{- toYaml . | nindent 12 }}
           {{- end }}

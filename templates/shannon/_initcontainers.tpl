@@ -16,7 +16,7 @@ This file implements several helpers function to define init containers.
       cosmovisor init /bin/{{ .Values.shannon.fullnode.cosmosvisor.daemon.name }}
   volumeMounts:
     - name: home-config
-      mountPath: {{ .Values.homeDirectory }}
+      mountPath: {{ .Values.workingDirectory }}
   env:
   {{- include "pocket-network.shannon.envs.cosmosvisor" . | nindent 2 }}
 {{- end }}
@@ -36,29 +36,29 @@ This file implements several helpers function to define init containers.
           zstd \
           tar
 
-      MARKER="{{ .Values.homeDirectory }}/snapshot/.{{ replace "/" "_" .Values.shannon.fullnode.snapshot.config.url }}"
+      MARKER="{{ .Values.workingDirectory }}/snapshot/.{{ replace "/" "_" .Values.shannon.fullnode.snapshot.config.url }}"
 
-      mkdir -p {{ .Values.homeDirectory }}/snapshot
+      mkdir -p {{ .Values.workingDirectory }}/snapshot
 
       if [ -f "$MARKER" ]; then
         echo "Snapshot already downloaded. ({{ .Values.shannon.fullnode.snapshot.config.url }})"
       else
         echo "Removing existing snapshot..."
-        rm -r {{ .Values.homeDirectory }}/snapshot/* > /dev/null 2>&1
+        rm -r {{ .Values.workingDirectory }}/snapshot/* > /dev/null 2>&1
 
         echo "Downloading snapshot..."
-        aria2c --seed-time=0 --file-allocation=none --dir {{ .Values.homeDirectory }}/snapshot "{{ .Values.shannon.fullnode.snapshot.config.url }}"
+        aria2c --seed-time=0 --file-allocation=none --dir {{ .Values.workingDirectory }}/snapshot "{{ .Values.shannon.fullnode.snapshot.config.url }}"
 
-        tar --no-same-owner -vxf {{ .Values.homeDirectory }}/snapshot/*.tar.zst --directory {{ .Values.homeDirectory }}/data
+        tar --no-same-owner -vxf {{ .Values.workingDirectory }}/snapshot/*.tar.zst --directory {{ .Values.workingDirectory }}/data
         {{ if and .Values.shannon.fullnode.snapshot.config.chownAsUser .Values.shannon.fullnode.snapshot.config.chownAsGroup }}
-        chown -R {{ .Values.shannon.fullnode.snapshot.config.chownAsUser }}:{{ .Values.shannon.fullnode.snapshot.config.chownAsGroup}} {{ .Values.homeDirectory }}/data
+        chown -R {{ .Values.shannon.fullnode.snapshot.config.chownAsUser }}:{{ .Values.shannon.fullnode.snapshot.config.chownAsGroup}} {{ .Values.workingDirectory }}/data
         {{- end }}
 
         touch "$MARKER"
       fi
   volumeMounts:
     - name: home-config
-      mountPath: {{ .Values.homeDirectory }}
+      mountPath: {{ .Values.workingDirectory }}
 {{- else if eq .Values.shannon.fullnode.snapshot.type "custom" }}
   image: "{{ .Values.shannon.fullnode.snapshot.image.repository }}:{{ .Values.shannon.fullnode.image.tag | default "latest" }}"
   {{- if .Values.shannon.fullnode.snapshot.securityContext }}
@@ -71,11 +71,11 @@ This file implements several helpers function to define init containers.
   {{- end }}
   env:
     - name: POCKETD_WORKING_DIRECTORY
-      value: {{ .Values.homeDirectory }}
+      value: {{ .Values.workingDirectory }}
   command:
     {{- toYaml .Values.shannon.fullnode.snapshot.command | nindent 4 }}
   volumeMounts:
     - name: home-config
-      mountPath: {{ .Values.homeDirectory }}
+      mountPath: {{ .Values.workingDirectory }}
 {{- end }}
 {{- end }}
