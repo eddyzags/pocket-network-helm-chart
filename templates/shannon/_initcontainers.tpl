@@ -34,7 +34,7 @@ Pocket Network Helm Chart.
     - |
       cosmovisor init /bin/{{ .Values.shannon.fullnode.cosmosvisor.daemon.name }}
   volumeMounts:
-    - name: home-config
+    - name: working-directory
       mountPath: {{ .Values.workingDirectory }}
   env:
   {{- include "pocket-network.shannon.envs.cosmosvisor" . | nindent 2 }}
@@ -76,7 +76,7 @@ Pocket Network Helm Chart.
         touch "$MARKER"
       fi
   volumeMounts:
-    - name: home-config
+    - name: working-directory
       mountPath: {{ .Values.workingDirectory }}
 {{- else if eq .Values.shannon.fullnode.snapshot.type "custom" }}
   image: "{{ .Values.shannon.fullnode.snapshot.image.repository }}:{{ .Values.shannon.fullnode.image.tag | default "latest" }}"
@@ -94,7 +94,7 @@ Pocket Network Helm Chart.
   command:
     {{- toYaml .Values.shannon.fullnode.snapshot.command | nindent 4 }}
   volumeMounts:
-    - name: home-config
+    - name: working-directory
       mountPath: {{ .Values.workingDirectory }}
 {{- end }}
 {{- end -}}
