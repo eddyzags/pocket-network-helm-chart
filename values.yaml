@@ -1331,7 +1331,7 @@ shannon:
         # connect.
         p2p:
           # defines the port to expose.
-          nodePort: 26656
+          nodePort: 30000
     # tls configures the fullnode to use a transport layer security (TLS) for
     # the RPC server.
     tls:
