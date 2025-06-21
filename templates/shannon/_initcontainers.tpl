@@ -110,7 +110,7 @@ Pocket Network Helm Chart.
     - "/bin/sh"
     - "-c"
     - |
-      pocketd init --home {{.Values.workingDirectory }} {{ .Values.network }} > /dev/null 2>&1 && \
+      pocketd init --home {{.Values.workingDirectory }} {{ .Values.chain }} > /dev/null 2>&1 && \
       echo genesis file initialized || \
       echo genesis file already exists. Continuing...
   volumeMounts:
@@ -129,7 +129,7 @@ Pocket Network Helm Chart.
     - "/bin/sh"
     - "-c"
     - |
-      wget -O {{ .Values.workingDirectory }}/config/genesis.json https://raw.githubusercontent.com/pokt-network/pocket-network-genesis/refs/heads/master/shannon/{{ .Values.network}}/genesis.json
+      wget -O {{ .Values.workingDirectory }}/config/genesis.json https://raw.githubusercontent.com/pokt-network/pocket-network-genesis/refs/heads/master/shannon/{{- include "pocket-network.utils.toGenesisRef" .Values.chain -}}/genesis.json
   volumeMounts:
     - name: working-directory
       mountPath: {{ .Values.workingDirectory }}

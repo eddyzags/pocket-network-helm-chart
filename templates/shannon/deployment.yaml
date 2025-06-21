@@ -55,7 +55,9 @@ spec:
           args:
           {{- end }}
             - "relayminer"
+            - "start"
             - "--home={{ .Values.workingDirectory }}"
+            - "--chain-id={{ .Values.chain }}"
             - "--keyring-backend={{ .Values.shannon.relayminer.keyring.backend }}"
             - "--config={{ .Values.workingDirectory }}/config/config.yaml"
             - "--grpc-insecure={{ .Values.shannon.relayminer.grpcInsecure }}"
