@@ -36,7 +36,7 @@ Common labels
 {{- define "pocket-network.labels" -}}
 app.pocket.network/name: {{ include "pocket-network.fullname" .root }}-{{ .nameSuffix }}
 app.pocket.network/protocol: {{ .root.Values.protocol }}
-app.pocket.network/network: {{ .root.Values.network }}
+app.pocket.network/network: {{ .root.Values.chain }}
 app.pocket.network/version: {{ .root.Values.version }}
 app.pocket.network/managed-by: {{ .root.Release.Service }}
 helm.sh/chart: {{ include "pocket-network.chart" .root }}
@@ -110,4 +110,17 @@ Extract port from URL for a give string.
 {{- else }}
 {{- fail "invalid addr to extract port" }}
 {{- end }}
+{{- end -}}
+
+{{- define "pocket-network.utils.toGenesisRef" -}}
+{{- $preset := dict
+  "pocket" "mainnet"
+  "pocket-beta" "testnet-beta"
+  "pocket-alpha" "testnet-alpha"
+}}
+{{- if hasKey $preset . -}}
+{{- index $preset . -}}
+{{- else -}}
+{{- fail "must provide valid chain (pocket, pocket-beta or pocket-alpha)" }}
+{{- end -}}
 {{- end -}}

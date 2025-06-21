@@ -7,17 +7,17 @@
 # This chart only supports shannon for now.
 protocol: shannon
 
-# network string refers to the different environment of the Pocket Network protocol.
-# (e.g. mainnet, testnet-beta, testnet-alpha)
+# chain string refers to the different chain of the Pocket Network protocol.
+# (e.g. pocket-beta, pocket-alpha, pocket)
 #
 # see https://dev.poktroll.com/category/networks
-network: testnet-beta
+chain: pocket-beta
 
 # version string refers to the unique version of the pocketd computer
 # software.
 #
 # see https://github.com/pokt-network/poktroll/releases
-version: 0.1.20
+version: 0.1.21
 
 # workingDirectory refers to the pocketd working directory. This variable is
 # shared across all every procol actors. Meaning that the working directory
@@ -1495,7 +1495,7 @@ shannon:
       enabled: true
       # initial number of seconds to wait after the container starts the 
       # liveness probe.
-      initialDelaySeconds: 60
+      initialDelaySeconds: 120
       # defines how often Kubernetes performs health checks in seconds.
       periodSeconds: 15
       # defines a duration threshold for the command to execute before it

@@ -6,8 +6,8 @@
 {{- fail "must provide protocol in values file (must be 'shannon' or 'morse')" }}
 {{- end }}
 
-{{- if not (or (eq .Values.network "mainnet") (eq .Values.network "testnet-alpha") (eq .Values.network "testnet-beta")) }}
-{{- fail "must provide network in values file (must be 'mainnet', 'testnet', 'devnet', 'alphanet' or 'betanet')" }}
+{{- if not (or (eq .Values.chain "pocket") (eq .Values.chain "pocket-alpha") (eq .Values.chain "pocket-beta")) }}
+{{- fail "must provide chain in values file (must be 'pocket', 'pocket-beta', or 'pocket-alpha')" }}
 {{- end }}
 
 {{- if not .Values.version }}

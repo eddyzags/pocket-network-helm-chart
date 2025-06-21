@@ -8,7 +8,7 @@ In this example, you are going to:
 * Deploy a relayminer that references the private/public key pair.
 
 ```shell
-?> pocketd keys add supplier1
+?> pocketd keys add supplier1 --keyring-backend=test
 
 ?> kubectl create secret generic pocket-network-shannon-relayminer-key --from-file=supplier1.info=$HOME/.pocket/keyring-test/supplier1.info
 
