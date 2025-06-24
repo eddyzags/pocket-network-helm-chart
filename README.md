@@ -318,14 +318,10 @@ shannon:
       - service_id: anvil
         service_config:
           backend_url: http://anvil:8547/
-          publicly_exposed_endpoints:
-            - servera.relayminer.example.com
         listen_url: http://0.0.0.0:8545
       - service_id: ollama
         service_config:
           backend_url: http://ollama:8080/
-          publicly_exposed_endpoints:
-            - serverb.relayminer.example.com
         listen_url: http://0.0.0.0:8546
     ingress:
       enabled: true
@@ -339,7 +335,7 @@ shannon:
             pathType: Prefix
             backend:
               service:
-                name: relayminer-service
+                name: pocket-network-<release-name>-shannon-relayminer
                 port:
                   number: 8545
       - host: serverb.relayminer.example.com
@@ -348,12 +344,14 @@ shannon:
             pathType: Prefix
             backend:
               service:
-                name: relayminer-service
+                name: pocket-network-<release-name>-shannon-relayminer
                 port:
                   number: 8546
 ```
 
 > Note: For Kubernetes to route traffic properly, the value of `shannon.relayminer.ingress.hosts[].paths[].backend.service.port.number` must match the port specified in `shannon.relayminer.config.suppliers[].listen_url`.
+
+> Note: You must replace <release-name> by the value provided while installing the chart. (`helm install <release-name> ...`)
 
 This example demonstrates how to define an external access with a certificate request using cert-manager and [Let's Encrypt](https://letsencrypt.org/) as a cluster issuer.
 
@@ -366,14 +364,10 @@ shannon:
       - service_id: anvil
         service_config:
           backend_url: http://anvil:8547/
-          publicly_exposed_endpoints:
-            - servera.relayminer.example.com
         listen_url: http://0.0.0.0:8545
       - service_id: ollama
         service_config:
           backend_url: http://ollama:8080/
-          publicly_exposed_endpoints:
-            - serverb.relayminer.example.com
         listen_url: http://0.0.0.0:8546
     ingress:
       # activates the definition of an ingress resource.
@@ -479,14 +473,14 @@ shannon:
 	</thead>
 	<tbody>
 		<tr>
-			<td id="network">network</td>
+			<td id="chain">chain</td>
 			<td>
 string
 </td>
 			<td>
 				<div style="max-width: 300px;">
 <pre lang="json">
-"testnet-beta"
+"pocket-beta"
 </pre>
 </div>
 			</td>
@@ -1082,7 +1076,7 @@ int
 			<td>
 				<div style="max-width: 300px;">
 <pre lang="json">
-60
+120
 </pre>
 </div>
 			</td>
@@ -1278,7 +1272,7 @@ int
 			<td>
 				<div style="max-width: 300px;">
 <pre lang="json">
-26656
+30000
 </pre>
 </div>
 			</td>
@@ -2186,7 +2180,7 @@ bool
 			<td>
 				<div style="max-width: 300px;">
 <pre lang="json">
-true
+false
 </pre>
 </div>
 			</td>
@@ -2564,7 +2558,7 @@ string
 			<td>
 				<div style="max-width: 300px;">
 <pre lang="json">
-"0.1.20"
+"0.1.21"
 </pre>
 </div>
 			</td>

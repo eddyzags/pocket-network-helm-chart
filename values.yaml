@@ -296,7 +296,7 @@ shannon:
     # https://kubernetes.io/docs/concepts/services-networking/ingress
     ingress:
       # activates the definition of an ingress resource.
-      enabled: true
+      enabled: false
       # controls how the ingress resource is dynamically provisioned.
       className: ""
       # defines non-selectable metadata attached to the ingress resource
