@@ -1428,9 +1428,13 @@ shannon:
       #           You can provide your own init container with the required commands to execute.
       #           When using this `custom` type, it is the responsability of this init container
       #           to:
+      #           * Download the snapshot.
       #           * Extract the downloaded snapshot to the appropriate directory. This chart will
       #             automatically define a default environment variable (POCKETD_WORKING_DIRECTORY_PATH).
       #             (e.g.: tar -vxf snapshot.tar.gz --directory $POCKETD_WORKING_DIRECTORY_PATH/data)
+      #           * Set the proper file permissions for the fullnode container (same user and group ID as
+      #             .Values.shannon.fullnode.podSecurityContext or .Values.shannon.fullnode.containersSecurityContext)
+      #             (e.g.: )
       #
       #          e.g.:
       #          type: custom
@@ -1450,6 +1454,7 @@ shannon:
       #            - |
       #              aws s3 cp s3://your-bucket-name/path/to/snapshot.tar.gz .
       #              tar --no-same-owner -vxf {{ .Values.workingDirectory }}/snapshot/*.tar.zst --directory $POCKETD_WORKING_DIRECTORY/data
+      #              chown -R {{ .Values.shannon.fullnode.containersSecurityContext.runAsUser }}:{{ .Values.shannon.fullnode.containersSecurityContext.runAsUser }} {{ .Values.workingDirectory }}
       type: ariac
       config:
         # defines the url to download.
