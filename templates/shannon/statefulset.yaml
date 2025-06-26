@@ -27,9 +27,9 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- if .Values.shannon.fullnode.podSecurityContext }}
+      {{- with .Values.shannon.fullnode.podSecurityContext }}
       securityContext:
-        {{- toYaml | nindent 8 }}
+        {{- toYaml . | nindent 8 }}
       {{- end }}
       initContainers:
         {{- include "pocket-network.shannon.initcontainers.fullnode.cosmossdk" . | nindent 8 }}
@@ -119,8 +119,14 @@ spec:
           resources: {{- toYaml .Values.shannon.fullnode.resources.values | nindent 12 }}
           {{- end }}
           volumeMounts:
+            - name: working-directory-config
+              mountPath: "{{ .Values.workingDirectory }}/config"
             - name: working-directory
-              mountPath: "{{ .Values.workingDirectory }}"
+              mountPath: "{{ .Values.workingDirectory }}/data"
+              subPath: data
+            - name: working-directory
+              mountPath: "{{ .Values.workingDirectory }}/snapshot"
+              subPath: snapshot
             - name: cosmossdk-config
               mountPath: "{{ .Values.workingDirectory }}/config/config.toml"
               subPath: "{{ .Values.shannon.fullnode.cosmossdk.volumes.config.key.configKeyName }}"
@@ -169,6 +175,8 @@ spec:
           {{- include "pocket-network.shannon.envs.cosmosvisor" . | nindent 10 }}
           {{- end }}
       volumes:
+        - name: working-directory-config
+          emptyDir: {}
         - name: cosmossdk-config
           configMap:
             {{- if .Values.shannon.fullnode.cosmossdk.volumes.enabled }}

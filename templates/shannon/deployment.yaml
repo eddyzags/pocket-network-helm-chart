@@ -25,9 +25,9 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- if .Values.shannon.relayminer.podSecurityContext }}
+      {{- with .Values.shannon.relayminer.podSecurityContext }}
       securityContext:
-        {{- toYaml .Values.shannon.relayminer.podSecurityContext | nindent 8 }}
+        {{- toYaml . | nindent 8 }}
       {{- end }}
       initContainers:
         {{- include "pocket-network.shannon.initcontainers.relayminer.working-directory" . | nindent 8 }}

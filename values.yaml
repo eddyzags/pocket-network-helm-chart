@@ -1546,30 +1546,18 @@ shannon:
     #   runAsGroup: 3000        # Run the Pod as group ID 3000
     #   fsGroup: 2000           # Set file system group ownership to 2000
     podSecurityContext: {}
-    # initContainersSecurityContext are key-values pairs to define the
-    # security settings for all init containers. This field overwrites
-    # the podSecurityContext settings if any defined.
-    #
-    # e.g
-    # initContainers:
-    #   runAsUser: 1000         # Run the Pod as user ID 1000
-    #   runAsGroup: 3000        # Run the Pod as group ID 3000
-    #   fsGroup: 2000           # Set file system group ownership to 2000
-    initContainersSecurityContext:
-      runAsUser: 1025
-      runAsGroup: 1025
     # securityContext are key-values pairs to define the security settings
     # for the fullnode pod containers. This field overwrites the
     # podSecurityContext settings if any defined.
     #
+    #
     # e.g.
-    # capabilities:
-    #     drop:
-    #     - ALL
-    #   readOnlyRootFilesystem: true
-    #   runAsNonRoot: true
-    #   runAsUser: 1000
-    containersSecurityContext: {}
+    # containersSecurityContext
+    #   runAsUser: 1025
+    #   runAsGroup: 1025
+    containersSecurityContext:
+      runAsUser: 1025
+      runAsGroup: 1025
     # nodeSelector are key-values pairs to schedule the fullnode pod on a
     # specific node based on labels.
     nodeSelector: {}
