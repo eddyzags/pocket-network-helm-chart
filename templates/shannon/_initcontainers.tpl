@@ -139,7 +139,11 @@ Pocket Network Helm Chart.
     - |
       mkdir -p {{ .Values.workingDirectory }}/config
       wget -O {{ .Values.workingDirectory }}/config/genesis.json https://raw.githubusercontent.com/pokt-network/pocket-network-genesis/refs/heads/master/shannon/{{- include "pocket-network.utils.toGenesisRef" .Values.chain -}}/genesis.json
-      chown -R {{ .Values.shannon.fullnode.containersSecurityContext.runAsUser }}:{{ .Values.shannon.fullnode.snapshot.config.chownAsGroup}} {{ .Values.workingDirectory }}
+      {{- if .Values.shannon.fullnode.podSecurityContext }}
+      chown -R {{ .Values.shannon.fullnode.podSecurityContext.runAsUser }}:{{ .Values.shannon.fullnode.podSecurityContext.runAsGroup}} {{ .Values.workingDirectory }}
+      {{- else if .Values.shannon.fullnode.containersSecurityContext }}
+      chown -R {{ .Values.shannon.fullnode.containersSecurityContext.runAsUser }}:{{ .Values.shannon.fullnode.containersSecurityContext.runAsGroup}} {{ .Values.workingDirectory }}
+      {{- end }}
   volumeMounts:
     - name: working-directory-config
       mountPath: {{ .Values.workingDirectory}}/config
