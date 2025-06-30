@@ -1,0 +1,90 @@
+{{- if and .Values.protocol "shannon" .Values.shannon.relayminer.development.relay.enabled }}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ include "pocket-network.fullname" . }}-shannon-relay
+  labels:
+    {{- include "pocket-network.labels" (dict "root" . "nameSuffix" "shannon-relayminer" ) | nindent 4 }}
+spec:
+  schedule: "{{ .Values.shannon.relayminer.development.relay.schedule }}"
+  suspend: {{ .Values.shannon.relayminer.development.relay.suspend }}
+  jobTemplate:
+    spec:
+      parallelism: {{ .Values.shannon.relayminer.development.relay.parallelism }}
+      completions: {{ .Values.shannon.relayminer.development.relay.completions }}
+      backoffLimit: {{ .Values.shannon.relayminer.development.relay.backoffLimit }}
+      activeDeadlineSeconds: {{ .Values.shannon.relayminer.development.relay.activeDeadlineSeconds }}
+      ttlSecondsAfterFinished: {{ .Values.shannon.relayminer.development.relay.ttlSecondsAfterFinished }}
+      template:
+        metadata:
+          labels:
+            {{- include "pocket-network.labels" (dict "root" . "nameSuffix" "shannon-relayminer" ) | nindent 12 }}
+        spec:
+          initContainers:
+            {{- include "pocket-network.shannon.initcontainers.relayminer.working-directory" . | nindent 12 }}
+          containers:
+          - name: "relayminer"
+            {{- with .Values.shannon.relayminer.containersSecurityContext }}
+            securityContext:
+              {{- toYaml . | nindent 14 }}
+            {{- end }}
+            image: "{{ .Values.shannon.relayminer.image.repository }}:{{ .Values.shannon.relayminer.image.tag | default .Values.version }}"
+            imagePullPolicy: {{ .Values.shannon.relayminer.image.pullPolicy }}
+            command:
+              - "/bin/sh"
+              - "-c"
+              - |
+                pocketd keys add \
+                {{ .Values.shannon.relayminer.development.relay.application.address }} \
+                --recover \
+                --home={{ .Values.workingDirectory }} \
+                --keyring-backend=test \
+                --source={{ .Values.workingDirectory }}/{{ .Values.shannon.relayminer.development.relay.application.secret.keyName }};
+
+                pocketd \
+                relayminer \
+                relay \
+                --home={{ .Values.workingDirectory }} \
+                --count={{ .Values.shannon.relayminer.development.relay.count }} \
+                --app={{ .Values.shannon.relayminer.development.relay.application.address }} \
+                {{- if .Values.shannon.relayminer.development.relay.supplierAddress }}
+                --supplier={{ .Values.shannon.relayminer.development.relay.supplierAddress }} \
+                {{- end }}
+                --keyring-backend=test \
+                --node={{ .Values.shannon.relayminer.development.relay.nodeRpcUrl }} \
+                --grpc-addr={{ .Values.shannon.relayminer.development.relay.nodeGrpc.url }} \
+                --grpc-insecure={{ .Values.shannon.relayminer.development.relay.nodeGrpc.insecure }} \
+                --payload={{ .Values.shannon.relayminer.development.relay.payload | toJson | quote }}
+            resources:
+              requests:
+                cpu: 50m
+                memory: 256Mi
+              limits:
+                cpu: 50m
+                memory: 256Mi
+            volumeMounts:
+              - name: working-directory
+                mountPath: "{{ .Values.workingDirectory }}"
+              - name: keys-application
+                mountPath: "{{ .Values.workingDirectory }}/{{ .Values.shannon.relayminer.development.relay.application.secret.keyName }}"
+                subPath: "{{ .Values.shannon.relayminer.development.relay.application.secret.keyName }}"
+          {{- with .Values.shannon.relayminer.nodeSelector }}
+          nodeSelector:
+            {{- toYaml . | nindent 8 }}
+          {{- end }}
+          {{- with .Values.shannon.relayminer.affinity }}
+          affinity:
+            {{- toYaml . | nindent 8 }}
+          {{- end }}
+          {{- with .Values.shannon.relayminer.tolerations }}
+          tolerations:
+            {{- toYaml . | nindent 8 }}
+          {{- end }}
+          volumes:
+            - name: working-directory
+              emptyDir: {}
+            - name: keys-application
+              secret:
+                secretName: {{ .Values.shannon.relayminer.development.relay.application.secret.name }}
+          restartPolicy: OnFailure
+{{- end }}
