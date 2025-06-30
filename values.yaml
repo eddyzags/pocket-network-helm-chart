@@ -223,7 +223,7 @@ shannon:
         enabled: false
         # defines the schedule time using the Cron syntax
         # https://en.wikipedia.org/wiki/Cron
-        schedule: "*/10 * * * *"
+        schedule: "*/5 * * * *"
         # defines the number of requests to send.
         count: 100
         # defines the staked application address.
@@ -248,15 +248,15 @@ shannon:
         # define the request payload to send for each requests in JSON.
         payload: "{\"jsonrpc\": \"2.0\", \"id\": 1, \"method\": \"eth_blockNumber\", \"params\": []}"
         # Number of pods to run in parallel.
-        parallelism: 1
+        parallelism: 5
         # Total number of completions required for a successful CronJob execution.
-        completions: 1
+        completions: 5
         # Number of retries before giving up.
         backoffLimit: 3
         # Time limit for the job (in seconds).
-        activeDeadlineSeconds: 1800
+        activeDeadlineSeconds: 600
         # Time to keep the Job resource around after completion.
-        ttlSecondsAfterFinished: 7200
+        ttlSecondsAfterFinished: 5
       # delve configures a debugger for the Go programming language. Keep in
       # mind that debugging may be challenging if the binary was compiled
       # with optimizations and inlining enabled.
