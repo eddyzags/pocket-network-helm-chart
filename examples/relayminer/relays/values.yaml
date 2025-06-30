@@ -1,0 +1,44 @@
+protocol: shannon
+chain: pocket-beta
+version: 0.1.24
+workingDirectory: /home/pocket/.pocket
+shannon:
+  relayminer:
+    development:
+      relay:
+        enabled: true
+        schedule: "*/3 * * * *"
+        suspend: false
+        count: 20000
+        application:
+          address: <your-app-address>
+          secret:
+            name: pocket-network-shannon-beta-application-key
+            keyName: mnemonic.txt
+        supplierAddress: <your-supplier-address>
+        nodeRpcUrl: tcp://node:26657
+        nodeGrpc:
+          url: node:9090
+          insecure: true
+        payload:
+          jsonrpc: "2.0"
+          id: 1
+          method: eth_blockNumber
+          params: []
+        parallelism: 10
+        completions: 10
+        backoffLimit: 3
+        activeDeadlineSeconds: 600
+        ttlSecondsAfterFinished: 10
+    image:
+      repository: ghcr.io/pokt-network/pocketd
+      pullPolicy: IfNotPresent
+      tag: ""
+    containersSecurityContext:
+      runAsUser: 1025
+      runAsGroup: 1025
+    nodeSelector: {}
+    affinity: {}
+    tolerations: []
+  fullnode:
+    enabled: false

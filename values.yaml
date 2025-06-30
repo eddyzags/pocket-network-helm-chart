@@ -17,7 +17,7 @@ chain: pocket-beta
 # software.
 #
 # see https://github.com/pokt-network/poktroll/releases
-version: 0.1.21
+version: 0.1.24
 
 # workingDirectory refers to the pocketd working directory. This variable is
 # shared across all every procol actors. Meaning that the working directory
@@ -211,9 +211,52 @@ shannon:
       serviceMonitor:
         # activates the templating of a ServiceMonitor custom resource.
         enabled: true
-    # development are the globals configuration to set up an development
-    # environment on the relayminer pod.
+    # development are the globals configuration to set up a development
+    # environment to test or analyze the relayminer pod.
     development:
+      # relay configures a Kubernetes CronJob to simulate real-word requests and
+      # response between a staked Application and Supplier.
+      # Before running this CronJob, you must staked an application and a
+      # supplier.
+      relay:
+        # actives the Kubernetes CronJob.
+        enabled: false
+        # defines the schedule time using the Cron syntax
+        # https://en.wikipedia.org/wiki/Cron
+        schedule: "*/5 * * * *"
+        # defines the number of requests to send.
+        count: 100
+        # defines the staked application address.
+        application:
+          address: pokt10v4ta463vmul6ztfzj2ts55rwmh9scdxzaaj9f
+          secret:
+            name: pocket-network-shannon-application-key
+            keyName: mnemonic.txt
+        # (optional) defines the staked supplier address exposing the
+        # service. If not defined, the Kubernetes CronJob will select
+        # a random Supplier. For now, the supplier must staked a
+        # single service.
+        supplierAddress: pokt19a3t4yunp0dlpfjrp7qwnzwlrzd5fzs2gjaaaj
+        # configures a websocket connection to a pocket network node.
+        nodeRpcUrl: tcp://node:26657
+        # configures RPC connection to a pocket network node.
+        nodeGrpc:
+          # defines the URL to connect to.
+          url: tcp://node:9090
+          # disable the transport security layer.
+          insecure: true
+        # define the request payload to send for each requests in JSON.
+        payload: "{\"jsonrpc\": \"2.0\", \"id\": 1, \"method\": \"eth_blockNumber\", \"params\": []}"
+        # Number of pods to run in parallel.
+        parallelism: 5
+        # Total number of completions required for a successful CronJob execution.
+        completions: 5
+        # Number of retries before giving up.
+        backoffLimit: 3
+        # Time limit for the job (in seconds).
+        activeDeadlineSeconds: 600
+        # Time to keep the Job resource around after completion.
+        ttlSecondsAfterFinished: 5
       # delve configures a debugger for the Go programming language. Keep in
       # mind that debugging may be challenging if the binary was compiled
       # with optimizations and inlining enabled.
@@ -369,39 +412,24 @@ shannon:
     # podSecurityContext are key-values pairs to define the security settings
     # for all containers within a pod.
     #
-    # e.g.
+    # e.g.:
     #
-    # podSecurityContext
+    # podSecurityContext:
     #   runAsUser: 1000         # Run the Pod as user ID 1000
     #   runAsGroup: 3000        # Run the Pod as group ID 3000
-    #   fsGroup: 2000           # Set file system group ownership to 2000
     podSecurityContext: {}
-    # initContainersSecurityContext are key-values pairs to define the
-    # security settings for all init containers. This field overwrites
-    # the podSecurityContext settings if any defined.
-    #
-    # e.g.
-    #
-    # initContainers:
-    #   runAsUser: 1000         # Run the Pod as user ID 1000
-    #   runAsGroup: 3000        # Run the Pod as group ID 3000
-    #   fsGroup: 2000           # Set file system group ownership to 2000
-    initContainersSecurityContext:
-      runAsUser: 1025
-      runAsGroup: 1025
     # securityContext are key-values pairs to define the security settings
     # for the relayminer pod containers. This field overwrites the
     # podSecurityContext settings if any defined.
     #
-    # e.g.
+    # e.g.:
     #
-    # capabilities:
-    #     drop:
-    #     - ALL
-    #   readOnlyRootFilesystem: true
-    #   runAsNonRoot: true
-    #   runAsUser: 1000
-    containersSecurityContext: {}
+    # containersSecurityContext:
+    #   runAsUser: 1000         # Run the Pod as user ID 1000
+    #   runAsGroup: 3000        # Run the Pod as group ID 3000
+    containersSecurityContext:
+      runAsUser: 1025
+      runAsGroup: 1025
     # nodeSelector are key-values pairs to schedule the relayminer pod on a
     # specific node based on labels.
     nodeSelector: {}
