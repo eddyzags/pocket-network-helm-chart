@@ -13,7 +13,10 @@ Pocket Network is permissionless decentralized physical infrastructure (DePin) p
 ?> helm install release-1 . -f values.yaml
 ```
 
-![pocket-network-grafana-dashboard](images/dashboard-1.png)
+![pocket-network-grafana-dashboard-1](images/dashboard-1.png)
+![pocket-network-grafana-dashboard-2](images/dashboard-2.png)
+![pocket-network-grafana-dashboard-3](images/dashboard-3.png)
+![pocket-network-grafana-dashboard-4](images/dashboard-4.png)
 
 # Table of Contents
 
