@@ -233,9 +233,9 @@ shannon:
             name: pocket-network-shannon-application-key
             keyName: mnemonic.txt
         # (optional) defines the staked supplier address exposing the
-        # service. If not defined, the Kubernetes CronJob will stake
-        # a random Supplier from the staked Application.
-        # For now, the supplier must staked a single service.
+        # service. If not defined, the Kubernetes CronJob will select
+        # a random Supplier. For now, the supplier must staked a
+        # single service.
         supplierAddress: pokt19a3t4yunp0dlpfjrp7qwnzwlrzd5fzs2gjaaaj
         # configures a websocket connection to a pocket network node.
         nodeRpcUrl: tcp://node:26657

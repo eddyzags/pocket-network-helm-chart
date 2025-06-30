@@ -34,8 +34,6 @@ shannon:
       repository: ghcr.io/pokt-network/pocketd
       pullPolicy: IfNotPresent
       tag: ""
-    imagePullSecrets: []
-    podSecurityContext: {}
     containersSecurityContext:
       runAsUser: 1025
       runAsGroup: 1025
