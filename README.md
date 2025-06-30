@@ -515,14 +515,28 @@ object
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--fullnode--containersSecurityContext">shannon.fullnode.containersSecurityContext</td>
+			<td id="shannon--fullnode--containersSecurityContext--runAsGroup">shannon.fullnode.containersSecurityContext.runAsGroup</td>
 			<td>
-object
+int
 </td>
 			<td>
 				<div style="max-width: 300px;">
 <pre lang="json">
-{}
+1025
+</pre>
+</div>
+			</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td id="shannon--fullnode--containersSecurityContext--runAsUser">shannon.fullnode.containersSecurityContext.runAsUser</td>
+			<td>
+int
+</td>
+			<td>
+				<div style="max-width: 300px;">
+<pre lang="json">
+1025
 </pre>
 </div>
 			</td>
@@ -993,34 +1007,6 @@ list
 				<div style="max-width: 300px;">
 <pre lang="json">
 []
-</pre>
-</div>
-			</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td id="shannon--fullnode--initContainersSecurityContext--runAsGroup">shannon.fullnode.initContainersSecurityContext.runAsGroup</td>
-			<td>
-int
-</td>
-			<td>
-				<div style="max-width: 300px;">
-<pre lang="json">
-1025
-</pre>
-</div>
-			</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td id="shannon--fullnode--initContainersSecurityContext--runAsUser">shannon.fullnode.initContainersSecurityContext.runAsUser</td>
-			<td>
-int
-</td>
-			<td>
-				<div style="max-width: 300px;">
-<pre lang="json">
-1025
 </pre>
 </div>
 			</td>
@@ -1949,14 +1935,28 @@ string
 			<td></td>
 		</tr>
 		<tr>
-			<td id="shannon--relayminer--containersSecurityContext">shannon.relayminer.containersSecurityContext</td>
+			<td id="shannon--relayminer--containersSecurityContext--runAsGroup">shannon.relayminer.containersSecurityContext.runAsGroup</td>
 			<td>
-object
+int
 </td>
 			<td>
 				<div style="max-width: 300px;">
 <pre lang="json">
-{}
+1025
+</pre>
+</div>
+			</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td id="shannon--relayminer--containersSecurityContext--runAsUser">shannon.relayminer.containersSecurityContext.runAsUser</td>
+			<td>
+int
+</td>
+			<td>
+				<div style="max-width: 300px;">
+<pre lang="json">
+1025
 </pre>
 </div>
 			</td>
@@ -2027,6 +2027,230 @@ bool
 				<div style="max-width: 300px;">
 <pre lang="json">
 true
+</pre>
+</div>
+			</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td id="shannon--relayminer--development--relay--activeDeadlineSeconds">shannon.relayminer.development.relay.activeDeadlineSeconds</td>
+			<td>
+int
+</td>
+			<td>
+				<div style="max-width: 300px;">
+<pre lang="json">
+600
+</pre>
+</div>
+			</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td id="shannon--relayminer--development--relay--application--address">shannon.relayminer.development.relay.application.address</td>
+			<td>
+string
+</td>
+			<td>
+				<div style="max-width: 300px;">
+<pre lang="json">
+"pokt10v4ta463vmul6ztfzj2ts55rwmh9scdxzaaj9f"
+</pre>
+</div>
+			</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td id="shannon--relayminer--development--relay--application--secret--keyName">shannon.relayminer.development.relay.application.secret.keyName</td>
+			<td>
+string
+</td>
+			<td>
+				<div style="max-width: 300px;">
+<pre lang="json">
+"mnemonic.txt"
+</pre>
+</div>
+			</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td id="shannon--relayminer--development--relay--application--secret--name">shannon.relayminer.development.relay.application.secret.name</td>
+			<td>
+string
+</td>
+			<td>
+				<div style="max-width: 300px;">
+<pre lang="json">
+"pocket-network-shannon-application-key"
+</pre>
+</div>
+			</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td id="shannon--relayminer--development--relay--backoffLimit">shannon.relayminer.development.relay.backoffLimit</td>
+			<td>
+int
+</td>
+			<td>
+				<div style="max-width: 300px;">
+<pre lang="json">
+3
+</pre>
+</div>
+			</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td id="shannon--relayminer--development--relay--completions">shannon.relayminer.development.relay.completions</td>
+			<td>
+int
+</td>
+			<td>
+				<div style="max-width: 300px;">
+<pre lang="json">
+5
+</pre>
+</div>
+			</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td id="shannon--relayminer--development--relay--count">shannon.relayminer.development.relay.count</td>
+			<td>
+int
+</td>
+			<td>
+				<div style="max-width: 300px;">
+<pre lang="json">
+100
+</pre>
+</div>
+			</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td id="shannon--relayminer--development--relay--enabled">shannon.relayminer.development.relay.enabled</td>
+			<td>
+bool
+</td>
+			<td>
+				<div style="max-width: 300px;">
+<pre lang="json">
+false
+</pre>
+</div>
+			</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td id="shannon--relayminer--development--relay--nodeGrpc--insecure">shannon.relayminer.development.relay.nodeGrpc.insecure</td>
+			<td>
+bool
+</td>
+			<td>
+				<div style="max-width: 300px;">
+<pre lang="json">
+true
+</pre>
+</div>
+			</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td id="shannon--relayminer--development--relay--nodeGrpc--url">shannon.relayminer.development.relay.nodeGrpc.url</td>
+			<td>
+string
+</td>
+			<td>
+				<div style="max-width: 300px;">
+<pre lang="json">
+"tcp://node:9090"
+</pre>
+</div>
+			</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td id="shannon--relayminer--development--relay--nodeRpcUrl">shannon.relayminer.development.relay.nodeRpcUrl</td>
+			<td>
+string
+</td>
+			<td>
+				<div style="max-width: 300px;">
+<pre lang="json">
+"tcp://node:26657"
+</pre>
+</div>
+			</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td id="shannon--relayminer--development--relay--parallelism">shannon.relayminer.development.relay.parallelism</td>
+			<td>
+int
+</td>
+			<td>
+				<div style="max-width: 300px;">
+<pre lang="json">
+5
+</pre>
+</div>
+			</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td id="shannon--relayminer--development--relay--payload">shannon.relayminer.development.relay.payload</td>
+			<td>
+string
+</td>
+			<td>
+				<div style="max-width: 300px;">
+<pre lang="json">
+"{\"jsonrpc\": \"2.0\", \"id\": 1, \"method\": \"eth_blockNumber\", \"params\": []}"
+</pre>
+</div>
+			</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td id="shannon--relayminer--development--relay--schedule">shannon.relayminer.development.relay.schedule</td>
+			<td>
+string
+</td>
+			<td>
+				<div style="max-width: 300px;">
+<pre lang="json">
+"*/5 * * * *"
+</pre>
+</div>
+			</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td id="shannon--relayminer--development--relay--supplierAddress">shannon.relayminer.development.relay.supplierAddress</td>
+			<td>
+string
+</td>
+			<td>
+				<div style="max-width: 300px;">
+<pre lang="json">
+"pokt19a3t4yunp0dlpfjrp7qwnzwlrzd5fzs2gjaaaj"
+</pre>
+</div>
+			</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td id="shannon--relayminer--development--relay--ttlSecondsAfterFinished">shannon.relayminer.development.relay.ttlSecondsAfterFinished</td>
+			<td>
+int
+</td>
+			<td>
+				<div style="max-width: 300px;">
+<pre lang="json">
+5
 </pre>
 </div>
 			</td>
@@ -2209,34 +2433,6 @@ list
 				<div style="max-width: 300px;">
 <pre lang="json">
 []
-</pre>
-</div>
-			</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td id="shannon--relayminer--initContainersSecurityContext--runAsGroup">shannon.relayminer.initContainersSecurityContext.runAsGroup</td>
-			<td>
-int
-</td>
-			<td>
-				<div style="max-width: 300px;">
-<pre lang="json">
-1025
-</pre>
-</div>
-			</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td id="shannon--relayminer--initContainersSecurityContext--runAsUser">shannon.relayminer.initContainersSecurityContext.runAsUser</td>
-			<td>
-int
-</td>
-			<td>
-				<div style="max-width: 300px;">
-<pre lang="json">
-1025
 </pre>
 </div>
 			</td>
@@ -2558,7 +2754,7 @@ string
 			<td>
 				<div style="max-width: 300px;">
 <pre lang="json">
-"0.1.21"
+"0.1.24"
 </pre>
 </div>
 			</td>
