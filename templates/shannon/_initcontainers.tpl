@@ -66,11 +66,11 @@ Pocket Network Helm Chart.
         rm -r {{ .Values.workingDirectory }}/snapshot/* > /dev/null 2>&1
 
         echo "Downloading snapshot..."
-        aria2c --seed-time=0 --file-allocation=none --dir {{ .Values.workingDirectory }}/snapshot "{{ .Values.shannon.fullnode.snapshot.config.url }}"
+        aria2c --seed-time=0 --file-allocation=none --dir {{ .Values.workingDirectory }}/snapshot "{{ .Values.shannon.fullnode.snapshot.config.url }}" || exit 1
 
-        tar --no-same-owner -vxf {{ .Values.workingDirectory }}/snapshot/*.tar.zst --directory {{ .Values.workingDirectory }}/data
+        tar --no-same-owner -vxf {{ .Values.workingDirectory }}/snapshot/*.tar.zst --directory {{ .Values.workingDirectory }}/data || exit 1
         {{ if and .Values.shannon.fullnode.snapshot.config.chownAsUser .Values.shannon.fullnode.snapshot.config.chownAsGroup }}
-        chown -R {{ .Values.shannon.fullnode.snapshot.config.chownAsUser }}:{{ .Values.shannon.fullnode.snapshot.config.chownAsGroup}} {{ .Values.workingDirectory }}/data
+        chown -R {{ .Values.shannon.fullnode.snapshot.config.chownAsUser }}:{{ .Values.shannon.fullnode.snapshot.config.chownAsGroup}} {{ .Values.workingDirectory }}/data || exit 1
         {{- end }}
 
         touch "$MARKER"
